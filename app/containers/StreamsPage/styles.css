@@ -1,0 +1,30 @@
+.streamPreviewsContainer {
+
+}
+
+.streamPreviewContainer {
+  float: left;
+  margin: 20px;
+  width: 320px;
+}
+
+.streamPreviewUser {
+
+}
+
+.streamPreviewImage {
+
+}
+
+.linkWhite:hover {
+  color: white;
+}
+.linkWhite {
+  color: white;
+}
+.streamPreviewTitle {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration-color: white;
+}

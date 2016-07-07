@@ -19,11 +19,10 @@ import { fromJS } from 'immutable';
 
 // The initial state of the App
 const initialState = fromJS({
-  loading: false,
-  error: false,
-  currentUser: false,
-  userData: fromJS({
-    repositories: false,
+  user: fromJS({
+    coins: 10,
+    loggedIn: true,
+    name: 'DinoEntrails'
   }),
 });
 

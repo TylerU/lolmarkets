@@ -23,13 +23,6 @@ import {
 import { changeUsername } from './actions';
 import { loadRepos } from '../App/actions';
 
-import RepoListItem from 'containers/RepoListItem';
-import Button from 'components/Button';
-import H2 from 'components/H2';
-import List from 'components/List';
-import ListItem from 'components/ListItem';
-import LoadingIndicator from 'components/LoadingIndicator';
-
 import styles from './styles.css';
 
 export class HomePage extends React.Component {
@@ -41,6 +34,7 @@ export class HomePage extends React.Component {
       this.props.onSubmitForm();
     }
   }
+
   /**
    * Changes the route
    *
@@ -58,50 +52,9 @@ export class HomePage extends React.Component {
   };
 
   render() {
-    let mainContent = null;
-
-    // Show a loading indicator when we're loading
-    if (this.props.loading) {
-      mainContent = (<List component={LoadingIndicator} />);
-
-    // Show an error if there is one
-    } else if (this.props.error !== false) {
-      const ErrorComponent = () => (
-        <ListItem item={'Something went wrong, please try again!'} />
-      );
-      mainContent = (<List component={ErrorComponent} />);
-
-    // If we're not loading, don't have an error and there are repos, show the repos
-    } else if (this.props.repos !== false) {
-      mainContent = (<List items={this.props.repos} component={RepoListItem} />);
-    }
-
     return (
       <article>
-        <div>
-          <section className={`${styles.textSection} ${styles.centered}`}>
-            <H2>Start your next react project in minutes</H2>
-            <p>A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices</p>
-          </section>
-          <section className={styles.textSection}>
-            <H2>Try me!</H2>
-            <form className={styles.usernameForm} onSubmit={this.props.onSubmitForm}>
-              <label htmlFor="username">Show Github repositories by
-                <span className={styles.atPrefix}>@</span>
-                <input
-                  id="username"
-                  className={styles.input}
-                  type="text"
-                  placeholder="mxstbr"
-                  value={this.props.username}
-                  onChange={this.props.onChangeUsername}
-                />
-              </label>
-            </form>
-            {mainContent}
-          </section>
-          <Button handleRoute={this.openFeaturesPage}>Features</Button>
-        </div>
+        <div className={styles.testStyle}></div>
       </article>
     );
   }
@@ -131,7 +84,6 @@ function mapDispatchToProps(dispatch) {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(loadRepos());
     },
-
     dispatch,
   };
 }

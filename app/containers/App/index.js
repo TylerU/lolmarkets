@@ -7,27 +7,52 @@
  */
 
 import React from 'react';
+import { Link, IndexLink } from 'react-router';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {LinkContainer, IndexLinkContainer} from 'react-router-bootstrap';
+import 'file?name=[name].[ext]!../../img/Coin_Icon.png';
+import Coin from '../../img/Coin_Icon.png';
 
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 import 'sanitize.css/sanitize.css';
 
-import Img from 'components/Img';
-import Footer from 'components/Footer';
-import Banner from './banner-metal.jpg';
-import A from 'components/A';
-
 import styles from './styles.css';
 
-function App(props) {
-  return (
-    <div className={styles.wrapper}>
-      <A className={styles.logoWrapper} href="https://twitter.com/mxstbr">
-        <Img className={styles.logo} src={Banner} alt="react-boilerplate - Logo" />
-      </A>
-      {props.children}
-      <Footer />
-    </div>
-  );
+export class App extends React.Component {
+  render() {
+    return (
+      <div>
+        <Navbar>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <IndexLink to="/">LoL Markets</IndexLink>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Streams</NavItem></LinkContainer>
+              <LinkContainer to="/about"><NavItem eventKey={2}>About</NavItem></LinkContainer>
+            </Nav>
+            <Nav pullRight>
+              <NavItem eventKey={3} className={styles.coinContainer}>
+                <img src={Coin} className={styles.coinImage} />
+                4
+              </NavItem>
+              <NavDropdown eventKey={4} title="DinoEntrails" id="nav-dropdown">
+                <MenuItem eventKey="4.1">Profile</MenuItem>
+                <MenuItem eventKey="4.3">My Open Markets</MenuItem>
+                <MenuItem eventKey="4.2">Logout</MenuItem>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        <div className="container">
+          {this.props.children}
+        </div>
+      </div>
+    );
+  }
 }
 
 App.propTypes = {

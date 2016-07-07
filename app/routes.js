@@ -39,10 +39,18 @@ export default function createRoutes(store) {
         importModules.catch(errorLoading);
       },
     }, {
-      path: '/features',
-      name: 'features',
+      path: '/streams',
+      name: 'streams',
       getComponent(nextState, cb) {
-        System.import('containers/FeaturePage')
+        System.import('containers/StreamsPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
+      path: '/stream/:streamName',
+      name: 'stream',
+      getComponent(nextState, cb) {
+        System.import('containers/StreamPage')
           .then(loadModule(cb))
           .catch(errorLoading);
       },

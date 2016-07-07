@@ -13,6 +13,9 @@ import 'file?name=[name].[ext]!./favicon.ico';
 import '!file?name=[name].[ext]!./manifest.json';
 import 'file?name=[name].[ext]!./.htaccess';
 
+// Load bootstrap
+import '!!style-loader!css-loader!./css/vendor/bootstrap-darkly.min.css';
+
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
