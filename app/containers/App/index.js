@@ -31,7 +31,7 @@ export class App extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Streams</NavItem></LinkContainer>
+              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Open Markets</NavItem></LinkContainer>
               <LinkContainer to="/about"><NavItem eventKey={2}>About</NavItem></LinkContainer>
             </Nav>
             <Nav pullRight>
@@ -39,9 +39,9 @@ export class App extends React.Component {
                 <img src={Coin} className={styles.coinImage} />
                 4
               </NavItem>
+              <NavItem eventKey="4.3">My Portfolio</NavItem>
               <NavDropdown eventKey={4} title="DinoEntrails" id="nav-dropdown">
                 <MenuItem eventKey="4.1">Profile</MenuItem>
-                <MenuItem eventKey="4.3">My Open Markets</MenuItem>
                 <MenuItem eventKey="4.2">Logout</MenuItem>
               </NavDropdown>
             </Nav>

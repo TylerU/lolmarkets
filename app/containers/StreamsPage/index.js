@@ -24,7 +24,7 @@ export class StreamsPage extends React.Component {
         title: 'You can call me washed up that just means im clean af | Trying new DPI | Join us https://discordapp.com/invite/wingsofdeat'
       },
       {
-        name: 'Scarra',
+        name: 'Nightblue3',
         imageUrl: 'https://static-cdn.jtvnw.net/previews-ttv/live_user_scarra-320x180.jpg',
         betVolume: 50,
         markets: 2,
