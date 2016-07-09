@@ -11,7 +11,6 @@
   clear: both;
   cursor: pointer;
   padding: 19px;
-  border-bottom: 2px solid #2c2c2c;
 }
 
 .collapseHeader {
@@ -46,13 +45,25 @@
 }
 
 .expandedMarketContent {
-  padding: 19px;
-  padding-top: 10px;
+  /*padding: 19px;*/
+  /*padding-top: 10px;*/
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .marketBtn {
-  margin-left: 20px;
+  /*margin-left: 20px;*/
   display: inline-block;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.marketBtnCancel {
+  /*margin-left: 20px;*/
+  display: block;
+  /*float: right;*/
+  width: 100%;
+  margin-top: 15px;
 }
 
 .marketInfoDesc {
@@ -60,9 +71,51 @@
 }
 
 .buySellArea {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-.buySellCollapse {
+.marketCol {
+  padding: 35px;
+  padding-top: 15px;
+  border-top: 2px solid #2c2c2c;
+}
 
+.buySellButton {
+  width: 100%;
+  padding: 0;
+  border: none;
+}
+
+.buySellButtonChildren {
+  display: inline-block;
+  width: 40%;
+  padding: 10px 15px;
+}
+
+.buySellLeftChild {
+  border-right: 2px dotted #beeee2;
+  width: 60%;
+}
+
+.buySellHeader {
+  margin-bottom: 30px;
+}
+
+.sliderContainer {
+  width: 80%;
+  display: inline-block;
+}
+
+.numSharesContainer {
+  margin-bottom: 15px;
+}
+
+.helpIcon {
+  margin-left: 10px;
+  color: #dcdcdc;
+}
+
+.shareIcon {
+  margin-right: 10px;
+  top: 2px;
 }

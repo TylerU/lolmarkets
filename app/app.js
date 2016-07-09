@@ -15,6 +15,7 @@ import 'file?name=[name].[ext]!./.htaccess';
 
 // Load bootstrap
 import '!!style-loader!css-loader!./css/vendor/bootstrap-darkly.min.css';
+import '!!style-loader!css-loader!./css/vendor/rangeslider.css';
 
 // Import all the third party stuff
 import React from 'react';

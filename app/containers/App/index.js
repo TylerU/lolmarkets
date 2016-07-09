@@ -10,8 +10,8 @@ import React from 'react';
 import { Link, IndexLink } from 'react-router';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
-// import 'file?name=[name].[ext]!../../img/Coin_Icon.png';
-import Coin from '../../img/Coin_Icon.png';
+
+import MoneyIcon from '../../components/MoneyIcon';
 
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 import 'sanitize.css/sanitize.css';
@@ -36,7 +36,7 @@ export class App extends React.Component {
             </Nav>
             <Nav pullRight>
               <NavItem eventKey={3} className={styles.coinContainer}>
-                <img src={Coin} className={styles.coinImage} />
+                <MoneyIcon />
                 4
               </NavItem>
               <NavItem eventKey="4.3">My Portfolio</NavItem>

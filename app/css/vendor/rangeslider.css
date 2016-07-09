@@ -1,0 +1,46 @@
+/**
+ * Rangeslider
+ */
+.rangeslider {
+  margin: 20px 0;
+  position: relative;
+  background: #e6e6e6;
+}
+.rangeslider .rangeslider__fill,
+.rangeslider .rangeslider__handle {
+  position: absolute;
+}
+.rangeslider,
+.rangeslider .rangeslider__fill {
+  display: block;
+  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3);
+}
+.rangeslider .rangeslider__handle {
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: inline-block;
+  position: absolute;
+}
+.rangeslider .rangeslider__handle:active {
+  background: #999;
+}
+/**
+ * Rangeslider - Horizontal slider
+ */
+.rangeslider-horizontal {
+  height: 10px;
+  border-radius: 10px;
+}
+.rangeslider-horizontal .rangeslider__fill {
+  height: 100%;
+  background: #27ae60;
+  border-radius: 10px;
+  top: 0;
+}
+.rangeslider-horizontal .rangeslider__handle {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  top: -5px;
+}
