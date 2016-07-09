@@ -1,23 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+// import { push } from 'react-router-redux';
 import _ from 'lodash';
-import { Link } from 'react-router';
+// import { Link } from 'react-router';
 import Collapse from 'react-collapse';
+import Slider from 'rc-slider';
+
 import styles from './styles.css';
 
 class EmbeddedTwitchPlayer extends React.Component {
   render() {
     return (
-        <iframe
-          className={styles.frame}
-          muted="true"
-          autoPlay={0}
-          frameBorder="0"
-          src={`http://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
-          scrolling="no"
-          allowFullScreen>
-        </iframe>
+      <iframe
+        className={styles.frame}
+        muted="true"
+        autoPlay={0}
+        frameBorder="0"
+        src={`http://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
+        scrolling="no"
+        allowFullScreen
+      >
+      </iframe>
     );
   }
 }
@@ -26,55 +29,65 @@ class MarketActions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: null
+      expanded: null,
     };
   }
 
   toggleExpand(val) {
-    this.setState({expanded: val});
+    this.setState({ expanded: val });
   }
 
   render() {
     const expanded = this.state.expanded;
 
-    const inner = this.state.expanded == null ?
-      (
-        <div>
-          <button className={styles.marketBtn + " btn btn-success"}
-                  onClick={this.toggleExpand.bind(this, 'buy')}>
-            Buy Yes Shares
-          </button>
+    const inner = expanded == null ?
+      (<div>
+        <button
+          className={`${styles.marketBtn} btn btn-success`}
+          onClick={() => this.toggleExpand('buy')}
+        >
+          Buy Yes Shares
+        </button>
 
-          <button disabled={false}
-                  className={styles.marketBtn + " btn btn-danger"}
-                  onClick={this.toggleExpand.bind(this, 'sell')}>
-            Sell Yes Shares
+        <button
+          disabled={false}
+          className={`${styles.marketBtn} btn btn-danger`}
+          onClick={() => this.toggleExpand('sell')}
+        >
+          Sell Yes Shares
+        </button>
+      </div>) :
+      (expanded === 'sell' ?
+        (<div>
+          <p>Selling</p>
+          <button
+            className={`${styles.marketBtn} btn btn-primary`}
+            onClick={() => this.toggleExpand(null)}
+          >
+            Cancel
           </button>
-        </div>
-      ) :
-      (this.state.expanded == 'sell' ?
-        (
+        </div>) :
+        (<div>
           <div>
-            <p>Selling</p>
-            <button className={styles.marketBtn + " btn btn-primary"}
-                    onClick={this.toggleExpand.bind(this, null)}>
+            <p className={styles.marketInfoDesc}>Buying Yes Shares</p>
+            <button
+              className={`${styles.marketBtn} btn btn-primary`}
+              onClick={() => this.toggleExpand(null)}
+            >
               Cancel
             </button>
           </div>
-        ) :
-        (
-          <div>
-            <p>Buying</p>
-            <button className={styles.marketBtn + " btn btn-primary"}
-                    onClick={this.toggleExpand.bind(this, null)}>
-              Cancel
-            </button>
+          <div className={styles.buySellArea}>
+            <input className="form-control" type="number" />
+            <div>
+              <Slider min={0} max={100} defaultValue={50} />
+            </div>
           </div>
-        )
+        </div>)
       );
 
     return (
-      <div className={"col-md-6 " + styles.buyColumn}>
+      <div className={`col-md-6 ${styles.buyColumn}`}>
         <h4>Yes Shares: {this.props.market.yesPrice}</h4>
         {inner}
       </div>
@@ -88,28 +101,32 @@ class MarketItem extends React.Component {
     super(props);
     this.state = {
       open: false,
-    }
+    };
   }
 
   toggle() {
-    this.setState({open: !this.state.open});
+    this.setState({ open: !this.state.open });
   }
 
   render() {
     return (
       <div>
-        <div className={styles.collapseHeader + " well"}>
-          <div className={styles.openMarketContainer} onClick={this.toggle.bind(this)}>
+        <div className={`${styles.collapseHeader} well`}>
+          <div className={styles.openMarketContainer} onClick={() => this.toggle()}>
             <div className={styles.openMarketName}>{this.props.market.name}</div>
             <div className={styles.openMarketPriceContainer}>
-              <span className={styles.chevronIcon + " pull-right glyphicon glyphicon-chevron-" +
-                (this.state.open ? 'up' : 'down')}>
+              <span
+                className={`${styles.chevronIcon} pull-right glyphicon
+                    glyphicon-chevron-${(this.state.open ? 'up' : 'down')}`}
+              >
               </span>
-              <span className={styles.openMarketPrice + " pull-right"}>{this.props.market.currentPrice}</span>
+              <span className={`${styles.openMarketPrice} pull-right`}>
+                {this.props.market.currentPrice}
+              </span>
             </div>
           </div>
           <Collapse isOpened={this.state.open}>
-            <div className={styles.expandedMarketContent + " row"}>
+            <div className={`${styles.expandedMarketContent} row`}>
               <MarketActions market={this.props.market} />
               <MarketActions market={this.props.market} />
             </div>
@@ -141,7 +158,7 @@ export class StreamPage extends React.Component {
       imageUrl: 'https://static-cdn.jtvnw.net/previews-ttv/live_user_scarra-320x180.jpg',
       betVolume: 50,
       markets: 2,
-      title: 'Voyboy | im the best league player in my room'
+      title: 'Voyboy | im the best league player in my room',
     };
 
     const markets = [
@@ -162,7 +179,7 @@ export class StreamPage extends React.Component {
         currentPrice: 16.5,
         yesPrice: 16.5,
         noPrice: 83.5,
-      }
+      },
     ];
 
     return (
@@ -170,7 +187,7 @@ export class StreamPage extends React.Component {
         <h3>{stream.name}</h3>
         <div className={styles.embedContainer}>
           <div className={styles.embedItem}>
-            <EmbeddedTwitchPlayer stream={stream.name} />
+            {/* <EmbeddedTwitchPlayer stream={stream.name} /> */}
           </div>
         </div>
         <div>

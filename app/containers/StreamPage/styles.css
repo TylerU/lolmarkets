@@ -51,7 +51,16 @@
 }
 
 .marketBtn {
-  margin: 10px;
+  margin-left: 20px;
+  display: inline-block;
+}
+
+.marketInfoDesc {
+  display: inline-block;
+}
+
+.buySellArea {
+  margin-top: 10px;
 }
 
 .buySellCollapse {

@@ -8,9 +8,9 @@
 
 import React from 'react';
 import { Link, IndexLink } from 'react-router';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
-import {LinkContainer, IndexLinkContainer} from 'react-router-bootstrap';
-import 'file?name=[name].[ext]!../../img/Coin_Icon.png';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+// import 'file?name=[name].[ext]!../../img/Coin_Icon.png';
 import Coin from '../../img/Coin_Icon.png';
 
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
@@ -31,7 +31,7 @@ export class App extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Open Markets</NavItem></LinkContainer>
+              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Active Streams</NavItem></LinkContainer>
               <LinkContainer to="/about"><NavItem eventKey={2}>About</NavItem></LinkContainer>
             </Nav>
             <Nav pullRight>
