@@ -23,20 +23,36 @@
 
 .openMarketName {
   display: inline-block;
-  width: 75%;
+  width: 50%;
+  vertical-align: text-bottom;
 }
 
 .chevronIcon {
+  top: 17px;
+}
+
+.chevronIconSmall {
   top: 5px;
 }
 
 .openMarketPriceContainer {
   display: inline-block;
-  width: 25%;
+  width: 50%;
 }
 
 .openMarketPrice {
-  padding-right: 10px;
+  /*padding-right: 10px;*/
+  display: block;
+  float: right;
+}
+
+.currentInvestment {
+  display: block;
+  clear: both;
+}
+
+.marketHeaderStats {
+  padding-right: 20px;
 }
 
 .frame {
@@ -71,7 +87,7 @@
 }
 
 .buySellArea {
-  margin-top: 15px;
+  padding-top: 15px;
 }
 
 .marketCol {
@@ -89,7 +105,7 @@
 .buySellButtonChildren {
   display: inline-block;
   width: 40%;
-  padding: 10px 15px;
+  padding: 10px 0;
 }
 
 .buySellLeftChild {
@@ -119,3 +135,4 @@
   margin-right: 10px;
   top: 2px;
 }
+

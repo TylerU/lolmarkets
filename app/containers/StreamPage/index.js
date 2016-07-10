@@ -12,16 +12,20 @@ import styles from './styles.css';
 
 class YesShareIcon extends React.Component {
   render() {
+    const curStyle = _.defaults(this.props.style || {}, { color: '#00bc8c' });
+
     return (
-      <Glyphicon className={styles.shareIcon} glyph="ok-sign" style={{ color: '#00bc8c' }} />
+      <Glyphicon className={styles.shareIcon} glyph="ok-sign" style={curStyle} />
     );
   }
 }
 
 class NoShareIcon extends React.Component {
   render() {
+    const curStyle = _.defaults(this.props.style || {}, { color: '#e74c3c' });
+
     return (
-      <Glyphicon className={styles.shareIcon} glyph="remove-sign" style={{ color: '#e74c3c' }} />
+      <Glyphicon className={styles.shareIcon} glyph="remove-sign" style={curStyle} />
     );
   }
 }
@@ -71,6 +75,8 @@ class SliderInputButton extends React.Component {
           <div className="col-sm-8">
             <InfoContainer label="Transaction Cost:" data={123.4} />
             <InfoContainer label="Predicted New Market Price:" data={'94.3%'} />
+            <InfoContainer label="Shares You Currently Own:" data={'12'} />
+            <InfoContainer label="Shares You Will Own:" data={12 + this.props.value} />
           </div>
           <div className="col-sm-4">
             <button
@@ -102,11 +108,11 @@ class InfoContainer extends React.Component {
   render() {
     return (
       <div className="row">
-        <label className="col-sm-9">
+        <label className="col-xs-9">
           {this.props.label}
         </label>
 
-        <div className="col-sm-3">
+        <div className="col-xs-3">
           <div className="">
             {this.props.data}
           </div>
@@ -167,7 +173,7 @@ class MarketActions extends React.Component {
         </button>
 
         <button
-          disabled={false}
+          disabled={true}
           className={`${styles.marketBtn} btn btn-danger`}
           onClick={() => this.toggleExpand('sell')}
         >
@@ -185,18 +191,20 @@ class MarketActions extends React.Component {
       <div className={`col-md-6 ${styles.marketCol}`}>
         <div className="clearfix">
           <h4 className="pull-left">
+
             {this.props.icon}
             {this.props.asset} Shares
-          </h4>
-          <h5 className="pull-right">
-            Current Price: <MoneyIcon />{this.props.market.yesPrice}
+            ({this.props.numOwned})
             <OverlayTrigger
               overlay={(<Tooltip id={`tooltip-${this.props.asset}`}>{this.props.helpText}</Tooltip>)} placement="top"
               delayShow={50} delayHide={150}
             >
               <span className={`${styles.helpIcon} glyphicon glyphicon-question-sign`}></span>
             </OverlayTrigger>
-          </h5>
+          </h4>
+          <h4 className="pull-right">
+            Current Price: <MoneyIcon size="24px"/>{this.props.market.yesPrice}
+          </h4>
         </div>
         <Collapse isOpened={this.state.expanded === null}>
           {primaryView}
@@ -228,20 +236,35 @@ class MarketItem extends React.Component {
   render() {
     const tooltipYes = 'At the end of the game, if this prediction is true, all yes shares are redeemed for $1. If the prediction is false, they are worth nothing';
     const tooltipNo = 'At the end of the game, if this prediction is false, all no shares are redeemed for $1. If the prediction is true, they are worth nothing';
+    const showOwned = this.props.market.yesOwned > 0 && this.props.market.noOwned > 0;
+    const ownedUI = showOwned ? (
+      <div className={`${styles.currentInvestment}`}>
+        <YesShareIcon style={{ marginLeft: '1px', marginRight: '3px' }} />
+        {this.props.market.yesOwned}
+        <NoShareIcon style={{ marginLeft: '15px', marginRight: '3px' }} />
+        {this.props.market.noOwned}
+      </div>) : (null);
+
     return (
+
       <div>
         <div className={`${styles.collapseHeader} well`}>
           <div className={styles.openMarketContainer} onClick={() => this.toggle()}>
-            <div className={styles.openMarketName}>{this.props.market.name}</div>
+            <div className={styles.openMarketName}>
+              <h5>{this.props.market.name}</h5>
+            </div>
             <div className={styles.openMarketPriceContainer}>
               <span
-                className={`${styles.chevronIcon} pull-right glyphicon
+                className={`${showOwned ? styles.chevronIcon : styles.chevronIconSmall} pull-right glyphicon
                     glyphicon-chevron-${(this.state.open ? 'up' : 'down')}`}
               >
               </span>
-              <span className={`${styles.openMarketPrice} pull-right`}>
-                {this.props.market.currentPrice} %
-              </span>
+              <div className={`${styles.marketHeaderStats} pull-right`}>
+                <span className={`${styles.openMarketPrice}`}>
+                  {this.props.market.currentPrice} %
+                </span>
+                {ownedUI}
+              </div>
             </div>
           </div>
           <Collapse isOpened={this.state.open}>
@@ -250,13 +273,16 @@ class MarketItem extends React.Component {
                 market={this.props.market}
                 asset="Yes"
                 helpText={tooltipYes}
-                icon={<YesShareIcon/>}
+                numOwned={this.props.market.yesOwned}
+                icon={<YesShareIcon />}
               />
               <MarketActions
                 market={this.props.market}
                 asset="No"
                 helpText={tooltipNo}
-                icon={<NoShareIcon/>}
+                numOwned={Math.round(Math.random() * 30)}
+                numOwned={this.props.market.noOwned}
+                icon={<NoShareIcon />}
               />
             </div>
           </Collapse>
@@ -292,22 +318,28 @@ export class StreamPage extends React.Component {
 
     const markets = [
       {
-        name: 'Hillary Clinton will be elected president',
+        name: 'Hillary Clinton will be elected president Hillary Clinton will be elected president',
         currentPrice: 74.3,
         yesPrice: 74.3,
         noPrice: 25.7,
+        yesOwned: 0,//Math.round(Math.random() * 30),
+        noOwned: 0,//Math.round(Math.random() * 30),
       },
       {
         name: 'Republicans will win the house',
         currentPrice: 55.9,
         yesPrice: 55.9,
         noPrice: 44.1,
+        yesOwned: 0,
+        noOwned: 0,
       },
       {
         name: 'Republicans will the senate',
         currentPrice: 16.5,
         yesPrice: 16.5,
         noPrice: 83.5,
+        yesOwned: Math.round(Math.random() * 30),
+        noOwned: Math.round(Math.random() * 30),
       },
     ];
 
