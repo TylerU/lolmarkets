@@ -31,15 +31,15 @@ export class App extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/streams"><NavItem eventKey={1} href="#">Active Streams</NavItem></LinkContainer>
               <LinkContainer to="/about"><NavItem eventKey={2}>About</NavItem></LinkContainer>
+              <LinkContainer to="/streams"><NavItem eventKey={1}>Active Streams</NavItem></LinkContainer>
+              <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer>
             </Nav>
             <Nav pullRight>
               <NavItem eventKey={3} className={styles.coinContainer}>
                 <MoneyIcon />
                 4
               </NavItem>
-              <NavItem eventKey="4.3">My Portfolio</NavItem>
               <NavDropdown eventKey={4} title="DinoEntrails" id="nav-dropdown">
                 <MenuItem eventKey="4.1">Profile</MenuItem>
                 <MenuItem eventKey="4.2">Logout</MenuItem>

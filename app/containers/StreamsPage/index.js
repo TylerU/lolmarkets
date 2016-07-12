@@ -33,7 +33,7 @@ export class StreamsPage extends React.Component {
 
     let streamPreviews = _.map(streams, (stream) => {
       const linkDest = `stream/${stream.name}`;
-      
+
       return (
         <div key={stream.name} className={styles.streamPreviewContainer}>
           <Link to={linkDest}><h4 className={styles.streamPreviewUser}>{stream.name}</h4> </Link>
@@ -42,11 +42,11 @@ export class StreamsPage extends React.Component {
           <div className={styles.streamPreviewVolume}>Bet Volume: {stream.betVolume}</div>
           <div className={styles.streamPreviewMarkets}>Open Markets: {stream.markets}</div>
         </div>
-      )
+      );
     });
     return (
       <div>
-        <h3>Popular Streams</h3>
+        <h2>Popular Streams</h2>
         <div className={styles.streamPreviewsContainer}>
           {streamPreviews}
         </div>

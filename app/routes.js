@@ -39,6 +39,14 @@ export default function createRoutes(store) {
         importModules.catch(errorLoading);
       },
     }, {
+      path: '/portfolio',
+      name: 'portfolio',
+      getComponent(nextState, cb) {
+        System.import('containers/PortfolioPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
       path: '/streams',
       name: 'streams',
       getComponent(nextState, cb) {
