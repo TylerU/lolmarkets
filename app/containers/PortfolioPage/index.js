@@ -57,6 +57,33 @@ class PortfolioPage extends React.Component {
       },
     ];
 
+    const oldMarkets = [
+      {
+        name: 'The square root of five is sqrt(5)',
+        marketClose: '7/2/2016',
+        resultYes: Math.random() < 0.5,
+        yesOwned: Math.round(Math.random() * 30),
+        noOwned: Math.round(Math.random() * 30),
+        preTrading: Math.round(Math.random() * 200 - 100),
+      },
+      {
+        name: 'I know nothing about anything',
+        marketClose: '7/10/2016',
+        resultYes: Math.random() < 0.5,
+        yesOwned: Math.round(Math.random() * 30),
+        noOwned: Math.round(Math.random() * 30),
+        preTrading: Math.round(Math.random() * 200 - 100),
+      },
+      {
+        name: 'Imaqtpie will win this game or something',
+        marketClose: '7/12/2016',
+        resultYes: Math.random() < 0.5,
+        yesOwned: Math.round(Math.random() * 30),
+        noOwned: Math.round(Math.random() * 30),
+        preTrading: Math.round(Math.random() * 200 - 100),
+      },
+    ];
+
     const groupedMarkets = _.groupBy(markets, 'channel');
     const activeMarkets = _.map(groupedMarkets, (curMarkets, channelId) => {
       const marketObjs = _.map(curMarkets, (market) => {
@@ -72,12 +99,39 @@ class PortfolioPage extends React.Component {
         </div>
       );
     });
+
+    const closedMarkets = _.map(oldMarkets, (market) =>
+       (<tr key={market.name}>
+         <td data-title="Name">{market.name}</td>
+         <td data-title="Date">{market.marketClose}</td>
+         <td data-title="Pre-close Gains" className={market.preTrading > 0 ? 'success' : 'danger'}>{market.preTrading}</td>
+         <td data-title="Yes Shares Owned" className={market.resultYes ? 'success' : 'danger'}>{market.yesOwned}</td>
+         <td data-title="No Shares Owned" className={market.resultYes ? 'danger' : 'success'}>{market.noOwned}</td>
+       </tr>)
+    );
+
     return (
       <div>
         <h2>Your Portfolio</h2>
         <h3>Active Market Investments</h3>
         {activeMarkets}
         <h3>Resolved Markets</h3>
+        <div className={`${styles.tableContainer} well`}>
+          <table className="table table-responsive table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Pre-close Gains</th>
+                <th>Yes Shares Owned</th>
+                <th>No Shares Owned</th>
+              </tr>
+            </thead>
+            <tbody>
+            {closedMarkets}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }

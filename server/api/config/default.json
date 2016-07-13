@@ -1,0 +1,13 @@
+{
+  "nedb": "databases",
+  "auth": {
+    "successRedirect": false,
+    "failureRedirect": false,
+    "shouldSetupFailureRoute": false,
+    "shouldSetupSuccessRoute": false,
+    "token": {
+      "secret": "+GJwhl9/93z1LNvxJ7xyIkEFFeqeErUYoub/Eeh4FIqLqr3j5nZoSt8UJkqogOP8iHUbJxo74R4L0OpRkZSFgw=="
+    },
+    "local": {}
+  }
+}
