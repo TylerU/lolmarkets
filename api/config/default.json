@@ -1,5 +1,7 @@
 {
-  "nedb": "databases",
+  "host": "localhost",
+  "port": 3030,
+  "nedb": "api/databases",
   "auth": {
     "successRedirect": false,
     "failureRedirect": false,

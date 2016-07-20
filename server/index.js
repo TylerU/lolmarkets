@@ -8,12 +8,8 @@ const setup = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false;
 const resolve = require('path').resolve;
-const api = require('./api');
 const app = express();
 
-
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-app.use('/api', api);
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
@@ -25,7 +21,7 @@ setup(app, {
 const port = argv.port || process.env.PORT || 3000;
 
 // Start your app.
-const server = app.listen(port, (err) => {
+app.listen(port, (err) => {
   if (err) {
     return logger.error(err.message);
   }
@@ -43,5 +39,3 @@ const server = app.listen(port, (err) => {
     logger.appStarted(port);
   }
 });
-
-api.setup(server);

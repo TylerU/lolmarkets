@@ -1,0 +1,4 @@
+{
+
+  "ignore": ["server/*", "internals/*", "experiments/*", "databases/*", "app/*"]
+}

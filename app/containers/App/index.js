@@ -31,7 +31,6 @@ export class App extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/about"><NavItem eventKey={2}>About</NavItem></LinkContainer>
               <LinkContainer to="/streams"><NavItem eventKey={1}>Active Streams</NavItem></LinkContainer>
               <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer>
             </Nav>
