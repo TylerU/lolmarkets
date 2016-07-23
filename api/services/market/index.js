@@ -1,17 +1,16 @@
+const path = require('path');
+const NeDB = require('nedb');
 const service = require('feathers-nedb');
 const hooks = require('./hooks');
-const NeDB = require('nedb');
-const path = require('path');
 
 module.exports = function () {
   const app = this;
 
   const db = new NeDB({
-    filename: path.join(app.get('nedb'), 'users.db'),
+    filename: path.join(app.get('nedb'), 'markets.db'),
     autoload: true,
   });
 
-  db.ensureIndex({ fieldName: 'email', unique: true });
 
   const options = {
     Model: db,
@@ -22,14 +21,14 @@ module.exports = function () {
   };
 
   // Initialize our service with any options it requires
-  app.use('/users', service(options));
+  app.use('/markets', service(options));
 
   // Get our initialized service to that we can bind hooks
-  const userService = app.service('/users');
+  const marketsService = app.service('/markets');
 
   // Set up our before hooks
-  userService.before(hooks.before);
+  marketsService.before(hooks.before);
 
   // Set up our after hooks
-  userService.after(hooks.after);
+  marketsService.after(hooks.after);
 };

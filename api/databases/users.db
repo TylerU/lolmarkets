@@ -1,5 +1,9 @@
-{"email":"tyler@gmail.com","password":"$2a$10$qoD2HWSlZdZeBfTA8icZeuEf/7giaeOxXo.z4wXCtIJmoUW8OBqgO","_id":"PJVcqbl2RijxUx6V"}
+{"email":"tyler2@gmail.com","password":"$2a$10$BkxHu9H2x8v2QzRISx2Me.cGTVnQ2oxQRQH5e23.ILOI6fc9KIsGe","_id":"HpbNHSZNSBuJJYsk"}
+{"email":"tyler1@gmail.com","password":"$2a$10$2Z0F522M57boM.qXp8jeweEDnOY3rVx8hSg43HX.GZ5BT2kBSH34O","_id":"N68fiXI3YN056ypk"}
+{"email":"tyler@gmail.com","password":"$2a$10$qoD2HWSlZdZeBfTA8icZeuEf/7giaeOxXo.z4wXCtIJmoUW8OBqgO","_id":"PJVcqbl2RijxUx6V","superAdmin":true}
+{"email":"tyler3@gmail.com","password":"$2a$10$G/axQe1X0XHim/9PiVmaue8l4ylekZ9sVKf/.PQNvaDEjJEw44mQm","superAdmin":false,"_id":"UHbmUR9dDx4MQaYZ"}
 {"password":"$2a$10$IdBE44dz4.ri8dFC0W4Vs.Flhf4BBXaVXgwz1igNtl7tFk4wkEv2i","email":"a@sdf.as","_id":"WWHPsuKN6J8Kt6rY"}
 {"email":"tyler9@gmail.com","password":"$2a$10$faJmpPof4B.yRe2Vy.8mtOsZxtj54oxU2nbm1yBWoPTJbHqGXt7jW","_id":"eTbPlqndnnYQiYQs"}
 {"email":"addhs1fa@gmail","password":"$2a$10$.yIKKR9i.tFn1imN5zUTPuPo1YyuwQNYv.GHbghh2oCUY4//IMiOu","_id":"iMIh5yVM0BskQo0T"}
 {"password":"$2a$10$3Vej7uxvRj.mLd.cg8xxDeM0ebgsAl8UHyhLCeRjUCzyIvWGIeERW","email":"a1@sdf.as","_id":"tqhBSpXX37TGf34a"}
+{"$$indexCreated":{"fieldName":"email","unique":true,"sparse":false}}

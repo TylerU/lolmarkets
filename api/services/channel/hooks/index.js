@@ -1,67 +1,76 @@
 const hooks = require('feathers-hooks');
 const auth = require('feathers-authentication').hooks;
+const superAdminOnly = require('../../../hooks/index.js').superAdminOnlyHook;
 const validateHook = require('../../../hooks/index.js').validateHook;
+const _ = require('lodash');
 /* eslint no-param-reassign: "off" */
 
 
 const schema = {
-  email: {
+  displayName: {
     required: true,
     type: 'string',
-    format: 'email',
   },
-  password: {
+  twitchName: {
     required: true,
     type: 'string',
-    maxLength: 512,
-    minLength: 5,
   },
-  superAdmin: {
-    required: false,
+  isStreaming: {
+    required: true,
     type: 'boolean',
+  },
+  activeMarkets: {
+    type: 'array',
+    items: {
+      type: 'string',
+    },
+  },
+  leagueAccounts: {
+    type: 'array',
+    items: {
+      type: 'integer',
+    },
+  },
+  activity: {
+    required: true,
+    type: 'integer',
   },
 };
 
-function setSuperAdmin(hook) {
-  hook.data.superAdmin = false;
-}
-const outProperties = ['email', '_id', 'superAdmin'];
-const inProperties = ['email', 'password'];
+const outProperties = ['activity', 'displayName', 'twitchName', 'isStreaming', 'activeMarkets'];
+const inProperties = _.keys(schema); // Everything
 
 exports.outProperties = outProperties;
 exports.inProperties = inProperties;
 
 exports.before = {
   all: [],
-  find: [
-    hooks.disable('external'),
-  ],
-  get: [
+  find: [],
+  get: [],
+  create: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' }),
-  ],
-  create: [
+    superAdminOnly(),
     validateHook(schema),
-    auth.hashPassword(),
     hooks.pluck.apply(hooks, inProperties),
-    setSuperAdmin,
   ],
   update: [
     auth.verifyToken(),
-    validateHook(schema),
-    auth.hashPassword(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' }),
-    hooks.pluck.apply(hooks, inProperties), // TODO - should email be settable?
+    superAdminOnly(),
+    validateHook(schema),
+    hooks.pluck.apply(hooks, inProperties),
   ],
   patch: [
     hooks.disable(() => true),
   ],
   remove: [
-    hooks.disable(() => true),
+    auth.verifyToken(),
+    auth.populateUser(),
+    auth.restrictToAuthenticated(),
+    superAdminOnly(),
   ],
 };
 

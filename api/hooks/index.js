@@ -31,3 +31,14 @@ exports.validateHook = function (schemaIn, optionsIn) {
     }
   };
 };
+
+exports.superAdminOnlyHook = () =>
+  (hook) => {
+    if (!hook.params.provider) return; // It's internal, so we don't care
+
+    if (hook.params.user && hook.params.user.superAdmin) {
+      return;
+    } else {
+      throw new errors.Forbidden('Internal access only');
+    }
+  };

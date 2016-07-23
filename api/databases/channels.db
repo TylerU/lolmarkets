@@ -1,0 +1,5 @@
+{"displayName":"Voyboy1","twitchName":"Voyboy1","isStreaming":false,"activity":1000,"activeMarkets":["tst"],"leagueAccounts":[],"_id":"4VvmRZ4XHpAThx6D"}
+{"displayName":"Voyboy","twitchName":"Voyboy","isStreaming":false,"activity":1000,"activeMarkets":["tst"],"leagueAccounts":[],"_id":"MpoUfZlhO6dpreET"}
+{"displayName":"Voyboy6","twitchName":"Voybo6y","isStreaming":false,"activity":1000,"activeMarkets":["tst"],"leagueAccounts":[],"_id":"nxc2Nobi3rpS1ve8"}
+{"$$indexCreated":{"fieldName":"twitchName","unique":true,"sparse":false}}
+{"$$indexCreated":{"fieldName":"displayName","unique":true,"sparse":false}}

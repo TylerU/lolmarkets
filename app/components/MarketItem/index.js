@@ -1,9 +1,3 @@
-/**
-*
-* MarketItem
-*
-*/
-
 import React from 'react';
 
 import Collapse from 'react-collapse';
@@ -159,7 +153,7 @@ class MarketActions extends React.Component {
         </button>
 
         <button
-          disabled={true}
+          disabled={false}
           className={`${styles.marketBtn} btn btn-danger`}
           onClick={() => this.toggleExpand('sell')}
         >
@@ -265,7 +259,6 @@ class MarketItem extends React.Component {
                 market={this.props.market}
                 asset="No"
                 helpText={tooltipNo}
-                numOwned={Math.round(Math.random() * 30)}
                 numOwned={this.props.market.noOwned}
                 icon={<NoShareIcon />}
               />

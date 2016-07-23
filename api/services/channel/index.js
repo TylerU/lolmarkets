@@ -1,17 +1,17 @@
+const path = require('path');
+const NeDB = require('nedb');
 const service = require('feathers-nedb');
 const hooks = require('./hooks');
-const NeDB = require('nedb');
-const path = require('path');
 
 module.exports = function () {
   const app = this;
 
   const db = new NeDB({
-    filename: path.join(app.get('nedb'), 'users.db'),
+    filename: path.join(app.get('nedb'), 'channels.db'),
     autoload: true,
   });
-
-  db.ensureIndex({ fieldName: 'email', unique: true });
+  db.ensureIndex({ fieldName: 'twitchName', unique: true });
+  db.ensureIndex({ fieldName: 'displayName', unique: true });
 
   const options = {
     Model: db,
@@ -22,14 +22,14 @@ module.exports = function () {
   };
 
   // Initialize our service with any options it requires
-  app.use('/users', service(options));
+  app.use('/channels', service(options));
 
   // Get our initialized service to that we can bind hooks
-  const userService = app.service('/users');
+  const channelsService = app.service('/channels');
 
   // Set up our before hooks
-  userService.before(hooks.before);
+  channelsService.before(hooks.before);
 
   // Set up our after hooks
-  userService.after(hooks.after);
+  channelsService.after(hooks.after);
 };
