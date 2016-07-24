@@ -1,5 +1,7 @@
+'use strict';
 const errors = require('feathers-errors');
 const validator = require('is-my-json-valid');
+const _ = require('lodash');
 /* eslint no-param-reassign: "off" */
 
 function errorsMap(error) {
@@ -36,9 +38,21 @@ exports.superAdminOnlyHook = () =>
   (hook) => {
     if (!hook.params.provider) return; // It's internal, so we don't care
 
-    if (hook.params.user && hook.params.user.superAdmin) {
+    if (hook.params.user && hook.params.user.superAdmin)
       return;
-    } else {
-      throw new errors.Forbidden('Internal access only');
-    }
+
+    throw new errors.Forbidden('Internal access only');
   };
+
+exports.pluckAfter = (outProperties) =>
+  (hook) => {
+    hook.result.dataValues = _.pick(hook.result.dataValues, outProperties);
+  };
+
+exports.overrideData = (obj) =>
+  (hook) => {
+    const toOverride = _.isFunction(obj) ? obj(hook.app) : obj;
+
+    hook.data = _.assign({}, hook.data, toOverride);
+  };
+

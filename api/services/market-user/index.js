@@ -1,6 +1,6 @@
 const service = require('feathers-sequelize');
-const hooks = require('./hooks/market-hooks');
-const model = require('./market-model');
+const hooks = require('./hooks/market-user-hooks');
+const model = require('./market-user-model');
 
 module.exports = function () {
   const app = this;
@@ -14,15 +14,15 @@ module.exports = function () {
   };
 
   // Initialize our service with any options it requires
-  app.use('/users', service(options));
+  app.use('/marketUsers', service(options));
 
   // Get our initialized service to that we can bind hooks
-  const userService = app.service('/users');
+  const marketUserService = app.service('/marketUsers');
 
   // Set up our before hooks
-  userService.before(hooks.before);
+  marketUserService.before(hooks.before);
 
   // Set up our after hooks
-  userService.after(hooks.after);
+  marketUserService.after(hooks.after);
 };
 

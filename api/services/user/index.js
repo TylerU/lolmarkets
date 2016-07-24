@@ -1,20 +1,12 @@
-const service = require('feathers-nedb');
-const hooks = require('./hooks');
-const NeDB = require('nedb');
-const path = require('path');
+const service = require('feathers-sequelize');
+const hooks = require('./hooks/user-hooks');
+const model = require('./user-model');
 
 module.exports = function () {
   const app = this;
 
-  const db = new NeDB({
-    filename: path.join(app.get('nedb'), 'users.db'),
-    autoload: true,
-  });
-
-  db.ensureIndex({ fieldName: 'email', unique: true });
-
   const options = {
-    Model: db,
+    Model: model(app.get('sequelize')),
     paginate: {
       default: 25,
       max: 25,
@@ -33,3 +25,4 @@ module.exports = function () {
   // Set up our after hooks
   userService.after(hooks.after);
 };
+

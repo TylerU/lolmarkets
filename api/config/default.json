@@ -2,7 +2,16 @@
   "host": "localhost",
   "port": 3030,
   "nedb": "api/databases",
+  "businessSettings": {
+    "startingMoney": 5
+  },
+  "market": {
+    "startingYes": 500,
+    "startingNo": 500,
+    "alpha": 0.04
+  },
   "auth": {
+    "idField": "id",
     "successRedirect": false,
     "failureRedirect": false,
     "shouldSetupFailureRoute": false,
@@ -11,5 +20,11 @@
       "secret": "+GJwhl9/93z1LNvxJ7xyIkEFFeqeErUYoub/Eeh4FIqLqr3j5nZoSt8UJkqogOP8iHUbJxo74R4L0OpRkZSFgw=="
     },
     "local": {}
+  },
+  "postgres": {
+    "host": "lolmar-dev.cubdcm4azyzg.us-west-2.rds.amazonaws.com",
+    "username": "username",
+    "password": "password",
+    "database": "lolmar"
   }
 }

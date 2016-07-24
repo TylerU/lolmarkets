@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: "off" */
 const authentication = require('feathers-authentication');
 const _ = require('lodash');
-const userOutProps = require('../user/hooks').outProperties;
+const userOutProps = require('../user/hooks/user-hooks').outProperties;
 
 module.exports = function () {
   const app = this;
