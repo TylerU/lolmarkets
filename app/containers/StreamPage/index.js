@@ -1,11 +1,9 @@
+// import { push } from 'react-router-redux';
+// import { Link } from 'react-router';
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-// import { push } from 'react-router-redux';
-import _ from 'lodash';
-// import { Link } from 'react-router';
-
-import MarketItem from '../../components/MarketItem';
-
+import MarketItem from '../../containers/MarketItem';
 import styles from './styles.css';
 
 
@@ -42,6 +40,7 @@ class MarketsList extends React.Component {
 
 export class StreamPage extends React.Component {
   render() {
+    console.log(this.props, 'props');
     const stream = {
       name: 'Politics',
       imageUrl: 'https://static-cdn.jtvnw.net/previews-ttv/live_user_scarra-320x180.jpg',
@@ -108,4 +107,10 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(StreamPage);
+function mapStateToProps(state, props) {
+  return {
+    user: state.getIn(['global', 'user', 'coins']),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StreamPage);

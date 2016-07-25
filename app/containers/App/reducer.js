@@ -22,7 +22,7 @@ const initialState = fromJS({
   user: fromJS({
     coins: 10,
     loggedIn: true,
-    name: 'DinoEntrails'
+    name: 'DinoEntrails',
   }),
 });
 

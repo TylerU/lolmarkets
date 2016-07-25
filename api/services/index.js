@@ -2,6 +2,9 @@ const authentication = require('./authentication');
 const user = require('./user');
 const channel = require('./channel');
 const market = require('./market');
+const marketUser = require('./market-user');
+const transaction = require('./transaction');
+
 const Sequelize = require('sequelize');
 
 module.exports = function () {
@@ -26,6 +29,8 @@ module.exports = function () {
   app.configure(user);
   app.configure(channel);
   app.configure(market);
+  app.configure(marketUser);
+  app.configure(transaction);
 
   // Associate all of our models
   Object.keys(sequelize.models)

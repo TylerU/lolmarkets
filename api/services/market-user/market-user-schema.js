@@ -1,9 +1,11 @@
 const Sequelize = require('sequelize');
 const extractSchemaExports = require('../helpers').extractSchemaExports;
 
-// Maybe move this to its own service.
-
 const schema = {
+  id: {
+    publicRead: true,
+    // Created by Sequelize
+  },
   yesShares: {
     publicRead: true,
     sequelize: {

@@ -1,9 +1,9 @@
-import React from 'react';
 // import { connect } from 'react-redux';
 // import { push } from 'react-router-redux';
-import _ from 'lodash';
 // import { Link } from 'react-router';
-import MarketItem from '../../components/MarketItem';
+import React from 'react';
+import _ from 'lodash';
+import MarketItem from '../../containers/MarketItem';
 
 import styles from './styles.css';
 

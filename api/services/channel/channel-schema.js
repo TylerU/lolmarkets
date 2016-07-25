@@ -2,6 +2,10 @@ const Sequelize = require('sequelize');
 const extractSchemaExports = require('../helpers').extractSchemaExports;
 
 const schema = {
+  id: {
+    publicRead: true,
+    // Created by Sequelize
+  },
   displayName: {
     publicRead: true,
     publicWrite: true,
