@@ -3,6 +3,7 @@ const hooks = require('feathers-hooks');
 const auth = require('feathers-authentication').hooks;
 const customHooks = require('../../../hooks/index.js');
 const schema = require('../market-schema');
+const _ = require('lodash');
 
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
@@ -16,17 +17,28 @@ if (debugSettings) {
 }
 
 function populateProperties(hook) {
-  if (!hook.result.dataValues) return;
-  const computer = new MarketComputer(hook.result.dataValues);
-  const result = hook.result.dataValues;
+  if (!hook.result) return;
+  const computer = new MarketComputer(hook.result);
+  const result = hook.result;
 
-  hook.result.dataValues = _.assign({}, result, {
+  hook.result = _.assign({}, result, {
     yesPrice: computer.getYesPrice(),
     noPrice: computer.getNoPrice(),
     percent: computer.getPercent(),
   });
 }
 
+function getDefaults(app) {
+  const market = app.get('market');
+  return {
+    yesSharesCompute: market.startingYes,
+    noSharesCompute: market.startingNo,
+    alpha: market.alpha,
+    yesShares: 0,
+    noShares: 0,
+    timeOpened: new Date(),
+  };
+}
 
 exports.before = {
   all: [],
@@ -39,6 +51,7 @@ exports.before = {
     auth.restrictToAuthenticated(),
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
+    customHooks.overrideData(getDefaults),
   ],
   update: [
     hooks.pluck.apply(hooks, inProperties),
@@ -61,6 +74,7 @@ exports.before = {
 
 exports.after = {
   all: [
+    customHooks.toJson(),
     populateProperties,
     customHooks.pluckAfter(outProperties),
   ],

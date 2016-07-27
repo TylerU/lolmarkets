@@ -11,7 +11,7 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   noSharesDelta: {
@@ -19,7 +19,7 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   market: {

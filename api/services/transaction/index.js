@@ -17,12 +17,12 @@ module.exports = function () {
   app.use('/transactions', service(options));
 
   // Get our initialized service to that we can bind hooks
-  const userService = app.service('/transactions');
+  const transactionService = app.service('/transactions');
 
   // Set up our before hooks
-  userService.before(hooks.before);
+  transactionService.before(hooks.before);
 
   // Set up our after hooks
-  userService.after(hooks.after);
+  transactionService.after(hooks.after);
 };
 

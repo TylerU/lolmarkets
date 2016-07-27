@@ -9,13 +9,13 @@ const schema = {
   yesShares: {
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   noShares: {
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   alpha: {
@@ -27,13 +27,13 @@ const schema = {
   yesSharesCompute: {
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   noSharesCompute: {
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   name: {
@@ -49,7 +49,7 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   active: {

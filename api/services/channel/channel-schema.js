@@ -6,6 +6,9 @@ const schema = {
     publicRead: true,
     // Created by Sequelize
   },
+  markets: {
+    publicRead: true,
+  },
   displayName: {
     publicRead: true,
     publicWrite: true,
@@ -39,7 +42,7 @@ const schema = {
   //   sequelize: {
   //     allowNull: false,
   //     defaultValue: 0,
-  //     type: Sequelize.BIGINT,
+  //     type: Sequelize.INTEGER,
   //   },
   // },
   leagueAccounts: {

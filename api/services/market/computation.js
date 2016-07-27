@@ -54,7 +54,7 @@ class MarketComputer {
   }
 
   getPercent() {
-    return (this.getYesPrice() + this.getNoPrice()) / 2.0;
+    return this.getYesPrice() / (this.getYesPrice() + this.getNoPrice());
   }
 
   getTransactionCost(deltaYes, deltaNo) {

@@ -8,7 +8,7 @@ const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
 
 const inProperties = schema.inProperties;
-const debugSettings = true;
+const debugSettings = false;
 if (debugSettings) {
   console.log('out', outProperties);
   console.log('in', inProperties);

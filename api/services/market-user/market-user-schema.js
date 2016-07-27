@@ -10,14 +10,14 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   noShares: {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.BIGINT,
+      type: Sequelize.INTEGER,
     },
   },
   inMoney: {

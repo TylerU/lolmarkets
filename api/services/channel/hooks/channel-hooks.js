@@ -18,7 +18,14 @@ if (debugSettings) {
 
 exports.before = {
   all: [],
-  find: [],
+  find: [(hook) => {
+    hook.params.sequelize = {
+      include: [{
+        model: hook.app.get('sequelize').models.Market,
+        as: 'markets',
+      }],
+    };
+  }],
   get: [],
   create: [
     hooks.pluck.apply(hooks, inProperties),
@@ -27,6 +34,7 @@ exports.before = {
     auth.restrictToAuthenticated(),
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
+    customHooks.overrideData({ leagueAccounts: '[]' }),
   ],
   update: [
     hooks.pluck.apply(hooks, inProperties),
@@ -48,7 +56,7 @@ exports.before = {
 };
 
 exports.after = {
-  all: [hooks.pluck.apply(hooks, outProperties)],
+  all: [customHooks.toJson(), hooks.pluck.apply(hooks, outProperties)],
   find: [],
   get: [],
   create: [],

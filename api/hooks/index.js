@@ -46,7 +46,11 @@ exports.superAdminOnlyHook = () =>
 
 exports.pluckAfter = (outProperties) =>
   (hook) => {
-    hook.result.dataValues = _.pick(hook.result.dataValues, outProperties);
+    if (hook.result.dataValues) {
+      hook.result.dataValues = _.pick(hook.result.dataValues, outProperties);
+    } else {
+      hook.result = _.pick(hook.result, outProperties);
+    }
   };
 
 exports.overrideData = (obj) =>
@@ -56,3 +60,11 @@ exports.overrideData = (obj) =>
     hook.data = _.assign({}, hook.data, toOverride);
   };
 
+exports.toJson = () =>
+  (hook) => {
+    if (hook.result.data) {
+      hook.result.data = _.map(hook.result.data, (obj) => obj.toJSON());
+    } else {
+      hook.result = hook.result.toJSON();
+    }
+  };

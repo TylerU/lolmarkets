@@ -14,15 +14,15 @@ module.exports = function () {
   };
 
   // Initialize our service with any options it requires
-  app.use('/users', service(options));
+  app.use('/markets', service(options));
 
   // Get our initialized service to that we can bind hooks
-  const userService = app.service('/users');
+  const marketService = app.service('/markets');
 
   // Set up our before hooks
-  userService.before(hooks.before);
+  marketService.before(hooks.before);
 
   // Set up our after hooks
-  userService.after(hooks.after);
+  marketService.after(hooks.after);
 };
 
