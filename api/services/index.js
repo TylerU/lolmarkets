@@ -27,8 +27,8 @@ module.exports = function () {
 
   app.set('sequelize', sequelize);
 
-  app.configure(user);
   app.configure(authentication);
+  app.configure(user);
   app.configure(channel);
   app.configure(market);
   app.configure(marketUser);
@@ -57,7 +57,8 @@ module.exports = function () {
         name: 'Voyboy will win this game',
         leagueGameId: 12345,
         channel: voy.id,
-      })).then(() => app.service('/channels').find())
-      .then(console.log.bind(console, 'success'), console.log.bind(console, 'failure'));
+      }))
+      // .then((res) => console.dir(res, { depth: null }), console.log.bind(console, 'failure'))
   });
 };
+

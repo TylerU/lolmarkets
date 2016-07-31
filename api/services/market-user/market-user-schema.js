@@ -36,6 +36,18 @@ const schema = {
       type: Sequelize.DOUBLE,
     },
   },
+  user: {
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+    },
+  },
+  market: {
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+    },
+  },
 };
 // TODO - market, user associations
 module.exports = extractSchemaExports(schema);

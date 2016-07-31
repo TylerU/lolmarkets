@@ -21,12 +21,13 @@ exports.before = {
     auth.restrictToAuthenticated(),
   ],
   find: [
-    auth.restrictToOwner({ ownerField: 'id' }),
+    auth.queryWithCurrentUser({ idField: 'id', as: 'user' }),
   ],
   get: [
-    auth.restrictToOwner({ ownerField: 'id' }), // TODO - update id
+    auth.restrictToOwner({ ownerField: 'id' }),
   ],
   create: [
+    auth.associateCurrentUser({ idField: 'id', as: 'user' }),
     hooks.pluck.apply(hooks, inProperties),
     customHooks.validateHook(jsonSchema),
   ],
@@ -42,7 +43,10 @@ exports.before = {
 };
 
 exports.after = {
-  all: [customHooks.pluckAfter(outProperties)],
+  all: [
+    // customHooks.toJson(),
+    // hooks.pluck.apply(hooks, outProperties),
+  ],
   find: [],
   get: [],
   create: [],

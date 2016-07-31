@@ -56,7 +56,10 @@ exports.before = {
 };
 
 exports.after = {
-  all: [customHooks.toJson(), hooks.pluck.apply(hooks, outProperties)],
+  all: [
+    customHooks.toJson(),
+    hooks.pluck.apply(hooks, outProperties),
+  ],
   find: [],
   get: [],
   create: [],

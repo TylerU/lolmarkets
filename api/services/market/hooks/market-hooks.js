@@ -7,21 +7,14 @@ const _ = require('lodash');
 
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
+const inProperties = schema.inProperties;
 const MarketComputer = require('../computation').MarketComputer;
 
-const inProperties = schema.inProperties;
-const debugSettings = false;
-if (debugSettings) {
-  console.log('out', outProperties);
-  console.log('in', inProperties);
-}
 
-function populateProperties(hook) {
-  if (!hook.result) return;
-  const computer = new MarketComputer(hook.result);
-  const result = hook.result;
+function populateProperties(market) {
+  const computer = new MarketComputer(market);
 
-  hook.result = _.assign({}, result, {
+  return _.assign({}, market, {
     yesPrice: computer.getYesPrice(),
     noPrice: computer.getNoPrice(),
     percent: computer.getPercent(),
@@ -43,7 +36,10 @@ function getDefaults(app) {
 exports.before = {
   all: [],
   find: [],
-  get: [],
+  get: [
+    customHooks.maybeVerifyToken(),
+    auth.populateUser(),
+  ],
   create: [
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
@@ -75,11 +71,23 @@ exports.before = {
 exports.after = {
   all: [
     customHooks.toJson(),
-    populateProperties,
-    customHooks.pluckAfter(outProperties),
+    customHooks.mapResultHook(populateProperties),
+    hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],
-  get: [],
+  get: [
+    (hook) => {
+      if (hook.params.user) {
+        return hook.app.service('/marketUsers').find({ user: hook.params.user.id, market: hook.result.id })
+          .then((res) => {
+            if (res.data.length === 1) {
+              hook.result.marketUser = res.data[0];
+            }
+          });
+      }
+      return null;
+    },
+  ],
   create: [],
   update: [],
   patch: [],
