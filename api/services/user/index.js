@@ -8,8 +8,8 @@ module.exports = function () {
   const options = {
     Model: model(app.get('sequelize')),
     paginate: {
-      default: 25,
-      max: 25,
+      default: 1000,
+      max: 1000,
     },
   };
 

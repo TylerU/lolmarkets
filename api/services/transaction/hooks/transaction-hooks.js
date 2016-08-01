@@ -27,9 +27,9 @@ exports.before = {
     auth.restrictToOwner({ ownerField: 'id' }),
   ],
   create: [
-    auth.associateCurrentUser({ idField: 'id', as: 'user' }),
     hooks.pluck.apply(hooks, inProperties),
     customHooks.validateHook(jsonSchema),
+    auth.associateCurrentUser({ idField: 'id', as: 'user' }),
   ],
   update: [
     hooks.disable(() => true),
@@ -44,8 +44,8 @@ exports.before = {
 
 exports.after = {
   all: [
-    // customHooks.toJson(),
-    // hooks.pluck.apply(hooks, outProperties),
+    customHooks.toJson(),
+    hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],
   get: [],

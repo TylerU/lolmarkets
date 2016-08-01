@@ -6,24 +6,29 @@ const schema = require('../market-user-schema');
 
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
-
 const inProperties = schema.inProperties;
+
+
 const debugSettings = false;
 if (debugSettings) {
   console.log('out', outProperties);
   console.log('in', inProperties);
 }
 
+
 exports.before = {
   all: [],
   find: [
-    hooks.disable(() => true),
+    auth.verifyToken(),
+    auth.populateUser(),
+    auth.restrictToAuthenticated(),
+    auth.queryWithCurrentUser({ idField: 'id', as: 'user' }),
   ],
   get: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: 'id' }),
+    auth.restrictToOwner({ idField: 'id', ownerField: 'user' }),
   ],
   create: [
     hooks.pluck.apply(hooks, inProperties),
@@ -52,6 +57,7 @@ exports.before = {
 exports.after = {
   all: [
     customHooks.toJson(),
+    customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],

@@ -83,6 +83,9 @@ const schema = {
   percent: {
     publicRead: true,
   },
+  marketUser: {
+    publicRead: true,
+  },
 };
 
 module.exports = extractSchemaExports(schema);

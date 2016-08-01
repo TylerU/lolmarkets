@@ -6,6 +6,12 @@ const schema = {
     publicRead: true,
     // Created by Sequelize
   },
+  maxYesShares: {
+    publicRead: true,
+  },
+  maxNoShares: {
+    publicRead: true,
+  },
   yesShares: {
     publicRead: true,
     sequelize: {
@@ -37,12 +43,14 @@ const schema = {
     },
   },
   user: {
+    publicRead: true,
     sequelize: {
       allowNull: false,
       type: Sequelize.INTEGER,
     },
   },
   market: {
+    publicRead: true,
     sequelize: {
       allowNull: false,
       type: Sequelize.INTEGER,

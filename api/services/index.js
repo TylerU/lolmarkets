@@ -13,7 +13,8 @@ module.exports = function () {
   const app = this;
 
   const pgSettings = app.get('postgres');
-  pgSettings.username = 'username'; // TODO - fix this bullshit
+  // pgSettings.username = 'username'; // TODO - fix this bullshit
+  pgSettings.username = 'postgres';
   const sequelize = new Sequelize(pgSettings.database, pgSettings.username, pgSettings.password, {
     host: pgSettings.host,
     dialect: 'postgres',
@@ -48,6 +49,16 @@ module.exports = function () {
       password: 'test123',
       username: 'DinoEntrails',
     })
+      .then(() => app.service('/users').create({
+        email: 'tyler1@gmail.com',
+        password: 'test123',
+        username: 'DinoEntrails1',
+      }))
+      .then(() => app.service('/users').create({
+        email: 'test@gmail.com',
+        password: 'test123',
+        username: 'DinoEntrails1',
+      }))
       .then(() => app.service('/channels').create({
         displayName: 'Voyboy',
         twitchName: 'Voyboy',
@@ -57,6 +68,27 @@ module.exports = function () {
         name: 'Voyboy will win this game',
         leagueGameId: 12345,
         channel: voy.id,
+      }))
+      .then(() => app.service('/channels').create({
+        displayName: 'Nightblue3',
+        twitchName: 'Nightblue3',
+        isStreaming: false,
+      }))
+      .then(() => app.service('/channels').create({
+        displayName: 'WildTurtle',
+        twitchName: 'IMT_WildTurtle',
+        isStreaming: false,
+      }))
+      .then(() => app.service('/channels').create({
+        displayName: 'imaqtpie',
+        twitchName: 'imaqtpie',
+        isStreaming: false,
+      }))
+      .then(() => app.service('/transactions').create({
+        market: 1,
+        user: 1,
+        yesSharesDelta: 1,
+        noSharesDelta: 0,
       }))
       // .then((res) => console.dir(res, { depth: null }), console.log.bind(console, 'failure'))
   });

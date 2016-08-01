@@ -3,6 +3,7 @@ const errors = require('feathers-errors');
 const validator = require('is-my-json-valid');
 const auth = require('feathers-authentication').hooks;
 const _ = require('lodash');
+const Promise = require('bluebird');
 /* eslint no-param-reassign: "off" */
 
 function errorsMap(error) {
@@ -56,18 +57,42 @@ exports.overrideData = (obj) =>
 exports.toJson = () =>
   (hook) => {
     if (hook.result.data) {
-      hook.result.data = _.map(hook.result.data, (obj) => obj.toJSON());
+      hook.result.data = _.map(hook.result.data, (obj) => {
+        if (obj.toJSON) {
+          return obj.toJSON();
+        }
+        return obj;
+      });
     } else {
-      hook.result = hook.result.toJSON();
+      if (hook.result.toJSON) {
+        hook.result = hook.result.toJSON();
+      }
     }
   };
 
 exports.mapResultHook = (fn) =>
   (hook) => {
     if (hook.result.data) {
-      hook.result.data = _.map(hook.result.data, fn);
+      return Promise.all(_.map(hook.result.data, (dataElem) => {
+        const result = fn(hook, dataElem);
+        if (result.then) {
+          return result;
+        }
+        return Promise.resolve(result);
+      })).then((arr) => {
+        hook.result.data = arr;
+        return hook;
+      });
     } else {
-      hook.result = fn(hook.result);
+      const result = fn(hook, hook.result);
+      if (result.then) {
+        return result.then((res) => {
+          hook.result = res;
+          return hook;
+        });
+      }
+      hook.result = result;
+      return null;
     }
   };
 
@@ -79,3 +104,9 @@ exports.maybeVerifyToken = () =>
     return null;
   };
 
+exports.ignoreNoProvider = () =>
+  (hook) => { // TODO - Resolve this little problem
+    if (!hook.params.provider) {
+      hook.params.provider = 'rest';
+    }
+  };

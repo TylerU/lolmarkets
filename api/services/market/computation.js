@@ -1,5 +1,7 @@
 'use strict';
 /* eslint no-underscore-dangle: "off" */
+const search = require('./binarySearch').search;
+const _ = require('lodash');
 
 function fb(alpha, main, opposite) {
   return alpha * (main + opposite);
@@ -59,6 +61,14 @@ class MarketComputer {
 
   getTransactionCost(deltaYes, deltaNo) {
     return this.getOtherCost(this.yes + deltaYes, this.no + deltaNo) - this.getCurrentCost();
+  }
+
+  getMaxYesCanBuy(money) {
+    return search(_.partialRight(this.getTransactionCost.bind(this), 0), money);
+  }
+
+  getMaxNoCanBuy(money) {
+    return search(_.partial(this.getTransactionCost.bind(this), 0), money);
   }
 }
 

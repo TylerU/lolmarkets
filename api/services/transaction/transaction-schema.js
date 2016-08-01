@@ -13,6 +13,10 @@ const schema = {
       allowNull: false,
       type: Sequelize.INTEGER,
     },
+    jsonSchema: {
+      required: true,
+      type: 'integer',
+    },
   },
   noSharesDelta: {
     publicWrite: true,
@@ -21,6 +25,10 @@ const schema = {
       allowNull: false,
       type: Sequelize.INTEGER,
     },
+    jsonSchema: {
+      required: true,
+      type: 'integer',
+    },
   },
   market: {
     publicWrite: true,
@@ -28,6 +36,11 @@ const schema = {
     sequelize: {
       allowNull: false,
       type: Sequelize.INTEGER,
+    },
+    jsonSchema: {
+      required: true,
+      type: 'integer',
+      minimum: 0,
     },
   },
   user: {
@@ -44,8 +57,23 @@ const schema = {
       type: Sequelize.DOUBLE,
     },
   },
-  createAt: {
+  fake: {
+    publicWrite: true,
+    jsonSchema: {
+      type: 'boolean',
+    },
+  },
+  createdAt: {
     publicRead: true, // Let them get it out. Sequelize will create it for us
+  },
+  newYesPrice: {
+    publicRead: true,
+  },
+  newNoPrice: {
+    publicRead: true,
+  },
+  newPercent: {
+    publicRead: true,
   },
 };
 

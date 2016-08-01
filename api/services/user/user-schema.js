@@ -56,7 +56,7 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.INTEGER,
+      type: Sequelize.DOUBLE,
     },
   },
 };

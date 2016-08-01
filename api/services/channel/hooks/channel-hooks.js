@@ -4,7 +4,7 @@ const auth = require('feathers-authentication').hooks;
 const customHooks = require('../../../hooks/index.js');
 const _ = require('lodash');
 const schema = require('../channel-schema');
-
+const Promise = require('bluebird');
 
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
@@ -16,16 +16,19 @@ if (debugSettings) {
   console.log('in', inProperties);
 }
 
+function populateMarkets(hook, channel) {
+  return hook.app.service('/markets').find({ query: { channel: channel.id } })
+    .then((res) => {
+      if (res.data.length > 0) {
+        channel.markets = _.map(res.data, 'id');
+      }
+      return channel;
+    });
+}
+
 exports.before = {
   all: [],
-  find: [(hook) => {
-    hook.params.sequelize = {
-      include: [{
-        model: hook.app.get('sequelize').models.Market,
-        as: 'markets',
-      }],
-    };
-  }],
+  find: [],
   get: [],
   create: [
     hooks.pluck.apply(hooks, inProperties),
@@ -58,6 +61,7 @@ exports.before = {
 exports.after = {
   all: [
     customHooks.toJson(),
+    customHooks.mapResultHook(populateMarkets),
     hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],

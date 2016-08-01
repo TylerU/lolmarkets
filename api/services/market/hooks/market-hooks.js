@@ -11,7 +11,42 @@ const inProperties = schema.inProperties;
 const MarketComputer = require('../computation').MarketComputer;
 
 
-function populateProperties(market) {
+// TODO - fix design problem here where this value will actually change in response to user changes as well
+function populateMaxCanBuy(hook, market) {
+  if (hook.params.user) {
+    const computer = new MarketComputer(market);
+    const money = hook.params.user.money;
+    const maxYes = computer.getMaxYesCanBuy(money);
+    const maxNo = computer.getMaxNoCanBuy(money);
+    if (market.marketUser) {
+      market.marketUser.maxYes = maxYes;
+      market.marketUser.maxNo = maxNo;
+    } else {
+      market.marketUser = {
+        maxYes,
+        maxNo,
+      };
+    }
+    return market;
+  }
+  return market;
+}
+
+function populateMarketUser(hook, market) {
+  if (hook.params.user) {
+    return hook.app.service('/marketUsers').find({ query: { user: hook.params.user.id, market: market.id } })
+      .then((res) => {
+        if (res.data.length > 0) {
+          market.marketUser = res.data[0];
+        }
+        return market;
+      });
+  }
+  return market;
+}
+
+
+function populateProperties(hook, market) {
   const computer = new MarketComputer(market);
 
   return _.assign({}, market, {
@@ -35,7 +70,10 @@ function getDefaults(app) {
 
 exports.before = {
   all: [],
-  find: [],
+  find: [
+    customHooks.maybeVerifyToken(),
+    auth.populateUser(),
+  ],
   get: [
     customHooks.maybeVerifyToken(),
     auth.populateUser(),
@@ -71,23 +109,14 @@ exports.before = {
 exports.after = {
   all: [
     customHooks.toJson(),
+    customHooks.mapResultHook(populateMarketUser),
     customHooks.mapResultHook(populateProperties),
+    customHooks.mapResultHook(populateMaxCanBuy),
+    customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],
-  get: [
-    (hook) => {
-      if (hook.params.user) {
-        return hook.app.service('/marketUsers').find({ user: hook.params.user.id, market: hook.result.id })
-          .then((res) => {
-            if (res.data.length === 1) {
-              hook.result.marketUser = res.data[0];
-            }
-          });
-      }
-      return null;
-    },
-  ],
+  get: [],
   create: [],
   update: [],
   patch: [],

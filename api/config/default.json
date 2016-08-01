@@ -22,9 +22,10 @@
     "local": {}
   },
   "postgres": {
-    "host": "lolmar-dev.cubdcm4azyzg.us-west-2.rds.amazonaws.com",
-    "username": "username",
+    "host": "localhost",
+    "username": "pgadmin",
     "password": "password",
-    "database": "lolmar"
+    "database": "lolmarkets"
   }
 }
+
