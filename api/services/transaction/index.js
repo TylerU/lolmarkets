@@ -69,6 +69,14 @@ class TransactionsService extends Service {
         if (noSharesDelta < 0 && marketUserSql.get('noShares') < -noSharesDelta) {
           throw new errors.BadRequest('User doesn\'t have enough no shares to execute operation');
         }
+        if (!marketSql.get('active')) {
+          throw new errors.BadRequest('Market is closed');
+        }
+        const futureComputer = new MarketComputer({
+          yesSharesCompute: marketSql.get('yesSharesCompute') + yesSharesDelta,
+          noSharesCompute: marketSql.get('noSharesCompute') + noSharesDelta,
+          alpha: marketSql.get('alpha'),
+        });
 
         if (real) {
           const updateMarket = marketSql.increment({
@@ -95,6 +103,7 @@ class TransactionsService extends Service {
             market,
             user,
             totalPrice: cost,
+            newPercent: futureComputer.getPercent(),
           }, { transaction: t });
           return Promise.all([updateMarket, updateUser, updateMarketUser, createTransaction])
             .then((allArr) => {
@@ -106,12 +115,6 @@ class TransactionsService extends Service {
               return allArr;
             });
         } else {
-          const futureComputer = new MarketComputer({
-            yesSharesCompute: marketSql.get('yesSharesCompute') + yesSharesDelta,
-            noSharesCompute: marketSql.get('noSharesCompute') + noSharesDelta,
-            alpha: marketSql.get('alpha'),
-          });
-
           return [null, null, null, {
             yesSharesDelta,
             noSharesDelta,

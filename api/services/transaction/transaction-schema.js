@@ -74,6 +74,10 @@ const schema = {
   },
   newPercent: {
     publicRead: true,
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.DOUBLE,
+    },
   },
 };
 

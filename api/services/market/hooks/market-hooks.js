@@ -61,6 +61,8 @@ function getDefaults(app) {
   return {
     yesSharesCompute: market.startingYes,
     noSharesCompute: market.startingNo,
+    yesSharesStart: market.startingYes,
+    noSharesStart: market.startingNo,
     alpha: market.alpha,
     yesShares: 0,
     noShares: 0,
@@ -88,15 +90,15 @@ exports.before = {
     customHooks.overrideData(getDefaults),
   ],
   update: [
+    hooks.disable(() => false),
+  ],
+  patch: [
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
-  ],
-  patch: [
-    hooks.disable(() => true),
   ],
   remove: [
     auth.verifyToken(),

@@ -4,17 +4,11 @@ const auth = require('feathers-authentication').hooks;
 const customHooks = require('../../../hooks/index.js');
 const _ = require('lodash');
 const schema = require('../channel-schema');
-const Promise = require('bluebird');
 
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
 const inProperties = schema.inProperties;
 
-const debugSettings = false;
-if (debugSettings) {
-  console.log('out', outProperties);
-  console.log('in', inProperties);
-}
 
 function populateMarkets(hook, channel) {
   return hook.app.service('/markets').find({ query: { channel: channel.id } })
@@ -40,15 +34,15 @@ exports.before = {
     customHooks.overrideData({ leagueAccounts: '[]' }),
   ],
   update: [
+    hooks.disable(() => false),
+  ],
+  patch: [
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
-  ],
-  patch: [
-    hooks.disable(() => true),
   ],
   remove: [
     auth.verifyToken(),

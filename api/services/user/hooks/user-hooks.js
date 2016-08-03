@@ -33,6 +33,9 @@ exports.before = {
     })),
   ],
   update: [
+    hooks.disable(() => false),
+  ],
+  patch: [
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     customHooks.validateHook(jsonSchema),
@@ -41,11 +44,8 @@ exports.before = {
     auth.restrictToAuthenticated(),
     auth.restrictToOwner({ ownerField: 'id' }),
   ],
-  patch: [
-    hooks.disable(() => true),
-  ],
   remove: [
-    hooks.disable(() => true),
+    hooks.disable(() => false),
   ],
 };
 

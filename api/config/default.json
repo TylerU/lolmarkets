@@ -3,7 +3,7 @@
   "port": 3030,
   "nedb": "api/databases",
   "businessSettings": {
-    "startingMoney": 5
+    "startingMoney": 5000
   },
   "market": {
     "startingYes": 500,

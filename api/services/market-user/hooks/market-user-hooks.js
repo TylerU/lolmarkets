@@ -9,13 +9,6 @@ const outProperties = schema.outProperties;
 const inProperties = schema.inProperties;
 
 
-const debugSettings = false;
-if (debugSettings) {
-  console.log('out', outProperties);
-  console.log('in', inProperties);
-}
-
-
 exports.before = {
   all: [],
   find: [
@@ -39,6 +32,9 @@ exports.before = {
     customHooks.validateHook(jsonSchema),
   ],
   update: [
+    hooks.disable(() => false),
+  ],
+  patch: [
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     auth.populateUser(),
@@ -46,11 +42,8 @@ exports.before = {
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
   ],
-  patch: [
-    hooks.disable(() => true),
-  ],
   remove: [
-    hooks.disable(() => true),
+    hooks.disable(() => false),
   ],
 };
 

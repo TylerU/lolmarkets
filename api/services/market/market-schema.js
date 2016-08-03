@@ -6,6 +6,18 @@ const schema = {
     publicRead: true,
     // Created by Sequelize
   },
+  yesSharesStart: {
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+    },
+  },
+  noSharesStart: {
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+    },
+  },
   yesShares: {
     sequelize: {
       allowNull: false,
@@ -53,6 +65,7 @@ const schema = {
     },
   },
   active: {
+    publicWrite: true,
     publicRead: true,
     sequelize: {
       allowNull: false,

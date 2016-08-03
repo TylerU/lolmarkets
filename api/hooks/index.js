@@ -13,11 +13,7 @@ function errorsMap(error) {
 }
 
 exports.validateHook = function (schemaIn, optionsIn) {
-  const schema = {
-    required: true,
-    type: 'object',
-    properties: schemaIn,
-  };
+  const schemaNoReq = _.mapValues(schemaIn, _.partialRight(_.omit, 'required'));
 
   const options = Object.assign({
     verbose: true,
@@ -25,6 +21,12 @@ exports.validateHook = function (schemaIn, optionsIn) {
   }, optionsIn);
 
   return (hook) => {
+    const schema = {
+      required: true,
+      type: 'object',
+      properties: hook.method === 'patch' ? schemaNoReq : schemaIn,
+    };
+
     const validate = validator(schema, options);
     const valid = validate(hook.data);
 
@@ -96,10 +98,18 @@ exports.mapResultHook = (fn) =>
     }
   };
 
+// If there's a token present, attempt to verify it and populate the user data.
+// If not, or if it's expired, pretend it doesn't exist
 exports.maybeVerifyToken = () =>
   (hook) => {
     if (hook.params.token) {
-      return auth.verifyToken()(hook);
+      return auth.verifyToken()(hook).then((res) => res, (err) => {
+        if (err.type === 'FeathersError' && err.message === 'jwt expired') {
+          hook.params.token = null;
+        } else {
+          throw err;
+        }
+      });
     }
     return null;
   };

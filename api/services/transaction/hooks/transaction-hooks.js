@@ -32,13 +32,13 @@ exports.before = {
     auth.associateCurrentUser({ idField: 'id', as: 'user' }),
   ],
   update: [
-    hooks.disable(() => true),
+    hooks.disable(() => false),
   ],
   patch: [
-    hooks.disable(() => true),
+    hooks.disable(() => false),
   ],
   remove: [
-    hooks.disable(() => true),
+    hooks.disable(() => false),
   ],
 };
 
