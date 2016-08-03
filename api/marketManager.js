@@ -14,7 +14,9 @@ function log(res) {
 const predictionTypes = exports.predictionTypes;
 
 // TODO - fix wonky app tossing
-exports.handleNewGame = function (app, details) {
+exports.handleNewGame = function handleNewGame(app, details) {
+  if (!details.channel.isStreaming) return Promise.resolve(null); // Just in case they stopped streaming in the meantime.
+
   const MarketService = app.service('markets');
   const channelIn = details.channel;
   const channel = details.channel.id;
