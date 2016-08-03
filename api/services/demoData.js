@@ -10,21 +10,17 @@ module.exports = function (app) {
   const ChannelService = app.service('channels');
   const MarketService = app.service('markets');
   const TransactionService = app.service('transactions');
-
-  const usersProm = _.map(users, (user) => UserService.create(user));
-  const channelsProm = _.map(channels, (channel) => ChannelService.create(channel));
-  return Promise.all(usersProm.concat(channelsProm))
-    .then(() => Promise.all(_.map(markets, (market) => MarketService.create(market))))
-    .then(() => {
-      function execElem(i) {
-        if (i < transactions.length) {
-          return TransactionService.create(transactions[i]).then(execElem.bind(null, i + 1));
-        }
-        return null;
-      }
-      return execElem(0);
-    })
+  function execElem(i, arr, service) {
+    if (i < arr.length) {
+      return service.create(arr[i]).then(execElem.bind(null, i + 1, arr, service));
+    }
+    return null;
+  }
+  const usersProm = execElem(0, users, UserService);
+  const channelsProm = execElem(0, channels, ChannelService);
+  return Promise.all([usersProm, channelsProm])
+    .then(() => execElem(0, markets, MarketService))
+    .then(() => execElem(0, transactions, TransactionService))
     .then(() => MarketService.patch(1, { active: false }))
     .then(/*(res) => console.dir(res, { depth: null })*/() => console.log('done'), console.log.bind(console, 'failure'));
 };
-

@@ -27,7 +27,6 @@ function getCost(alpha, main, opposite) {
     );
 }
 
-// TODO - cache?
 class MarketComputer {
   constructor(settings) {
     if (!settings.alpha || !settings.yesSharesCompute || !settings.noSharesCompute) throw { message: 'Invalid parameters for MarketComputer' };

@@ -15,6 +15,7 @@ exports.inProperties = inProperties;
 exports.before = {
   all: [],
   find: [
+    hooks.pluckQuery.apply(hooks, outProperties),
     hooks.disable('external'),
   ],
   get: [

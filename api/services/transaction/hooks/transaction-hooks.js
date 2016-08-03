@@ -21,6 +21,7 @@ exports.before = {
     auth.restrictToAuthenticated(),
   ],
   find: [
+    hooks.pluckQuery.apply(hooks, outProperties),
     auth.queryWithCurrentUser({ idField: 'id', as: 'user' }),
   ],
   get: [

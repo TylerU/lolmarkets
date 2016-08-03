@@ -19,7 +19,7 @@ class LeaderboardService {
         FROM public."MarketUser"
         INNER JOIN public."Market"
           ON "MarketUser"."market" = "Market"."id"
-          WHERE "Market"."active" = false
+          WHERE "Market"."resolved" = true
         GROUP BY "user", "channel") AS withoutusernames
       INNER JOIN public."User"
         ON "User"."id" = "withoutusernames"."user"`;

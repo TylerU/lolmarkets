@@ -10,8 +10,20 @@ const outProperties = schema.outProperties;
 const inProperties = schema.inProperties;
 const MarketComputer = require('../computation').MarketComputer;
 
+function notifyChannel(hook) {
+  if (hook.result.channel) {
+    if (hook.method === 'patch' && (hook.data.active !== undefined || hook.data.channel !== undefined) ||
+      hook.method === 'update' ||
+      hook.method === 'create' ||
+      hook.method === 'remove') {
+      hook.app.service('channels').patch(hook.result.channel, {});
+    }
+  }
+}
 
-// TODO - fix design problem here where this value will actually change in response to user changes as well
+// Fix design problem here where this value will actually change in response to user changes as well
+// Resolution: assume meaningful changes to user only occur in tandem with market changes we'll already be notified about
+// through transaction
 function populateMaxCanBuy(hook, market) {
   if (hook.params.user) {
     const computer = new MarketComputer(market);
@@ -32,6 +44,7 @@ function populateMaxCanBuy(hook, market) {
   return market;
 }
 
+// If MarketUser ever changes without market also changing, we'll need to manually emit events
 function populateMarketUser(hook, market) {
   if (hook.params.user) {
     return hook.app.service('/marketUsers').find({ query: { user: hook.params.user.id, market: market.id } })
@@ -73,6 +86,7 @@ function getDefaults(app) {
 exports.before = {
   all: [],
   find: [
+    hooks.pluckQuery.apply(hooks, outProperties),
     customHooks.maybeVerifyToken(),
     auth.populateUser(),
   ],
@@ -119,8 +133,14 @@ exports.after = {
   ],
   find: [],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
+  create: [
+    notifyChannel,
+  ],
+  update: [
+    notifyChannel,
+  ],
+  patch: [
+    notifyChannel,
+  ],
   remove: [],
 };

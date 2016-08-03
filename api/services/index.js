@@ -9,14 +9,14 @@ const leaderboard = require('./leaderboard');
 const Sequelize = require('sequelize');
 const demoData = require('./demoData');
 
+const TwitchMonitor = require('../twitchMonitor');
+
 const logging = false;
 
 module.exports = function () {
   const app = this;
 
   const pgSettings = app.get('postgres');
-  // pgSettings.username = 'username'; // TODO - fix this bullshit
-  pgSettings.username = 'postgres';
   const sequelize = new Sequelize(pgSettings.database, pgSettings.username, pgSettings.password, {
     host: pgSettings.host,
     dialect: 'postgres',
@@ -47,6 +47,8 @@ module.exports = function () {
   sequelize.sync({ force: true, logging }).then(() => {
     console.log('Database ready');
     return demoData(app);
+  }).then(() => {
+    TwitchMonitor(app);
   });
 };
 

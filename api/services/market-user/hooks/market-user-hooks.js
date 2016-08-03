@@ -12,6 +12,7 @@ const inProperties = schema.inProperties;
 exports.before = {
   all: [],
   find: [
+    hooks.pluckQuery.apply(hooks, outProperties),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),

@@ -3,97 +3,57 @@
 const request = require('request-promise');
 const _ = require('lodash');
 const moment = require('moment');
+const Promise = require('bluebird');
 
 const POLL_INTERVAL = moment.duration(5, 'minutes').asMilliseconds();
 
-class StreamListener {
-  constructor(channel) {
-    this.channel = channel;
-    this.listeners = {};
-    this.streaming = false;
-    this.idx = 0; // Unique index generator for our listeners
+function log(res) {
+  console.log(res);
+  return res;
+}
+
+function TwitchMonitor(app) {
+  function checkChannel(channelName) {
+    return request({
+      method: 'GET',
+      uri: `https://api.twitch.tv/kraken/streams/${channelName}`,
+      json: true,
+    })
+      .then((res) => ({
+        isStreaming: res.stream !== null,
+        twitchViewers: res.stream !== null ? res.stream.viewers : 0,
+      }));
+      // .then(log)
   }
 
-  registerListener(fn) {
-    this.listeners[this.idx] = fn;
-    if (this.streaming) {
-      _.defer(fn, {isStreaming: true});
-    }
-    return this.idx++;
-  }
+  const ChannelService = app.service('channels');
 
-  unregisterListener(id) {
-    delete this.listeners[id];
+  function checkAllChannels() {
+    return ChannelService.find({ query: { $limit: 1000 } })
+      .then((channels) => channels.data)
+      // .then((channels) => _.map(channels, (chan) => _.assign({}, chan, { isStreaming: (Math.random() < 0.5) })))
+      // .then((channels) => { console.log(_.map(channels, _.partialRight(_.pick, ['id', 'isStreaming']))); return channels; })
+      .then((channels) =>
+        Promise.all(
+          _.chain(channels)
+          .map('twitchName')
+          .map(checkChannel)
+          .value())
+        // .then(log)
+        .then((streams) =>
+          _.chain(channels)
+            .zip(streams)
+            .filter(_.spread((channel, stream) => channel.isStreaming !== stream.isStreaming || channel.twitchViewers !== stream.twitchViewers))
+            .map(_.spread((channel, stream) => _.assign({ id: channel.id }, stream)))
+            .value()))
+      // .then(log)
+      .then((updates) => Promise.all(_.map(updates, (obj) => ChannelService.patch(obj.id, _.omit(obj, 'id')))))
+      // .then(log)
+      .then(() => app.logger.info('Successfully queried Twitch'), (err) => app.logger.error(`Twitch service failed with error ${err}`))
+      .then(() => setTimeout(checkAllChannels, POLL_INTERVAL), () => setTimeout(checkAllChannels, POLL_INTERVAL));
   }
-
-  getListenerCount() {
-    return _.keys(this.listeners).length;
-  }
-
-  executeUpdate() {
-    if (this.getListenerCount() > 0) {
-      request({
-        method: 'GET',
-        uri: 'https://api.twitch.tv/kraken/streams/' + this.channel,
-        json: true
-      }).then(function(res) {
-        const isStreaming = res.stream !== null;
-        if (isStreaming !== this.streaming) {
-          this.streaming = isStreaming;
-
-          _.each(this.listeners, function(fn) {
-            fn({
-              isStreaming: isStreaming
-            });
-          });
-        }
-      }.bind(this)).catch(function(err) {
-        console.log('Error fetching stream status from twitch API: ', err);
-        // TODO handle error
-      }.bind(this));
-    }
-  }
+  checkAllChannels();
 }
 
 
-const TwitchMonitor = {
-  currentStreams: {},
-  polling: false,
-
-  pollAll: function() {
-    _.each(this.currentStreams, function(streamListener) {
-      streamListener.executeUpdate();
-    });
-    setTimeout(this.pollAll.bind(this), POLL_INTERVAL)
-  },
-
-  registerListener: function(channel, fn) {
-    if (!this.currentStreams[channel]) {
-      this.currentStreams[channel] = new StreamListener(channel);
-    }
-    const id = this.currentStreams[channel].registerListener(fn);
-
-    if (!this.polling) {
-      this.pollAll();
-    }
-
-    return id;
-  },
-
-  unregisterListener: function(channel, id) {
-    if (!this.currentStreams[channel]) {
-      // TODO Handle error
-    } else {
-      this.currentStreams[channel].unregisterListener(id);
-      if (this.currentStreams[channel].getListenerCount() == 0) {
-        delete this.currentStreams[channel];
-        if (_.keys(this.currentStreams).length == 0) {
-          this.polling = false;
-        }
-      }
-    }
-  }
-};
-
-
-module.exports =  TwitchMonitor;
+module.exports = TwitchMonitor;

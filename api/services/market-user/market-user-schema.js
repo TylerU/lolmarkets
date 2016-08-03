@@ -57,5 +57,5 @@ const schema = {
     },
   },
 };
-// TODO - market, user associations
+
 module.exports = extractSchemaExports(schema);

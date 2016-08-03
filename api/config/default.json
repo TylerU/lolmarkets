@@ -23,7 +23,7 @@
   },
   "postgres": {
     "host": "localhost",
-    "username": "pgadmin",
+    "username": "postgres",
     "password": "password",
     "database": "lolmarkets"
   }

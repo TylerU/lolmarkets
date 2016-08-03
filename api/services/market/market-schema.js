@@ -73,6 +73,23 @@ const schema = {
       defaultValue: true,
     },
   },
+  resolved: {
+    publicWrite: true,
+    publicRead: true,
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+  },
+  result: {
+    publicWrite: true,
+    publicRead: true,
+    sequelize: {
+      allowNull: true,
+      type: Sequelize.BOOLEAN,
+    },
+  },
   timeOpened: {
     publicRead: true,
     sequelize: {
@@ -86,6 +103,9 @@ const schema = {
       defaultValue: null,
       type: Sequelize.DATE,
     },
+  },
+  channel: {
+    publicRead: true,
   },
   yesPrice: {
     publicRead: true,
