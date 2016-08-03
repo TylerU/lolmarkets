@@ -61,7 +61,7 @@ const schema = {
     publicRead: true,
     sequelize: {
       allowNull: false,
-      type: Sequelize.INTEGER,
+      type: Sequelize.BIGINT,
     },
   },
   active: {
@@ -102,6 +102,13 @@ const schema = {
     sequelize: {
       defaultValue: null,
       type: Sequelize.DATE,
+    },
+  },
+  predictionDetails: {
+    publicWrite: true,
+    sequelize: {
+      allowNull: false,
+      type: Sequelize.JSONB,
     },
   },
   channel: {

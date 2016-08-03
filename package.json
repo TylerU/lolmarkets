@@ -140,6 +140,7 @@
     "immutable": "3.8.1",
     "ip": "1.1.2",
     "is-my-json-valid": "2.13.1",
+    "leagueapi": "0.4.21",
     "lodash": "4.13.1",
     "minimist": "1.2.0",
     "moment": "2.13.0",

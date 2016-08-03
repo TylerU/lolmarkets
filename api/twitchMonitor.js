@@ -52,7 +52,7 @@ function TwitchMonitor(app) {
       .then(() => app.logger.info('Successfully queried Twitch'), (err) => app.logger.error(`Twitch service failed with error ${err}`))
       .then(() => setTimeout(checkAllChannels, POLL_INTERVAL), () => setTimeout(checkAllChannels, POLL_INTERVAL));
   }
-  checkAllChannels();
+  return checkAllChannels();
 }
 
 

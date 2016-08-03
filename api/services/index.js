@@ -9,7 +9,8 @@ const leaderboard = require('./leaderboard');
 const Sequelize = require('sequelize');
 const demoData = require('./demoData');
 
-const TwitchMonitor = require('../twitchMonitor');
+const twitchMonitor = require('../twitchMonitor');
+const LeagueMonitor = require('../leagueMonitor');
 
 const logging = false;
 
@@ -45,10 +46,10 @@ module.exports = function () {
     .forEach(model => model.associate());
 
   sequelize.sync({ force: true, logging }).then(() => {
-    console.log('Database ready');
     return demoData(app);
   }).then(() => {
-    TwitchMonitor(app);
+    twitchMonitor(app)
+      .then(() => LeagueMonitor.checkForGameStart(app));
   });
 };
 

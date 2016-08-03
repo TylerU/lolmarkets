@@ -2,6 +2,9 @@
   "host": "localhost",
   "port": 3030,
   "nedb": "api/databases",
+  "leagueMonitor": {
+    "startGamePollInterval": 2
+  },
   "businessSettings": {
     "startingMoney": 5000
   },

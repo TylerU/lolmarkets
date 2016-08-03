@@ -36,6 +36,23 @@ const schema = {
       type: Sequelize.BOOLEAN,
     },
   },
+  inGame: {
+    publicRead: true,
+    publicWrite: true,
+    sequelize: {
+      allowNull: false,
+      defaultValue: false,
+      type: Sequelize.BOOLEAN,
+    },
+  },
+  leagueGameId: {
+    publicWrite: true,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.BIGINT,
+    },
+  },
   twitchViewers: {
     publicRead: true,
     publicWrite: true,

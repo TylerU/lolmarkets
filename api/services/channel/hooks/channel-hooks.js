@@ -33,7 +33,6 @@ exports.before = {
     auth.restrictToAuthenticated(),
     customHooks.superAdminOnlyHook(),
     customHooks.validateHook(jsonSchema),
-    customHooks.overrideData({ leagueAccounts: '[]' }),
   ],
   update: [
     hooks.disable(() => false),

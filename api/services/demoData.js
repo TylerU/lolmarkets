@@ -1,8 +1,7 @@
-const users = require('./demodata/user');
-const channels = require('./demodata/channel');
-const markets = require('./demodata/market');
-const transactions = require('./demodata/transaction');
-const _ = require('lodash');
+const users = require('../demodata/user');
+const channels = require('../demodata/channel');
+const markets = require('../demodata/market');
+const transactions = require('../demodata/transaction');
 const Promise = require('bluebird');
 
 module.exports = function (app) {
@@ -22,5 +21,7 @@ module.exports = function (app) {
     .then(() => execElem(0, markets, MarketService))
     .then(() => execElem(0, transactions, TransactionService))
     .then(() => MarketService.patch(1, { active: false }))
-    .then(/*(res) => console.dir(res, { depth: null })*/() => console.log('done'), console.log.bind(console, 'failure'));
+    .then(
+      () => app.logger.info('Successfully wiped and repopulated the database'),
+      (err) => app.logger.error(`Failed to repopulate the database: ${err}`));
 };
