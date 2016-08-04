@@ -47,10 +47,20 @@ const schema = {
   },
   leagueGameId: {
     publicWrite: true,
+    publicRead: true,
     sequelize: {
       allowNull: true,
       defaultValue: null,
       type: Sequelize.BIGINT,
+    },
+  },
+  leagueGameRegion: {
+    publicWrite: true,
+    publicRead: true,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.STRING,
     },
   },
   twitchViewers: {

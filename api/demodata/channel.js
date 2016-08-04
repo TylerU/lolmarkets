@@ -8,6 +8,14 @@ module.exports = [
     ],
   },
   {
+    displayName: 'WingsOfDeath',
+    twitchName: 'wingsofdeath',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 53742348, region: 'na' },
+    ],
+  },
+  {
     displayName: 'WildTurtle',
     twitchName: 'IMT_WildTurtle',
     isStreaming: false,

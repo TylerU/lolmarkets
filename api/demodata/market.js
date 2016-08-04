@@ -1,34 +1,42 @@
 module.exports = [
   {
     name: 'Nightblue3 will win this game',
-    leagueGameId: 12345,
+    leagueGameId: 2257791757,
+    leagueGameRegion: 'na',
     channel: 1,
     predictionDetails: {
-      type: 1,
+      type: 0,
+      activeAccount: { id: 53742348, region: 'na' },
     },
   },
   {
     name: 'Nightblue\'s team will get first Baron (and will get baron)',
-    leagueGameId: 12345,
+    leagueGameId: 2257799794,
+    leagueGameRegion: 'na',
     channel: 1,
     predictionDetails: {
-      type: 1,
+      type: 0,
+      activeAccount: { id: 53742348, region: 'na' },
     },
   },
   {
     name: 'WildTurtle will win this game',
-    leagueGameId: 12344,
+    leagueGameId: 2257799794,
+    leagueGameRegion: 'na',
     channel: 2,
     predictionDetails: {
-      type: 1,
+      type: 0,
+      activeAccount: { id: 53742348, region: 'na' },
     },
   },
   {
     name: 'Voyboy will win this game',
-    leagueGameId: 12342,
+    leagueGameId: 2257799794,
+    leagueGameRegion: 'na',
     channel: 4,
     predictionDetails: {
-      type: 1,
+      type: 0,
+      activeAccount: { id: 53742348, region: 'na' },
     },
   },
 ];

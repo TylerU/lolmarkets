@@ -128,7 +128,8 @@ exports.after = {
     customHooks.mapResultHook(populateMarketUser),
     customHooks.mapResultHook(populateProperties),
     customHooks.mapResultHook(populateMaxCanBuy),
-    customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
+    // TODO - Does commenting this cause data leakage somewhere?
+    // customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],

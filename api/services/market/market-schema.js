@@ -64,6 +64,14 @@ const schema = {
       type: Sequelize.BIGINT,
     },
   },
+  leagueGameRegion: {
+    publicWrite: true,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.STRING,
+    },
+  },
   active: {
     publicWrite: true,
     publicRead: true,
@@ -99,6 +107,7 @@ const schema = {
   },
   timeClosed: {
     publicRead: true,
+    publicWrite: true,
     sequelize: {
       defaultValue: null,
       type: Sequelize.DATE,

@@ -4,7 +4,6 @@ const LolApi = require('leagueapi');
 LolApi.init('d360d3eb-e358-4f80-8759-fbfac4ccab19');
 const Promise = require('bluebird');
 const _ = require('lodash');
-const moment = require('moment');
 const marketManager = require('./marketManager');
 
 function log(res) {
@@ -12,14 +11,21 @@ function log(res) {
   return res;
 }
 
+function execElem(i, arr, fn) {
+  if (i < arr.length) {
+    return fn(arr[i]).delay(10000).then(execElem.bind(null, i + 1, arr, fn));
+  }
+  // Note: will wait 10 seconds after last element is processed to finally resolve
+  return null;
+}
+
 const RATE_PER_10 = 8;
 
-// LolApi.Summoner.getByName('WildTurtle', 'na').then(log, log);
+// LolApi.Summoner.getByName('Wingsofdeath', 'na').then(log, log);
 
 // TODO account for rate limiting. Maybe add lastChecked DateTime field
 function checkForGameStart(app) {
   const ChannelService = app.service('channels');
-  const POLL_INTERVAL = moment.duration(app.get('leagueMonitor').startGamePollInterval, 'minutes').asMilliseconds();
 
   function getCurrentGameId(account) {
     return LolApi.getCurrentGame(account.id, account.region)
@@ -27,7 +33,6 @@ function checkForGameStart(app) {
         (err) => {
           if (`${err}`.indexOf('404 Not Found') !== -1) {
             return null;
-            // return 1234556; // TODO - temp. For Testing only.
           }
           throw err;
         });
@@ -37,6 +42,7 @@ function checkForGameStart(app) {
     return Promise.all(_.map(accounts, getCurrentGameId));
   }
 
+  // TODO - may be swallowing errors
   function checkChannelObjectsForGameStart(channels) {
     return Promise.all(
       _.chain(channels)
@@ -52,12 +58,13 @@ function checkForGameStart(app) {
             const activeAccountAndGameId = _.find(channel.leagueAccounts, _.spread((leagueAcc, gameId) => !!gameId));
             const activeAccount = activeAccountAndGameId[0];
             const leagueGameId = activeAccountAndGameId[1];
-
+            const leagueGameRegion = activeAccount.region;
             return _.assign({
               id: channel.id,
               save: {
                 inGame: true,
                 leagueGameId,
+                leagueGameRegion,
               },
               extraDetails: {
                 activeAccount,
@@ -69,14 +76,14 @@ function checkForGameStart(app) {
       .then((updates) =>
         // Update inGame and current game id
         Promise.all(_.map(updates, (obj) => ChannelService.patch(obj.id, obj.save)))
-        // Trigger market creation for each channel that is now in game
+          // Trigger market creation for each channel that is now in game
           .then((updatedChannels) => {
             _.map(updatedChannels, (channel, index) => marketManager.handleNewGame(app, { channel, extraDetails: updates[index].extraDetails }));
             return updatedChannels;
           }))
       .then(
         () => app.logger.info('Successfully checked for game starts'),
-        (err) => app.logger.error(`League Game Start Check failed with error ${err}`));
+        (err) => app.logger.error('League Game Start Check failed with error', err));
   }
 
   function splitAndExecuteInSerial(channels) {
@@ -97,26 +104,96 @@ function checkForGameStart(app) {
     }
     result.push(curArr);
 
-    function execElem(i, arr, fn) {
-      if (i < arr.length) {
-        return fn(arr[i]).delay(10000).then(execElem.bind(null, i + 1, arr, fn));
-      }
-      // Note: will wait 10 seconds after last element is processed to finally resolve
-      return null;
-    }
-
     return execElem(0, result, checkChannelObjectsForGameStart);
   }
+
   function actualCheckForGameStart() {
-    return ChannelService.find({ query: { $limit: 1000, /*isStreaming: true, inGame: false */} })
+    return ChannelService.find({ query: { $limit: 1000, isStreaming: true, inGame: false } })
       .then((channels) => channels.data)
-      .then(splitAndExecuteInSerial)
-      .then(
-        () => setTimeout(actualCheckForGameStart, POLL_INTERVAL),
-        () => setTimeout(actualCheckForGameStart, POLL_INTERVAL));
+      .then(splitAndExecuteInSerial);
   }
 
-  return actualCheckForGameStart();
+  actualCheckForGameStart().then(
+    () => checkForGameEnd(app),
+    (err) => {
+      app.logger.error('Error encountered checking for game starts', err);
+      return checkForGameEnd(app);
+    });
 }
 
-exports.checkForGameStart = checkForGameStart;
+
+function checkForGameEnd(app) {
+  const allGameIdsQuery =
+    `SELECT "leagueGameId", "leagueGameRegion"
+    FROM public."Channel" 
+    WHERE 
+      "leagueGameId" IS NOT NULL
+      AND "leagueGameRegion" IS NOT NULL
+      AND "inGame" IS TRUE
+    UNION
+    SELECT "leagueGameId", "leagueGameRegion"
+    FROM public."Market" 
+    WHERE 
+      "leagueGameId" IS NOT NULL
+      AND "leagueGameRegion" IS NOT NULL
+      AND "active" IS TRUE`;
+
+  function updateChannelsOnGameOver(match) {
+    const ChannelService = app.service('channels');
+    return ChannelService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
+      .then((channels) => channels.data)
+      .then((channels) => {
+        if (channels.length > 0) {
+          app.logger.info(`Found game over for users ${_.map(channels, 'displayName')}`);
+        }
+        return channels;
+      })
+      .then((channels) => Promise.all(_.map(channels, (channel) =>
+        ChannelService.patch(channel.id, { inGame: false, leagueGameId: null, leagueGameRegion: null }))));
+  }
+  function getGameCompletion(game) {
+    return LolApi.getMatch(game.leagueGameId, false, game.leagueGameRegion)
+      .then((res) => res,
+        (err) => {
+          if (`${err}`.indexOf('404 Not Found') !== -1) {
+            return null;
+          }
+          throw err;
+        })
+      .then((match) => {
+        if (!!match) {
+          marketManager.handleGameOver(app, match);
+          return updateChannelsOnGameOver(match);
+        }
+        return Promise.resolve(true); // TODO - better return value?
+      });
+  }
+
+  function checkAllGames(games) {
+    return Promise.all(_.map(games, (game) => getGameCompletion(game)))
+      .then(
+        () => app.logger.info('Successfully checked for end game'),
+        (err) => app.logger.error('Error checking for end game', err));
+  }
+
+  function splitAndExecuteInSerial(games) {
+    const split = _.chunk(games, RATE_PER_10);
+    return execElem(0, split, checkAllGames);
+  }
+
+  function actualCheckForGameEnd() {
+    return app.get('sequelize').query(allGameIdsQuery, { type: app.get('sequelize').QueryTypes.SELECT })
+      .then(splitAndExecuteInSerial);
+  }
+
+  actualCheckForGameEnd().then(
+    () => checkForGameStart(app),
+    (err) => {
+      app.logger.error('Error encountered checking for game ends', err);
+      return checkForGameStart(app);
+    });
+}
+
+exports.startMonitoring = function startMonitoring(app) {
+  checkForGameStart(app);
+};

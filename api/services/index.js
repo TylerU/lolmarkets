@@ -45,11 +45,10 @@ module.exports = function () {
     .filter(model => model.associate !== undefined)
     .forEach(model => model.associate());
 
-  sequelize.sync({ force: true, logging }).then(() => {
-    return demoData(app);
-  }).then(() => {
-    twitchMonitor(app)
-      .then(() => LeagueMonitor.checkForGameStart(app));
-  });
+  sequelize.sync({ force: true, logging })
+    .then(() => demoData(app))
+    .then(() => twitchMonitor(app))
+    .then(() => LeagueMonitor.startMonitoring(app))
+    .then(null, (err) => app.logger.error('Error encountered during setup', err));
 };
 

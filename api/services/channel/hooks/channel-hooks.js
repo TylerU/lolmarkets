@@ -20,14 +20,24 @@ function populateMarkets(hook, channel) {
     });
 }
 
+function processData(hook) {
+  if (hook.data && hook.data.leagueGameRegion) {
+    hook.data.leagueGameRegion = hook.data.leagueGameRegion.toLowerCase();
+  } else if (hook.params && hook.params.query && hook.params.query.leagueGameRegion) {
+    hook.params.query.leagueGameRegion = hook.params.query.leagueGameRegion.toLowerCase();
+  }
+}
+
 exports.before = {
   all: [],
   find: [
     hooks.pluckQuery.apply(hooks, outProperties),
+    processData,
   ],
   get: [],
   create: [
     hooks.pluck.apply(hooks, inProperties),
+    processData,
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -39,6 +49,7 @@ exports.before = {
   ],
   patch: [
     hooks.pluck.apply(hooks, inProperties),
+    processData,
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
