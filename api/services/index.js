@@ -50,6 +50,7 @@ module.exports = function () {
     .then(() => demoData(app))
     .then(() => twitchMonitor(app))
     .then(() => LeagueMonitor.startMonitoring(app))
+    .then(() => MarketManager.resolveMarkets(app)) // TODO - TEMP
     .then(null, (err) => app.logger.error('Error encountered during setup', err));
 };
 

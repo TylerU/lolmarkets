@@ -1,5 +1,6 @@
 const service = require('feathers-sequelize');
 const hooks = require('./hooks/market-user-hooks');
+const filters = require('./market-user-filters').filters;
 const model = require('./market-user-model');
 
 module.exports = function () {
@@ -24,5 +25,8 @@ module.exports = function () {
 
   // Set up our after hooks
   marketUserService.after(hooks.after);
+
+  marketUserService.filter(filters);
+
 };
 

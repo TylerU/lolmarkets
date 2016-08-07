@@ -19,6 +19,7 @@ exports.before = {
     auth.queryWithCurrentUser({ idField: 'id', as: 'user' }),
   ],
   get: [
+    customHooks.ensureId(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -36,6 +37,7 @@ exports.before = {
     hooks.disable(() => false),
   ],
   patch: [
+    customHooks.ensureId(),
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     auth.populateUser(),

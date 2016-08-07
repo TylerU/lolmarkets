@@ -1,6 +1,7 @@
 'use strict';
 /* eslint no-else-return: "off" */
 const hooks = require('./hooks/transaction-hooks');
+const filters = require('./transaction-filters').filters;
 const model = require('./transaction-model');
 const Sequelize = require('sequelize');
 
@@ -165,5 +166,7 @@ module.exports = function () {
 
   // Set up our after hooks
   transactionService.after(hooks.after);
+
+  transactionService.filter(filters);
 };
 

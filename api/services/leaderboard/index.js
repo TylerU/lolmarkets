@@ -2,6 +2,7 @@
 const hooks = require('./hooks/leaderboard-hooks');
 const _ = require('lodash');
 const Promise = require('bluebird');
+const filters = require('./leaderboard-filters').filters;
 
 class LeaderboardService {
   constructor(options) {
@@ -94,5 +95,7 @@ module.exports = function initLeaderboard() {
 
   // Set up our after hooks
   leaderboardService.after(hooks.after);
+
+  leaderboardService.filter(filters);
 };
 

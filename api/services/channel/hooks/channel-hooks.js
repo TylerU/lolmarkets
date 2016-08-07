@@ -34,7 +34,9 @@ exports.before = {
     hooks.pluckQuery.apply(hooks, outProperties),
     processData,
   ],
-  get: [],
+  get: [
+    customHooks.ensureId(),
+  ],
   create: [
     hooks.pluck.apply(hooks, inProperties),
     processData,
@@ -48,6 +50,7 @@ exports.before = {
     hooks.disable(() => false),
   ],
   patch: [
+    customHooks.ensureId(),
     hooks.pluck.apply(hooks, inProperties),
     processData,
     auth.verifyToken(),
@@ -57,6 +60,7 @@ exports.before = {
     customHooks.validateHook(jsonSchema),
   ],
   remove: [
+    customHooks.ensureId(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),

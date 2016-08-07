@@ -91,6 +91,7 @@ exports.before = {
     auth.populateUser(),
   ],
   get: [
+    customHooks.ensureId(),
     customHooks.maybeVerifyToken(),
     auth.populateUser(),
   ],
@@ -107,6 +108,7 @@ exports.before = {
     hooks.disable(() => false),
   ],
   patch: [
+    customHooks.ensureId(),
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     auth.populateUser(),
@@ -115,6 +117,7 @@ exports.before = {
     customHooks.validateHook(jsonSchema),
   ],
   remove: [
+    customHooks.ensureId(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),

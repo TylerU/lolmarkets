@@ -1,5 +1,6 @@
 const service = require('feathers-sequelize');
 const hooks = require('./hooks/user-hooks');
+const filters = require('./user-filters').filters;
 const model = require('./user-model');
 
 module.exports = function () {
@@ -24,5 +25,7 @@ module.exports = function () {
 
   // Set up our after hooks
   userService.after(hooks.after);
+
+  userService.filter(filters);
 };
 

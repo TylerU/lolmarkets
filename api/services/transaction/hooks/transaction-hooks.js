@@ -25,6 +25,7 @@ exports.before = {
     auth.queryWithCurrentUser({ idField: 'id', as: 'user' }),
   ],
   get: [
+    customHooks.ensureId(),
     auth.restrictToOwner({ ownerField: 'id' }),
   ],
   create: [

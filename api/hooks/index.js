@@ -12,6 +12,10 @@ function errorsMap(error) {
   return error;
 }
 
+exports.ensureId = () => (hook) => {
+  if (!hook.id) throw new errors.BadRequest('Must provide an ID with this request');
+};
+
 exports.validateHook = function (schemaIn, optionsIn) {
   const schemaNoReq = _.mapValues(schemaIn, _.partialRight(_.omit, 'required'));
 

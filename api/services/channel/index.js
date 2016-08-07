@@ -1,6 +1,7 @@
 const service = require('feathers-sequelize');
 const hooks = require('./hooks/channel-hooks');
 const model = require('./channel-model');
+const filters = require('./channel-filters').filters;
 
 module.exports = function () {
   const app = this;
@@ -24,5 +25,7 @@ module.exports = function () {
 
   // Set up our after hooks
   channelService.after(hooks.after);
+
+  channelService.filter(filters);
 };
 

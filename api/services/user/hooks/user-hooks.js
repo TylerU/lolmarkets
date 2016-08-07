@@ -19,6 +19,7 @@ exports.before = {
     hooks.disable('external'),
   ],
   get: [
+    customHooks.ensureId(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -37,10 +38,11 @@ exports.before = {
     hooks.disable(() => false),
   ],
   patch: [
+    customHooks.ensureId(),
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     customHooks.validateHook(jsonSchema),
-    auth.hashPassword(),
+    // auth.hashPassword(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
     auth.restrictToOwner({ ownerField: 'id' }),

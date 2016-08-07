@@ -23,6 +23,45 @@ import {
 import { changeUsername } from './actions';
 import { loadRepos } from '../App/actions';
 
+
+// Testing
+const feathers = require('feathers/client');
+const authentication = require('feathers-authentication');
+const socketio = require('feathers-socketio/client');
+const hooks = require('feathers-hooks');
+const io = require('socket.io-client');
+
+const socket = io('http://localhost:3030', {
+  transport: ['websockets'],
+});
+
+const app = feathers()
+  .configure(hooks())
+  .configure(authentication({ storage: window.localStorage }))
+  .configure(socketio(socket));
+const messageService = app.service('users');
+
+
+socket.on('reconnect', () => {
+  setTimeout(
+    () => app.authenticate({ type: 'token', token: app.get('token') }),
+    2000 /* time for server to start up */);
+});
+
+
+app.authenticate({
+  type: 'local',
+  email: 'tyler@gmail.com',
+  password: 'test123',
+})
+  .then(function(result) {
+    messageService.on('patched', message => console.log('Created a message', message));
+  })
+  .catch(function(error) {
+    console.error('Error authenticating!', error);
+  });
+
+
 import styles from './styles.css';
 
 export class HomePage extends React.Component {
