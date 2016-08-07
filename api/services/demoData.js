@@ -20,7 +20,7 @@ module.exports = function (app) {
   return Promise.all([usersProm, channelsProm])
     .then(() => execElem(0, markets, MarketService))
     .then(() => execElem(0, transactions, TransactionService))
-    .then(() => MarketService.patch(1, { active: false }))
+    .then(() => MarketService.patch(4, { active: false, resolved: false, result: true }))
     .then(
       () => app.logger.info('Successfully wiped and repopulated the database'),
       (err) => app.logger.error(`Failed to repopulate the database: ${err}`));

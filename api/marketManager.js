@@ -58,14 +58,12 @@ exports.handleNewGame = function handleNewGame(app, details) {
 function getResult(details, match) {
   if (!details || !details.activeAccount) throw new Error('Invalid market. Needs activeAccount set');
   const summonerId = details.activeAccount.id;
-  const region = details.activeAccount.region;
-  const participantId = _.find(match.participantIdentities, (identity) => identity.player.summonerId == summonerId).participantId;
+  const participantId = _.find(match.participantIdentities, (identity) => identity.player.summonerId === summonerId).participantId;
   const participant = _.find(match.participants, { participantId });
 
   const resolve = {
-    WILL_WIN: () => {
-      return participant.winner;
-    },
+    WILL_WIN: () =>
+       participant.stats.winner,
     MORE_THAN_X_KILLS: () => {
       if (!details.kills) {
         throw new Error(`Markets of type ${predictionTypes.MORE_THAN_X_KILLS} must have 'kills' member`);
@@ -77,17 +75,78 @@ function getResult(details, match) {
   if (!_.isEqual(_.keys(resolve), _.keys(predictionTypes))) {
     throw new Error('Prediction Types not equal');
   }
+  const result = _.mapKeys(resolve, (value, key) => predictionTypes[key])[details.type]();
+  return result;
+}
 
-  return _.mapKeys(resolve, (value, key) => predictionTypes[key])[details.type]();
+function resolveMarkets(app) {
+  function notifyAll(res) {
+    const UserService = app.service('users');
+    const MarketService = app.service('markets');
+    const ServiceMap = {
+      Market: MarketService,
+      User: UserService,
+    };
+
+    return Promise.all(_.map(res, (obj) => ServiceMap[obj.type].patch(obj.id, {})));
+  }
+
+  // Grab unresolved markets
+  // Grab their market users
+  // Give users money
+  // Mark market as resolved
+  const resolveQuery = `
+    WITH 
+    "shares" AS
+        (SELECT "result", "user", "MarketUser"."yesShares", "MarketUser"."noShares", "Market"."id"
+            FROM public."MarketUser"
+            INNER JOIN public."Market"
+            ON "Market"."id" = "MarketUser"."market"
+            WHERE "active" = FALSE 
+            AND "resolved" = FALSE
+            AND "result" = <%= curResult %>
+            AND "MarketUser"."<%= curField %>" > 0
+            FOR UPDATE
+        ),
+    "updated" AS 
+        (UPDATE public."User"
+            SET "money" = "money" + "shares"."<%= curField %>"
+            FROM "shares"
+            WHERE "shares"."user" = "User"."id"
+          RETURNING "User"."id" as "userId", "User"."money"
+        ),
+    "marketsUpdated" AS 
+        (UPDATE public."Market"
+            SET "resolved" = TRUE
+            WHERE "Market"."id" in (SELECT "id" FROM "shares")
+          RETURNING "id"
+        )
+    SELECT * 
+    FROM 
+      (SELECT DISTINCT "id", 'Market' AS "type" FROM "marketsUpdated"
+         UNION 
+         select  "userId", 'User' as "type" from "updated") as "test2"`;
+
+  const compiled = _.template(resolveQuery);
+  const yesQuery = compiled({ curResult: 'TRUE', curField: 'yesShares' });
+  const noQuery = compiled({ curResult: 'FALSE', curField: 'noShares' });
+  const options = { type: app.get('sequelize').QueryTypes.SELECT };
+
+  // Execute the query, then notify Markets and Users of the updates
+  const yesUpdate = app.get('sequelize').query(yesQuery, options)
+    .then(notifyAll);
+  const noUpdate = app.get('sequelize').query(noQuery, options)
+    .then(notifyAll);
+
+  return Promise.all([yesUpdate, noUpdate]);
 }
 
 exports.handleGameOver = function handleGameOver(app, match) {
-  // Mark market as over
-  // Resolve market
+  // Mark markets as over
+  // Resolve markets
   const MarketService = app.service('markets');
-  const MarketUserService = app.service('marketUsers');
 
-  MarketService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region} })
+  MarketService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
     .then((markets) => markets.data)
     // Mark as inactive
     .then((markets) => Promise.all(_.map(markets, (market) => MarketService.patch(market.id, {
@@ -95,7 +154,10 @@ exports.handleGameOver = function handleGameOver(app, match) {
       timeClosed: new Date(),
       result: getResult(market.predictionDetails, match),
     }))))
+    .then((markets) => resolveMarkets(app, markets))
     .then(
-    () => app.logger.info(`Successfully resolved markets for match: ${match.matchId}`),
-    (err) => app.logger.error('Error resolving markets.', err));
+      () => app.logger.info(`Successfully resolved markets for match: ${match.matchId}`),
+      (err) => app.logger.error('Error resolving markets.', err));
 };
+
+exports.resolveMarkets = resolveMarkets;

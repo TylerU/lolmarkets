@@ -51,4 +51,32 @@ module.exports = [
       { id: 19134540, region: 'na' },
     ],
   },
+  {
+    displayName: 'Sneaky',
+    twitchName: 'c9sneaky',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 51405, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Bunny FuFu',
+    twitchName: 'bunnyfufuu',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 63674783, region: 'na' },
+      { id: 22645232, region: 'na' },
+      { id: 20441329, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Meteos',
+    twitchName: 'meteos',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 390600, region: 'na' },
+      { id: 44979324, region: 'na' },
+      { id: 44095912, region: 'na' },
+    ],
+  },
 ];

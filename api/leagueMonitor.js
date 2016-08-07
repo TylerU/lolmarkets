@@ -1,4 +1,5 @@
 'use strict';
+/* eslint no-use-before-define: "off" */
 
 const LolApi = require('leagueapi');
 LolApi.init('d360d3eb-e358-4f80-8759-fbfac4ccab19');
@@ -11,15 +12,17 @@ function log(res) {
   return res;
 }
 
+const RATE_PER_10 = 7;
+const WAIT_BETWEEN_BATCHES = 11000;
+
 function execElem(i, arr, fn) {
   if (i < arr.length) {
-    return fn(arr[i]).delay(10000).then(execElem.bind(null, i + 1, arr, fn));
+    return fn(arr[i]).delay(WAIT_BETWEEN_BATCHES).then(execElem.bind(null, i + 1, arr, fn));
   }
   // Note: will wait 10 seconds after last element is processed to finally resolve
   return null;
 }
 
-const RATE_PER_10 = 8;
 
 // LolApi.Summoner.getByName('Wingsofdeath', 'na').then(log, log);
 
@@ -121,7 +124,6 @@ function checkForGameStart(app) {
     });
 }
 
-
 function checkForGameEnd(app) {
   const allGameIdsQuery =
     `SELECT "leagueGameId", "leagueGameRegion"
@@ -195,5 +197,5 @@ function checkForGameEnd(app) {
 }
 
 exports.startMonitoring = function startMonitoring(app) {
-  checkForGameStart(app);
+  setTimeout(() => checkForGameStart(app), WAIT_BETWEEN_BATCHES);
 };

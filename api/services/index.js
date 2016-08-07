@@ -11,6 +11,7 @@ const demoData = require('./demoData');
 
 const twitchMonitor = require('../twitchMonitor');
 const LeagueMonitor = require('../leagueMonitor');
+const MarketManager = require('../marketManager');
 
 const logging = false;
 

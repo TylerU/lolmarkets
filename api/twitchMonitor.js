@@ -5,7 +5,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('bluebird');
 
-const POLL_INTERVAL = moment.duration(5, 'minutes').asMilliseconds();
+const POLL_INTERVAL = moment.duration(1, 'minutes').asMilliseconds();
 
 function log(res) {
   console.log(res);
