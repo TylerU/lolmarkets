@@ -41,6 +41,9 @@ const app = feathers()
   .configure(socketio(socket));
 const messageService = app.service('users');
 
+socket.on('connect', () => {
+  socket.emit('watchChannelMarkets', [3]);
+});
 
 socket.on('reconnect', () => {
   setTimeout(

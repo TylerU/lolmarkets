@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     name: 'WildTurtle will win this game',
-    leagueGameId: 2259041524,
+    leagueGameId: 123456,
     leagueGameRegion: 'na',
     channel: 2,
     predictionDetails: {
