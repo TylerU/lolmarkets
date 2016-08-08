@@ -35,6 +35,7 @@ class TransactionsService extends Service {
     const user = data.user;
     const market = data.market;
     if (yesSharesDelta === 0 && noSharesDelta === 0) throw new errors.BadRequest('That\'s not a valid transaction');
+    if (yesSharesDelta !== 0 && noSharesDelta !== 0) throw new errors.BadRequest('Only one of the two shares can be non-zero');
 
     function executeTransaction(t) {
       const findUser = User.findById(user, real ? { transaction: t, lock: t.LOCK.UPDATE } : {});
