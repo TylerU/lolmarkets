@@ -158,9 +158,9 @@ function checkForGameEnd(app) {
       .then((res) => res,
         (err) => {
           if (`${err}`.indexOf('404 Not Found') !== -1) {
-            return null;
+            return false;
           } else if (`${err}`.indexOf('429') !== -1) {
-            app.logger.info('Got rate limited in getMatch(). Unable to complete request.');
+            app.logger.info(`Got rate limited in getMatch(${game.leagueGameId}). Unable to complete request.`);
             return null;
           }
           throw err;
@@ -170,14 +170,14 @@ function checkForGameEnd(app) {
           marketManager.handleGameOver(app, match);
           return updateChannelsOnGameOver(match);
         }
-        return Promise.resolve(true); // TODO - better return value?
+        return Promise.resolve(match); // TODO - better return value?
       });
   }
 
   function checkAllGames(games) {
     return Promise.all(_.map(games, (game) => getGameCompletion(game)))
       .then(
-        () => app.logger.info('Successfully checked for end game'),
+        (res) => app.logger.info(`Successfully checked for end games: ${_.map(_.filter(games, (game, index) => res[index] !== null), 'leagueGameId')}`),
         (err) => app.logger.error('Error checking for end game', err));
   }
 

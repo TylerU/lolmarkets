@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     name: 'Nightblue\'s team will get first Baron (and will get baron)',
-    leagueGameId: 1,
+    leagueGameId: 2259041524,
     leagueGameRegion: 'na',
     channel: 2,
     predictionDetails: {

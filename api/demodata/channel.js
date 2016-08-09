@@ -114,4 +114,40 @@ module.exports = [
       { id: 5908, region: 'na' },
     ],
   },
+  {
+    displayName: 'IWillDominate',
+    twitchName: 'IWillDominate',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 50529339, region: 'na' },
+      { id: 38249375, region: 'na' },
+      { id: 50759303, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Gripex',
+    twitchName: 'gripex90',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 41520988, region: 'euw' },
+      { id: 19331582, region: 'euw' },
+      { id: 19080605, region: 'euw' },
+    ],
+  },
+  {
+    displayName: 'Rush',
+    twitchName: 'rush',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 11422189, region: 'kr' },
+    ],
+  },
+  {
+    displayName: 'RF Legendary',
+    twitchName: 'rflegendary',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 19209176, region: 'na' },
+    ],
+  },
 ];
