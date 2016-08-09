@@ -177,7 +177,8 @@ function checkForGameEnd(app) {
   function checkAllGames(games) {
     return Promise.all(_.map(games, (game) => getGameCompletion(game)))
       .then(
-        (res) => app.logger.info(`Successfully checked for end games: ${_.map(_.filter(games, (game, index) => res[index] !== null), 'leagueGameId')}`),
+        // (res) => app.logger.info(`Successfully checked for end games: ${_.map(_.filter(games, (game, index) => res[index] !== null), 'leagueGameId')}`),
+        () => app.logger.info('Successfully checked for end games'),
         (err) => app.logger.error('Error checking for end game', err));
   }
 
