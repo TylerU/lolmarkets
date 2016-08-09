@@ -13,7 +13,7 @@ function log(res) {
 }
 
 const RATE_PER_10 = 7;
-const WAIT_BETWEEN_BATCHES = 11000;
+const WAIT_BETWEEN_BATCHES = 21000;
 
 function execElem(i, arr, fn) {
   if (i < arr.length) {
@@ -158,6 +158,9 @@ function checkForGameEnd(app) {
       .then((res) => res,
         (err) => {
           if (`${err}`.indexOf('404 Not Found') !== -1) {
+            return null;
+          } else if (`${err}`.indexOf('429') !== -1) {
+            app.logger.info('Got rate limited in getMatch(). Unable to complete request.');
             return null;
           }
           throw err;

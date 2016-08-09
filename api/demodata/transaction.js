@@ -27,24 +27,24 @@ module.exports = [
     market: 4,
     user: 1,
     yesSharesDelta: 3,
-    noSharesDelta: 5,
+    noSharesDelta: 0,
   },
   {
     market: 4,
     user: 2,
-    yesSharesDelta: 2,
+    yesSharesDelta: 0,
     noSharesDelta: 5,
   },
   {
     market: 4,
     user: 3,
-    yesSharesDelta: 1,
+    yesSharesDelta: 0,
     noSharesDelta: 5,
   },
   {
     market: 1,
     user: 2,
-    yesSharesDelta: 1,
+    yesSharesDelta: 0,
     noSharesDelta: 3,
   },
   {
@@ -56,13 +56,13 @@ module.exports = [
   {
     market: 1,
     user: 2,
-    yesSharesDelta: -1,
+    yesSharesDelta: 0,
     noSharesDelta: -3,
   },
   {
     market: 1,
     user: 1,
-    yesSharesDelta: -1,
-    noSharesDelta: -302,
+    yesSharesDelta: 0,
+    noSharesDelta: -300,
   },
 ];

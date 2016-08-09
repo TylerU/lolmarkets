@@ -50,17 +50,43 @@ export default function createRoutes(store) {
       path: '/streams',
       name: 'streams',
       getComponent(nextState, cb) {
-        System.import('containers/StreamsPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        const importModules = Promise.all([
+          System.import('containers/ChannelsPage/reducer'),
+          System.import('containers/ChannelsPage/sagas'),
+          System.import('containers/ChannelsPage'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([reducer, sagas, component]) => {
+          injectReducer('channels', reducer.default);
+          injectSagas(sagas.default);
+
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
       },
     }, {
       path: '/stream/:streamName',
       name: 'stream',
       getComponent(nextState, cb) {
-        System.import('containers/StreamPage')
-          .then(loadModule(cb))
-          .catch(errorLoading);
+        const importModules = Promise.all([
+          System.import('containers/ChannelPage/reducer'),
+          System.import('containers/ChannelPage/sagas'),
+          System.import('containers/ChannelPage'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([reducer, sagas, component]) => {
+          injectReducer('markets', reducer.default);
+          injectSagas(sagas.default);
+
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
       },
     }, {
       path: '*',

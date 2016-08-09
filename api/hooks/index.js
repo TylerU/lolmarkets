@@ -2,6 +2,7 @@
 const errors = require('feathers-errors');
 const validator = require('is-my-json-valid');
 const auth = require('feathers-authentication').hooks;
+const hooks = require('feathers-hooks');
 const _ = require('lodash');
 const Promise = require('bluebird');
 /* eslint no-param-reassign: "off" */
@@ -117,6 +118,9 @@ exports.maybeVerifyToken = () =>
     }
     return null;
   };
+
+exports.pluckQuery = (outProperties) =>
+       hooks.pluckQuery.apply(hooks, outProperties.concat(['$sort', '$skip', '$select']));
 
 exports.ignoreNoProvider = () =>
   (hook) => { // TODO - Resolve this little problem

@@ -15,6 +15,8 @@ function populateMarkets(hook, channel) {
     .then((res) => {
       if (res.data.length > 0) {
         channel.markets = _.map(res.data, 'id');
+      } else {
+        channel.markets = [];
       }
       return channel;
     });
@@ -31,7 +33,7 @@ function processData(hook) {
 exports.before = {
   all: [],
   find: [
-    hooks.pluckQuery.apply(hooks, outProperties),
+    customHooks.pluckQuery(outProperties),
     processData,
   ],
   get: [

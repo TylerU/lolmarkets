@@ -70,6 +70,23 @@ module.exports = [
     ],
   },
   {
+    displayName: 'Scarra',
+    twitchName: 'Scarra',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 10077, region: 'na' },
+      { id: 19877155, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Valkrin',
+    twitchName: 'Valkrin',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 1496, region: 'na' },
+    ],
+  },
+  {
     displayName: 'Meteos',
     twitchName: 'meteos',
     isStreaming: false,
@@ -77,6 +94,24 @@ module.exports = [
       { id: 390600, region: 'na' },
       { id: 44979324, region: 'na' },
       { id: 44095912, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'TheOddOne',
+    twitchName: 'TSM_TheOddOne',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 465413, region: 'na' },
+      { id: 60783, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Dyrus',
+    twitchName: 'TSM_Dyrus',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 71749871, region: 'na' },
+      { id: 5908, region: 'na' },
     ],
   },
 ];

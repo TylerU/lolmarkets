@@ -11,37 +11,49 @@
  */
 
 import {
-  LOAD_REPOS_SUCCESS,
-  LOAD_REPOS,
-  LOAD_REPOS_ERROR,
+  ATTEMPT_REAUTH,
+  REAUTH_SUCCESS,
+  USER_UPDATE,
+  REAUTH_ERROR,
+  LOGOUT,
 } from './constants';
+
 import { fromJS } from 'immutable';
 
 // The initial state of the App
 const initialState = fromJS({
   user: fromJS({
-    coins: 10,
-    loggedIn: true,
-    name: 'DinoEntrails',
+    loading: false,
+    loggedIn: false,
+    userObj: null,
+    error: null,
   }),
 });
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_REPOS:
+    case LOGOUT:
       return state
-        .set('loading', true)
-        .set('error', false)
-        .setIn(['userData', 'repositories'], false);
-    case LOAD_REPOS_SUCCESS:
+        .setIn(['user', 'loggedIn'], false)
+        .setIn(['user', 'userObj'], null);
+    case USER_UPDATE:
       return state
-        .setIn(['userData', 'repositories'], action.repos)
-        .set('loading', false)
-        .set('currentUser', action.username);
-    case LOAD_REPOS_ERROR:
+        .setIn(['user', 'userObj'], fromJS(action.user));
+    case ATTEMPT_REAUTH:
       return state
-        .set('error', action.error)
-        .set('loading', false);
+        .setIn(['user', 'loading'], true)
+        .setIn(['user', 'error'], null);
+    case REAUTH_SUCCESS:
+      return state
+        .setIn(['user', 'userObj'], fromJS(action.user))
+        .setIn(['user', 'loading'], false)
+        .setIn(['user', 'loggedIn'], true);
+    case REAUTH_ERROR:
+      return state
+        .setIn(['user', 'error'], action.error)
+        .setIn(['user', 'userObj'], null)
+        .setIn(['user', 'loggedIn'], false)
+        .setIn(['user', 'loading'], false);
     default:
       return state;
   }

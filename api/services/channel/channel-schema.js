@@ -72,6 +72,22 @@ const schema = {
       type: Sequelize.INTEGER,
     },
   },
+  twitchImageUrl: {
+    publicRead: true,
+    publicWrite: true,
+    sequelize: {
+      allowNull: true,
+      type: Sequelize.STRING(512),
+    },
+  },
+  twitchStreamTitle: {
+    publicRead: true,
+    publicWrite: true,
+    sequelize: {
+      allowNull: true,
+      type: Sequelize.STRING(512),
+    },
+  },
   leagueAccounts: {
     publicWrite: true,
     sequelize: {

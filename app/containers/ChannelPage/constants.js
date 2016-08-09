@@ -9,8 +9,6 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 
-export const ATTEMPT_REAUTH = 'zilean/App/ATTEMPT_REAUTH';
-export const REAUTH_SUCCESS = 'zilean/App/REAUTH_SUCCESS';
-export const REAUTH_ERROR = 'zilean/App/REAUTH_ERROR';
-export const USER_UPDATE = 'zilean/App/USER_UPDATE';
-export const LOGOUT = 'zilean/App/LOGOUT';
+export const LOAD_CHANNEL_MARKETS = 'zilean/ChannelsPage/LOAD_CHANNEL_MARKETS';
+export const LOAD_CHANNEL_MARKETS_SUCCESS = 'zilean/ChannelsPage/LOAD_CHANNEL_MARKETS_SUCCESS';
+export const LOAD_CHANNEL_MARKETS_ERROR = 'zilean/ChannelsPage/LOAD_CHANNEL_MARKETS_ERROR';

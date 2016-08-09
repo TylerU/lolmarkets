@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import MarketItem from '../../containers/MarketItem';
 import styles from './styles.css';
 
+import { loadChannelMarkets } from './actions';
 
 class EmbeddedTwitchPlayer extends React.Component {
   render() {
@@ -39,8 +40,14 @@ class MarketsList extends React.Component {
 }
 
 export class StreamPage extends React.Component {
+  componentWillMount() {
+    console.log(this.props.channel);
+    this.props.loadMarketsForChannel(this.props.params.streamName, this.props.channel);
+  }
+
   render() {
-    console.log(this.props, 'props');
+    console.log(this.props.markets);
+
     const stream = {
       name: 'Politics',
       imageUrl: 'https://static-cdn.jtvnw.net/previews-ttv/live_user_scarra-320x180.jpg',
@@ -103,13 +110,23 @@ StreamPage.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    // changeRoute: (url) => dispatch(push(url)),
+    loadMarketsForChannel: (channelName, channelObj) => dispatch(loadChannelMarkets(channelName, channelObj)),
   };
 }
 
 function mapStateToProps(state, props) {
+  const channelName = props.params.streamName;
+  const loadedChannels = state.get('channels');
+  let channel = null;
+  if (loadedChannels) {
+    channel = loadedChannels.find((value) => value.get('displayName') === channelName);
+    if (channel) {
+      channel = channel.toJS();
+    }
+  }
   return {
-    user: state.getIn(['global', 'user', 'coins']),
+    markets: state.get('markets').toJS(),
+    channel,
   };
 }
 

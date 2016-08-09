@@ -8,22 +8,27 @@ const selectGlobal = () => (state) => state.get('global');
 
 const selectCurrentUser = () => createSelector(
   selectGlobal(),
-  (globalState) => globalState.get('currentUser')
+  (globalState) => globalState.get('user')
 );
 
-const selectLoading = () => createSelector(
-  selectGlobal(),
-  (globalState) => globalState.get('loading')
+const selectAuthLoading = () => createSelector(
+  selectCurrentUser(),
+  (user) => user.get('loading')
 );
 
-const selectError = () => createSelector(
-  selectGlobal(),
-  (globalState) => globalState.get('error')
+const selectAuthError = () => createSelector(
+  selectCurrentUser(),
+  (user) => user.get('error')
 );
 
-const selectRepos = () => createSelector(
-  selectGlobal(),
-  (globalState) => globalState.getIn(['userData', 'repositories'])
+const selectLoggedIn = () => createSelector(
+  selectCurrentUser(),
+  (user) => user.get('loggedIn')
+);
+
+const selectUserObj = () => createSelector(
+  selectCurrentUser(),
+  (user) => user.get('userObj')
 );
 
 const selectLocationState = () => {
@@ -45,8 +50,9 @@ const selectLocationState = () => {
 export {
   selectGlobal,
   selectCurrentUser,
-  selectLoading,
-  selectError,
-  selectRepos,
+  selectAuthLoading,
+  selectAuthError,
   selectLocationState,
+  selectLoggedIn,
+  selectUserObj,
 };

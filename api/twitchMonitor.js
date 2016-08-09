@@ -22,6 +22,8 @@ function TwitchMonitor(app) {
       .then((res) => ({
         isStreaming: res.stream !== null,
         twitchViewers: res.stream !== null ? res.stream.viewers : 0,
+        twitchImageUrl: res.stream !== null ? res.stream.preview.large : null,
+        twitchStreamTitle: res.stream !== null ? res.stream.channel.status : null,
       }));
       // .then(log)
   }

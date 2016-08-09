@@ -20,8 +20,8 @@ module.exports = [
     },
   },
   {
-    name: 'WildTurtle will win this game',
-    leagueGameId: 123456,
+    name: 'Nightblue\'s team will get first Baron (and will get baron)',
+    leagueGameId: 1,
     leagueGameRegion: 'na',
     channel: 2,
     predictionDetails: {

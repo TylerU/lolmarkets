@@ -86,7 +86,7 @@ function getDefaults(app) {
 exports.before = {
   all: [],
   find: [
-    hooks.pluckQuery.apply(hooks, outProperties),
+    customHooks.pluckQuery(outProperties),
     customHooks.maybeVerifyToken(),
     auth.populateUser(),
   ],

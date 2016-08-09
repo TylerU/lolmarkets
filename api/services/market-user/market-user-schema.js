@@ -6,6 +6,10 @@ const schema = {
     publicRead: true,
     // Created by Sequelize
   },
+  marketObj: {
+    publicRead: true,
+    // Created by us
+  },
   maxYesShares: {
     publicRead: true,
   },

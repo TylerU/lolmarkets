@@ -8,11 +8,27 @@ const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
 const inProperties = schema.inProperties;
 
+function populateMarket(hook, marketUser) {
+  if (hook.params.includeMarket) {
+    return hook.app.service('/markets').get(marketUser.market)
+      .then((res) => {
+        marketUser.marketObj = res;
+        return marketUser;
+      });
+  }
+  return marketUser;
+}
 
 exports.before = {
-  all: [],
+  all: [
+    (hook) => {
+      if (hook.params.query && hook.params.query.$includeMarket) {
+        hook.params.includeMarket = true;
+      }
+    },
+  ],
   find: [
-    hooks.pluckQuery.apply(hooks, outProperties),
+    customHooks.pluckQuery(outProperties),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -53,6 +69,7 @@ exports.before = {
 exports.after = {
   all: [
     customHooks.toJson(),
+    customHooks.mapResultHook(populateMarket),
     customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
