@@ -31,14 +31,28 @@ function checkForGameStart(app) {
   const ChannelService = app.service('channels');
 
   function getCurrentGameId(account) {
+    const relevantQueueTypes = {
+      RANKED_SOLO_5x5:	4,
+      RANKED_PREMADE_5x5:	6,
+      RANKED_PREMADE_3x3:	9,
+      RANKED_TEAM_3x3:	41,
+      RANKED_TEAM_5x5:	42,
+      TEAM_BUILDER_DRAFT_RANKED_5x5:	410,
+    };
     return LolApi.getCurrentGame(account.id, account.region)
-      .then((res) => (res.gameMode === 'CLASSIC' ? res.gameId : null), // Only allow summoner's rift games
+      .then((res) => (res.gameMode === 'CLASSIC' && res.gameType === 'MATCHED_GAME' ? res.gameId : null), // Only allow summoner's rift games
         (err) => {
           if (`${err}`.indexOf('404 Not Found') !== -1) {
             return null;
           }
           throw err;
-        });
+        })
+      .then((match) => {
+        if (match) {
+          console.log(match.gameQueueConfigId, _.invert(relevantQueueTypes[match.gameQueueConfigId]));
+        }
+        return match;
+      });
   }
 
   function checkAllAccountsForActiveGame(accounts) {

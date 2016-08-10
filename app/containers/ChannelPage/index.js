@@ -29,7 +29,7 @@ class EmbeddedTwitchPlayer extends React.Component {
 class MarketsList extends React.Component {
   render() {
     const items = _.map(this.props.markets, (market) => (
-      <MarketItem key={market.name} market={market} loggedIn={this.props.loggedIn} />
+      <MarketItem key={market.id} market={market} loggedIn={this.props.loggedIn} />
     ));
 
     return (
@@ -70,7 +70,8 @@ export class StreamPage extends React.Component {
             <h3 className="pull-right">Price</h3>
           </div>
           <div>
-            <MarketsList markets={markets} loggedIn={this.props.loggedIn} />
+            {markets.length > 0 ? (<MarketsList markets={markets} loggedIn={this.props.loggedIn} />) : (<h4>There are currently no open markets.</h4>)}
+
           </div>
         </div>
       </div>
@@ -102,7 +103,7 @@ function mapStateToProps(state, props) {
   let markets = null;
   if (channel) {
     markets = state.get('markets').valueSeq().filter((val) =>
-       val.get('channel') === channel.get('id'));
+       val.get('channel') === channel.get('id') && val.get('active'));
     if (markets) {
       markets = markets.toJS();
     }
