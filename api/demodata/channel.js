@@ -150,4 +150,12 @@ module.exports = [
       { id: 19209176, region: 'na' },
     ],
   },
+  {
+    displayName: 'Annie Bot',
+    twitchName: 'anniebot',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 35590582, region: 'na' },
+    ],
+  },
 ];
