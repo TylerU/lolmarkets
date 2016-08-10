@@ -71,7 +71,6 @@ export class StreamPage extends React.Component {
           </div>
           <div>
             {markets.length > 0 ? (<MarketsList markets={markets} loggedIn={this.props.loggedIn} />) : (<h4>There are currently no open markets.</h4>)}
-
           </div>
         </div>
       </div>
