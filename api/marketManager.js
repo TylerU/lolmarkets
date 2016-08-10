@@ -88,7 +88,12 @@ function resolveMarkets(app) {
       User: UserService,
     };
 
-    return Promise.all(_.map(res, (obj) => ServiceMap[obj.type].patch(obj.id, {})));
+    function toPromises(arr) {
+      return _.map(arr, (obj) => ServiceMap[obj.type].patch(obj.id, {}));
+    }
+
+    // Udpate all Users, then all Markets so that the Markets will have updated user info
+    return Promise.all(toPromises([].concat(_.filter(res, { type: 'User' }), _.filter(res, { type: 'Market' }))));
   }
 
   // Grab unresolved markets

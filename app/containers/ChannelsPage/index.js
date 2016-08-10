@@ -5,8 +5,8 @@ import _ from 'lodash';
 import { Link } from 'react-router';
 
 import { createStructuredSelector } from 'reselect';
-import { loadAllChannels } from './actions';
-import { selectChannelsJs } from './selectors';
+import { loadAllChannels } from 'globalReducers/channels/actions';
+import { selectChannelsJs } from 'globalReducers/channels/selectors';
 
 import styles from './styles.css';
 

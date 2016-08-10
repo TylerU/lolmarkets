@@ -111,9 +111,11 @@ class TransactionsService extends Service {
             .then((allArr) => {
               // TODO - find better way to notify that doesn't hit the database.
               // This updates timestamp then SELECT's all fields to return.
-              app.service('markets').patch(market, {});
+
+              // Must update things Market relies on before Market
               app.service('users').patch(user, {});
               app.service('marketUsers').patch(marketUserSql.get('id'), {});
+              app.service('markets').patch(market, {});
               return allArr;
             });
         } else {

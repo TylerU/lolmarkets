@@ -1,27 +1,8 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- */
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import { createStructuredSelector } from 'reselect';
-
-// import {
-//   selectRepos,
-//   selectLoading,
-//   selectError,
-// } from 'containers/App/selectors';
-
-// import {
-//   selectUsername,
-// } from './selectors';
-//
-// import { changeUsername } from './actions';
-// import { loadRepos } from '../App/actions';
 
 import styles from './styles.css';
 

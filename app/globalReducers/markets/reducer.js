@@ -11,8 +11,10 @@
  */
 
 import {
-  LOAD_ALL_CHANNELS_SUCCESS,
-  LOAD_CHANNEL_SUCCESS,
+  LOAD_CHANNEL_MARKETS,
+  LOAD_CHANNEL_MARKETS_SUCCESS,
+  LOAD_CHANNEL_MARKETS_ERROR,
+  LOAD_MARKET_SUCCESS,
 } from './constants';
 
 import _ from 'lodash';
@@ -24,11 +26,10 @@ const initialState = fromJS({});
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_ALL_CHANNELS_SUCCESS:
-      return fromJS(_.keyBy(action.channels, 'id'));
-    case LOAD_CHANNEL_SUCCESS:
-      return state
-        .set(action.channel.id, action.channel);
+    case LOAD_MARKET_SUCCESS:
+      return state.merge(_.keyBy([action.market], 'id'));
+    case LOAD_CHANNEL_MARKETS_SUCCESS:
+      return state.merge(_.keyBy(action.markets, 'id'));
     default:
       return state;
   }

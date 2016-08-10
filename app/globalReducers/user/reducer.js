@@ -22,38 +22,36 @@ import { fromJS } from 'immutable';
 
 // The initial state of the App
 const initialState = fromJS({
-  user: fromJS({
-    loading: false,
-    loggedIn: false,
-    userObj: null,
-    error: null,
-  }),
+  loading: false,
+  loggedIn: false,
+  userObj: null,
+  error: null,
 });
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
     case LOGOUT:
       return state
-        .setIn(['user', 'loggedIn'], false)
-        .setIn(['user', 'userObj'], null);
+        .set('loggedIn', false)
+        .set('userObj', null);
     case USER_UPDATE:
       return state
-        .setIn(['user', 'userObj'], fromJS(action.user));
+        .set('userObj', fromJS(action.user));
     case ATTEMPT_REAUTH:
       return state
-        .setIn(['user', 'loading'], true)
-        .setIn(['user', 'error'], null);
+        .set('loading', true)
+        .set('error', null);
     case REAUTH_SUCCESS:
       return state
-        .setIn(['user', 'userObj'], fromJS(action.user))
-        .setIn(['user', 'loading'], false)
-        .setIn(['user', 'loggedIn'], true);
+        .set('userObj', fromJS(action.user))
+        .set('loading', false)
+        .set('loggedIn', true);
     case REAUTH_ERROR:
       return state
-        .setIn(['user', 'error'], action.error)
-        .setIn(['user', 'userObj'], null)
-        .setIn(['user', 'loggedIn'], false)
-        .setIn(['user', 'loading'], false);
+        .set('error', action.error)
+        .set('userObj', null)
+        .set('loggedIn', false)
+        .set('loading', false);
     default:
       return state;
   }

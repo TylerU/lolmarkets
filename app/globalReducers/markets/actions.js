@@ -16,17 +16,42 @@
  */
 
 import {
+  LOAD_MARKET_SUCCESS,
   LOAD_CHANNEL_MARKETS,
   LOAD_CHANNEL_MARKETS_SUCCESS,
   LOAD_CHANNEL_MARKETS_ERROR,
+  UNSUBSCRIBE_CHANNEL_MARKETS,
+  SUBSCRIBE_CHANNEL_MARKETS,
 } from './constants';
 
 
-export function loadChannelMarkets(channelName, channelObj) {
+export function subscribeChannelMarkets(channelId, channelName) {
+  return {
+    type: SUBSCRIBE_CHANNEL_MARKETS,
+    channelId,
+    channelName,
+  };
+}
+
+export function unsubscribeChannelMarkets(channelName) {
+  return {
+    type: UNSUBSCRIBE_CHANNEL_MARKETS,
+    channelName,
+  };
+}
+
+export function loadChannelMarketsAndSubscribe(channelName, channelObj) {
   return {
     type: LOAD_CHANNEL_MARKETS,
     channelName,
     channelObj,
+  };
+}
+
+export function loadMarketSuccess(market) {
+  return {
+    type: LOAD_MARKET_SUCCESS,
+    market,
   };
 }
 
@@ -37,10 +62,10 @@ export function loadChannelMarketsSuccess(markets) {
   };
 }
 
-export function loadChannelMarketsError(err) {
+export function loadChannelMarketsError(error) {
   return {
     type: LOAD_CHANNEL_MARKETS_ERROR,
-    err,
+    error,
   };
 }
 

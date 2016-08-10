@@ -5,9 +5,20 @@ import Slider from 'react-rangeslider';
 import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
 import MoneyIcon from '../../components/MoneyIcon';
 import _ from 'lodash';
-
+import numeral from 'numeral'
 import styles from './styles.css';
 
+function formatNumber(x) {
+  return numeral(x).format('0.00');
+}
+
+function formatPrice(x) {
+  return numeral(x).format('0.000');
+}
+
+function formatPercent(x) {
+  return numeral(x).format('0.0 %');
+}
 
 class YesShareIcon extends React.Component {
   render() {
@@ -41,7 +52,7 @@ class SliderInputButton extends React.Component {
           <div className="col-sm-8">
             <Slider
               min={0}
-              max={100}
+              max={this.props.max}
               step={1}
               value={this.props.value}
               onChange={(val) => this.props.onChange(val)}
@@ -107,7 +118,7 @@ class BuySellView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: 50,
+      x: Math.floor(this.props.max / 2),
     };
   }
 
@@ -120,6 +131,7 @@ class BuySellView extends React.Component {
       <div>
         <SliderInputButton
           value={this.state.x}
+          max={this.props.max}
           onChange={(val) => this.numChange(val)}
           buttonText={this.props.op}
           buttonType={this.props.op === 'Sell' ? 'success' : 'danger'}
@@ -139,7 +151,9 @@ class MarketActions extends React.Component {
   }
 
   toggleExpand(val) {
-    this.setState({ expanded: val });
+    if (this.props.loggedIn) {
+      this.setState({ expanded: val });
+    }
   }
 
   render() {
@@ -162,10 +176,10 @@ class MarketActions extends React.Component {
       </div>);
 
     const sellView =
-      (<BuySellView op="Sell" asset={this.props.asset} cancel={() => this.toggleExpand(null)} />);
+      (<BuySellView op="Sell" asset={this.props.asset} max={this.props.numOwned} cancel={() => this.toggleExpand(null)} />);
 
     const buyView =
-      (<BuySellView op="Buy" asset={this.props.asset} cancel={() => this.toggleExpand(null)} />);
+      (<BuySellView op="Buy" asset={this.props.asset} max={this.props.max} cancel={() => this.toggleExpand(null)} />);
 
     return (
       <div className={`col-md-6 ${styles.marketCol}`}>
@@ -174,7 +188,7 @@ class MarketActions extends React.Component {
 
             {this.props.icon}
             {this.props.asset} Shares
-            ({this.props.numOwned})
+            ({this.props.numOwned || 0})
             <OverlayTrigger
               overlay={(<Tooltip id={`tooltip-${this.props.asset}`}>{this.props.helpText}</Tooltip>)} placement="top"
               delayShow={50} delayHide={150}
@@ -183,7 +197,7 @@ class MarketActions extends React.Component {
             </OverlayTrigger>
           </h4>
           <h4 className="pull-right">
-            Current Price: <MoneyIcon size="24px"/>{this.props.market.yesPrice}
+            Current Price: <MoneyIcon size="24px" />{formatPrice(this.props.price)}
           </h4>
         </div>
         <Collapse isOpened={this.state.expanded === null}>
@@ -240,7 +254,7 @@ class MarketItem extends React.Component {
               </span>
               <div className={`${styles.marketHeaderStats} pull-right`}>
                 <span className={`${styles.openMarketPrice}`}>
-                  {this.props.market.currentPrice} %
+                  {formatPercent(this.props.market.percent)}
                 </span>
                 {ownedUI}
               </div>
@@ -249,17 +263,23 @@ class MarketItem extends React.Component {
           <Collapse isOpened={this.state.open}>
             <div className={`${styles.expandedMarketContent} row`}>
               <MarketActions
+                loggedIn={this.props.loggedIn}
                 market={this.props.market}
                 asset="Yes"
+                price={this.props.market.yesPrice}
+                max={this.props.market.marketUser.maxYes}
                 helpText={tooltipYes}
-                numOwned={this.props.market.yesOwned}
+                numOwned={_.get(this.props, 'market.marketUser.yesShares')}
                 icon={<YesShareIcon />}
               />
               <MarketActions
+                loggedIn={this.props.loggedIn}
                 market={this.props.market}
                 asset="No"
+                max={this.props.market.marketUser.maxNo}
+                price={this.props.market.noPrice}
                 helpText={tooltipNo}
-                numOwned={this.props.market.noOwned}
+                numOwned={_.get(this.props, 'market.marketUser.noShares')}
                 icon={<NoShareIcon />}
               />
             </div>

@@ -11,16 +11,16 @@ import {
   selectAuthError,
   selectLoggedIn,
   selectUserObj,
-} from './selectors';
+} from 'globalReducers/user/selectors';
 
 
 import {
   attemptReauth,
   userUpdate,
   logout,
-} from './actions';
+} from 'globalReducers/user/actions';
 
-import { socket, UserService } from './feathers-app';
+import { socket, UserService } from 'globalReducers/feathers-app';
 
 import MoneyIcon from '../../components/MoneyIcon';
 
@@ -31,15 +31,14 @@ import styles from './styles.css';
 
 export class App extends React.Component {
   componentWillMount() {
-    // TODO - figure out where this belongs
     socket.on('reconnect', () => {
       setTimeout(
         () => this.props.attemptReauth(),
         1000 /* time for server to start up */);
     });
 
+    // TODO - figure out where this belongs
     function updateUser(user) {
-      console.log('there');
       if (this.props.user.get('id') === user.id) {
         this.props.updateUser(user);
       }

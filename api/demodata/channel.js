@@ -33,7 +33,7 @@ module.exports = [
     ],
   },
   {
-    displayName: 'imaqtpie',
+    displayName: 'Imaqtpie',
     twitchName: 'imaqtpie',
     isStreaming: false,
     leagueAccounts: [

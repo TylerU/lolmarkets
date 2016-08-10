@@ -21,22 +21,25 @@ export default function createRoutes(store) {
       path: '/',
       name: 'home',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/HomePage/reducer'),
-          System.import('containers/HomePage/sagas'),
-          System.import('containers/HomePage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([reducer, sagas, component]) => {
-          injectReducer('home', reducer.default);
-          injectSagas(sagas.default);
-
-          renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        // const importModules = Promise.all([
+        //   System.import('containers/HomePage/reducer'),
+        //   System.import('containers/HomePage/sagas'),
+        //   System.import('containers/HomePage'),
+        // ]);
+        //
+        // const renderRoute = loadModule(cb);
+        //
+        // importModules.then(([reducer, sagas, component]) => {
+        //   injectReducer('home', reducer.default);
+        //   injectSagas(sagas.default);
+        //
+        //   renderRoute(component);
+        // });
+        //
+        // importModules.catch(errorLoading);
+        System.import('containers/HomePage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/portfolio',
@@ -50,43 +53,17 @@ export default function createRoutes(store) {
       path: '/streams',
       name: 'streams',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/ChannelsPage/reducer'),
-          System.import('containers/ChannelsPage/sagas'),
-          System.import('containers/ChannelsPage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([reducer, sagas, component]) => {
-          injectReducer('channels', reducer.default);
-          injectSagas(sagas.default);
-
-          renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        System.import('containers/ChannelsPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '/stream/:streamName',
       name: 'stream',
       getComponent(nextState, cb) {
-        const importModules = Promise.all([
-          System.import('containers/ChannelPage/reducer'),
-          System.import('containers/ChannelPage/sagas'),
-          System.import('containers/ChannelPage'),
-        ]);
-
-        const renderRoute = loadModule(cb);
-
-        importModules.then(([reducer, sagas, component]) => {
-          injectReducer('markets', reducer.default);
-          injectSagas(sagas.default);
-
-          renderRoute(component);
-        });
-
-        importModules.catch(errorLoading);
+        System.import('containers/ChannelPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '*',

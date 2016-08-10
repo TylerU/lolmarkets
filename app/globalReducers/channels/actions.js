@@ -20,10 +20,18 @@ import {
   LOAD_ALL_CHANNELS_SUCCESS,
   LOAD_ALL_CHANNELS_ERROR,
   LOAD_CHANNEL,
+  LOAD_CHANNEL_BY_NAME,
   LOAD_CHANNEL_SUCCESS,
   LOAD_CHANNEL_ERROR,
 } from './constants';
 
+
+export function loadChannelByName(displayName) {
+  return {
+    type: LOAD_CHANNEL_BY_NAME,
+    displayName,
+  };
+}
 
 export function loadChannel(id) {
   return {
@@ -39,10 +47,10 @@ export function loadChannelSuccess(channel) {
   };
 }
 
-export function loadChannelError(err) {
+export function loadChannelError(error) {
   return {
     type: LOAD_CHANNEL_ERROR,
-    err,
+    error,
   };
 }
 
