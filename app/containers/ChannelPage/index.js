@@ -9,6 +9,9 @@ import styles from './styles.css';
 import { loadChannelMarketsAndSubscribe, unsubscribeChannelMarkets } from 'globalReducers/markets/actions';
 import { selectLoggedIn } from 'globalReducers/user/selectors';
 
+import { transactionAmountChange } from 'globalReducers/transactions/actions';
+
+
 class EmbeddedTwitchPlayer extends React.Component {
   render() {
     return (
@@ -70,7 +73,11 @@ export class StreamPage extends React.Component {
             <h3 className="pull-right">Price</h3>
           </div>
           <div>
-            {markets.length > 0 ? (<MarketsList markets={markets} loggedIn={this.props.loggedIn} />) : (<h4>There are currently no open markets.</h4>)}
+            {markets.length > 0 ?
+              (<MarketsList
+                markets={markets}
+                loggedIn={this.props.loggedIn}
+              />) : (<h4>There are currently no open markets.</h4>)}
           </div>
         </div>
       </div>
@@ -88,6 +95,7 @@ function mapDispatchToProps(dispatch) {
   return {
     loadMarketsForChannelAndSubscribe: (channelName, channelObj) => dispatch(loadChannelMarketsAndSubscribe(channelName, channelObj)),
     unsubscribeChannelMarkets: (channelId) => dispatch(unsubscribeChannelMarkets(channelId)),
+    transactionAmountChange: (market, entity, operation, amount) => dispatch(transactionAmountChange(market, entity, operation, amount)),
   };
 }
 

@@ -1,12 +1,15 @@
 import React from 'react';
-
 import Collapse from 'react-collapse';
 import Slider from 'react-rangeslider';
 import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
 import MoneyIcon from '../../components/MoneyIcon';
 import _ from 'lodash';
-import numeral from 'numeral'
+import numeral from 'numeral';
 import styles from './styles.css';
+import { connect } from 'react-redux';
+
+
+import { transactionAmountChange } from 'globalReducers/transactions/actions';
 
 function formatNumber(x) {
   return numeral(x).format('0.00');
@@ -124,6 +127,7 @@ class BuySellView extends React.Component {
 
   numChange(val) {
     this.setState({ x: val });
+    this.props.onChange(val);
   }
 
   render() {
@@ -176,10 +180,22 @@ class MarketActions extends React.Component {
       </div>);
 
     const sellView =
-      (<BuySellView op="Sell" asset={this.props.asset} max={this.props.numOwned} cancel={() => this.toggleExpand(null)} />);
+      (<BuySellView
+        op="Sell"
+        asset={this.props.asset}
+        max={this.props.numOwned}
+        cancel={() => this.toggleExpand(null)}
+        onChange={_.partial(this.props.onChange, 'SELL')}
+      />);
 
     const buyView =
-      (<BuySellView op="Buy" asset={this.props.asset} max={this.props.max} cancel={() => this.toggleExpand(null)} />);
+      (<BuySellView
+        op="Buy"
+        asset={this.props.asset}
+        max={this.props.max}
+        cancel={() => this.toggleExpand(null)}
+        onChange={_.partial(this.props.onChange, 'BUY')}
+      />);
 
     return (
       <div className={`col-md-6 ${styles.marketCol}`}>
@@ -269,7 +285,8 @@ class MarketItem extends React.Component {
                 price={this.props.market.yesPrice}
                 max={this.props.market.marketUser.maxYes}
                 helpText={tooltipYes}
-                numOwned={_.get(this.props, 'market.marketUser.yesShares')}
+                numOwned={_.get(this.props, 'market.marketUser.yesShares', 0)}
+                onChange={_.partial(this.props.transactionAmountChange, this.props.market.id, 'YES')}
                 icon={<YesShareIcon />}
               />
               <MarketActions
@@ -279,7 +296,8 @@ class MarketItem extends React.Component {
                 max={this.props.market.marketUser.maxNo}
                 price={this.props.market.noPrice}
                 helpText={tooltipNo}
-                numOwned={_.get(this.props, 'market.marketUser.noShares')}
+                numOwned={_.get(this.props, 'market.marketUser.noShares', 0)}
+                onChange={_.partial(this.props.transactionAmountChange, this.props.market.id, 'NO')}
                 icon={<NoShareIcon />}
               />
             </div>
@@ -290,5 +308,17 @@ class MarketItem extends React.Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    transactionAmountChange: (market, entity, operation, amount) => dispatch(transactionAmountChange(market, entity, operation, amount)),
+  };
+}
 
-export default MarketItem;
+function mapStateToProps(state, props) {
+  return {
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MarketItem);
+
+// export default MarketItem;
