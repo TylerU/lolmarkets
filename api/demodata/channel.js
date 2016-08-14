@@ -49,6 +49,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 19134540, region: 'na' },
+      { id: 63556984, region: 'na' },
     ],
   },
   {
@@ -156,6 +157,15 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 35590582, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Gosu',
+    twitchName: 'mushisgosu',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 78989837, region: 'na' },
+      { id: 23557909, region: 'na' },
     ],
   },
 ];

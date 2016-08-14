@@ -20,7 +20,7 @@ function TwitchMonitor(app) {
       json: true,
     })
       .then((res) => ({
-        isStreaming: res.stream !== null,
+        isStreaming: res.stream !== null && res.stream.game === 'League of Legends',
         twitchViewers: res.stream !== null ? res.stream.viewers : 0,
         twitchImageUrl: res.stream !== null ? res.stream.preview.large : null,
         twitchStreamTitle: res.stream !== null ? res.stream.channel.status : null,
