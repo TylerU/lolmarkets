@@ -28,6 +28,7 @@ module.exports = [
     twitchName: 'flosd',
     isStreaming: false,
     leagueAccounts: [
+      { id: 19503947, region: 'na' },
       { id: 245353, region: 'na' },
       { id: 108491, region: 'na' },
     ],
