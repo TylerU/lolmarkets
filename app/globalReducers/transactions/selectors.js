@@ -13,7 +13,15 @@ const selectAuthLoading = () => createSelector(
   (user) => user.get('loading')
 );
 
+const selectHypotheticalTransaction = (market, entity, operation) =>
+  (store) =>
+    store.getIn(['transactions', `${market}`, entity, operation, 'hypothetical']);
+
+const selectTransactionAmount = (market, entity, operation) =>
+  (store) =>
+    store.getIn(['transactions', `${market}`, entity, operation, 'amount']);
 
 export {
-  selectAuthLoading,
+  selectHypotheticalTransaction,
+  selectTransactionAmount,
 };

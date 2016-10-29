@@ -1,9 +1,5 @@
-/**
- * Gets the repositories of the user from Github
- */
-
-import { take, call, put, select, fork, cancel } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, select, fork, cancel, cancelled, race, } from 'redux-saga/effects';
+import { takeEvery, eventChannel } from 'redux-saga';
 
 import {
   LOAD_CHANNEL,
@@ -16,11 +12,44 @@ import {
   loadAllChannelsError,
   loadChannelSuccess,
   loadChannelError,
+  loadAllChannels,
 } from 'globalReducers/channels/actions';
 
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
-import { ChannelService } from 'globalReducers/feathers-app';
+import { ChannelService, socket } from 'globalReducers/feathers-app';
+
+export function channelChangeEmitter() {
+  return eventChannel(emitter => {
+    const handleChange = (newMarket) => {
+      emitter(newMarket);
+    };
+
+    ChannelService.on('created', handleChange);
+    ChannelService.on('patched', handleChange);
+    ChannelService.on('updated', handleChange);
+
+    return () => {
+      ChannelService.removeListener('created', handleChange);
+      ChannelService.removeListener('patched', handleChange);
+      ChannelService.removeListener('updated', handleChange);
+    };
+  });
+}
+
+function* watchChannelChanges() {
+  const chan = yield call(channelChangeEmitter);
+  try {
+    while (true) {
+      yield take(chan);
+      yield put(loadAllChannels());
+    }
+  } finally {
+    if (yield cancelled()) {
+      chan.close();
+    }
+  }
+}
 
 export function* loadChannelActual(action) {
   const channel = yield ChannelService.get(action.id)
@@ -85,9 +114,15 @@ export function* onLoadChannel() {
 export function* onLoadChannelByName() {
   yield* takeEvery(LOAD_CHANNEL_BY_NAME, loadChannelByNameActual);
 }
+
+export function* listenChanges() {
+  yield* watchChannelChanges();
+}
+
 // Bootstrap sagas
 export default [
   onLoadAllChannels,
   onLoadChannel,
   onLoadChannelByName,
+  listenChanges,
 ];

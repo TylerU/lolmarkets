@@ -33,6 +33,7 @@ function getObj(action) {
   obj[action.market][action.entity][action.operation] = {};
   return obj;
 }
+
 function appReducer(state = initialState, action) {
   let obj = {};
 

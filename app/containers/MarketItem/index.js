@@ -9,7 +9,8 @@ import styles from './styles.css';
 import { connect } from 'react-redux';
 
 
-import { transactionAmountChange } from 'globalReducers/transactions/actions';
+import { transactionAmountChange, executeTransaction } from 'globalReducers/transactions/actions';
+import { selectHypotheticalTransaction, selectTransactionAmount } from 'globalReducers/transactions/selectors';
 
 function formatNumber(x) {
   return numeral(x).format('0.00');
@@ -49,12 +50,17 @@ class SliderInputButton extends React.Component {
   }
 
   render() {
+    // console.log(this.props);
+    const hypoResult = _.get(this.props, ['hypotheticalResult', 'result']);
+    const totalCost = formatPrice(_.get(hypoResult, ['totalPrice'], 0.0));
+    const newPercent = formatPrice(_.get(hypoResult, ['newPercent'], 0.0));
+
     return (
       <div>
         <div className={`row ${styles.buySellArea}`}>
           <div className="col-sm-8">
             <Slider
-              min={0}
+              min={1}
               max={this.props.max}
               step={1}
               value={this.props.value}
@@ -67,19 +73,21 @@ class SliderInputButton extends React.Component {
         </div>
         <div className="row">
           <div className="col-sm-8">
-            <InfoContainer label="Transaction Cost:" data={123.4} />
-            <InfoContainer label="Predicted New Market Price:" data={'94.3%'} />
+            <InfoContainer label="Transaction Cost:" data={totalCost} />
+            <InfoContainer label="Predicted New Market Price:" data={newPercent} />
             <InfoContainer label="Shares You Currently Own:" data={'12'} />
             <InfoContainer label="Shares You Will Own:" data={12 + this.props.value} />
           </div>
           <div className="col-sm-4">
             <button
+              onClick={this.props.executeTransaction}
               style={{ width: '100%' }}
+              disabled={this.props.value === 0}
               className={`btn btn-${this.props.buttonType} ${styles.buySellButton}`}
             >
               <div className={`${styles.buySellButtonChildren} ${styles.buySellLeftChild}`}>
                 <MoneyIcon />
-                {this.props.value * 10}
+                {totalCost}
               </div>
               <div className={styles.buySellButtonChildren}>
                 {this.props.buttonText}
@@ -134,12 +142,14 @@ class BuySellView extends React.Component {
     return (
       <div>
         <SliderInputButton
+          hypotheticalResult={this.props.hypothetical}
           value={this.state.x}
           max={this.props.max}
           onChange={(val) => this.numChange(val)}
           buttonText={this.props.op}
           buttonType={this.props.op === 'Sell' ? 'success' : 'danger'}
           cancel={this.props.cancel}
+          executeTransaction={this.props.executeTransaction}
         />
       </div>
     );
@@ -182,19 +192,23 @@ class MarketActions extends React.Component {
     const sellView =
       (<BuySellView
         op="Sell"
+        hypothetical={this.props.sellHypo}
         asset={this.props.asset}
         max={this.props.numOwned}
         cancel={() => this.toggleExpand(null)}
         onChange={_.partial(this.props.onChange, 'SELL')}
+        executeTransaction={_.partial(this.props.executeTransaction, 'SELL')}
       />);
 
     const buyView =
       (<BuySellView
         op="Buy"
+        hypothetical={this.props.buyHypo}
         asset={this.props.asset}
         max={this.props.max}
         cancel={() => this.toggleExpand(null)}
         onChange={_.partial(this.props.onChange, 'BUY')}
+        executeTransaction={_.partial(this.props.executeTransaction, 'BUY')}
       />);
 
     return (
@@ -282,22 +296,28 @@ class MarketItem extends React.Component {
                 loggedIn={this.props.loggedIn}
                 market={this.props.market}
                 asset="Yes"
+                sellHypo={this.props.yesSellHypo}
+                buyHypo={this.props.yesBuyHypo}
                 price={this.props.market.yesPrice}
                 max={this.props.market.marketUser.maxYes}
                 helpText={tooltipYes}
                 numOwned={_.get(this.props, 'market.marketUser.yesShares', 0)}
                 onChange={_.partial(this.props.transactionAmountChange, this.props.market.id, 'YES')}
+                executeTransaction={_.partial(this.props.executeTransaction, this.props.market.id, 'YES')}
                 icon={<YesShareIcon />}
               />
               <MarketActions
                 loggedIn={this.props.loggedIn}
                 market={this.props.market}
                 asset="No"
+                sellHypo={this.props.noSellHypo}
+                buyHypo={this.props.noBuyHypo}
                 max={this.props.market.marketUser.maxNo}
                 price={this.props.market.noPrice}
                 helpText={tooltipNo}
                 numOwned={_.get(this.props, 'market.marketUser.noShares', 0)}
                 onChange={_.partial(this.props.transactionAmountChange, this.props.market.id, 'NO')}
+                executeTransaction={_.partial(this.props.executeTransaction, this.props.market.id, 'NO')}
                 icon={<NoShareIcon />}
               />
             </div>
@@ -310,12 +330,29 @@ class MarketItem extends React.Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    transactionAmountChange: (market, entity, operation, amount) => dispatch(transactionAmountChange(market, entity, operation, amount)),
+    transactionAmountChange:
+      _.debounce((market, entity, operation, amount) =>
+        dispatch(transactionAmountChange(market, entity, operation, amount)), 50),
+    executeTransaction: (market, entity, operation, amount) => dispatch(executeTransaction(market, entity, operation, amount)),
   };
 }
 
+function toJSON(obj) {
+  if (obj) return obj.toJSON();
+  return obj;
+}
 function mapStateToProps(state, props) {
+  const market = props.market.id;
+  const yesBuyHypo = toJSON(selectHypotheticalTransaction(market, 'YES', 'BUY')(state));
+  const yesSellHypo = toJSON(selectHypotheticalTransaction(market, 'YES', 'SELL')(state));
+  const noBuyHypo = toJSON(selectHypotheticalTransaction(market, 'NO', 'BUY')(state));
+  const noSellHypo = toJSON(selectHypotheticalTransaction(market, 'NO', 'SELL')(state));
+
   return {
+    yesBuyHypo,
+    yesSellHypo,
+    noBuyHypo,
+    noSellHypo,
   };
 }
 

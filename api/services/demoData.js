@@ -18,9 +18,9 @@ module.exports = function (app) {
   const usersProm = execElem(0, users, UserService);
   const channelsProm = execElem(0, channels, ChannelService);
   return Promise.all([usersProm, channelsProm])
-    .then(() => execElem(0, markets, MarketService))
-    .then(() => execElem(0, transactions, TransactionService))
-    .then(() => MarketService.patch(4, { active: false, resolved: false, result: true }))
+    // .then(() => execElem(0, markets, MarketService))
+    // .then(() => execElem(0, transactions, TransactionService))
+    // .then(() => MarketService.patch(4, { active: false, resolved: false, result: true }))
     .then(
       () => app.logger.info('Successfully wiped and repopulated the database'),
       (err) => app.logger.error(`Failed to repopulate the database: ${err}`));

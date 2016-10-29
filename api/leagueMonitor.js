@@ -23,13 +23,10 @@ function execElem(i, arr, fn) {
   return null;
 }
 
-
-// LolApi.Summoner.getByName('Wingsofdeath', 'na').then(log, log);
-
 // TODO account for rate limiting. Maybe add lastChecked DateTime field
 function checkForGameStart(app) {
   const ChannelService = app.service('channels');
-
+  const MatchStateService = app.service('match-state');
   function getCurrentGameId(account) {
     const relevantQueueTypes = {
       RANKED_SOLO_5x5:	4,
@@ -40,6 +37,7 @@ function checkForGameStart(app) {
       TEAM_BUILDER_DRAFT_RANKED_5x5:	410,
     };
     const reverseQueueTypes = _.invert(relevantQueueTypes);
+
     return LolApi.getCurrentGame(account.id, account.region)
       .then(
         (res) =>
@@ -68,8 +66,11 @@ function checkForGameStart(app) {
       .then((gameIds) =>
         _.chain(channels)
           .zip(gameIds)
+          // Create objects with updated leagueAccounts objects (map to whether or not each account is in game)
           .map(_.spread((channel, games) => _.assign({}, channel, { leagueAccounts: _.zip(channel.leagueAccounts, games) })))
+          // Filter for channels that were not in game, but now are
           .filter((channel) => channel.inGame === false && _.find(channel.leagueAccounts, _.spread((leagueAcc, gameId) => !!gameId)))
+          // Map to 'updates' objects which include relevant information to save to the db
           .map((channel) => {
             const activeAccountAndGameId = _.find(channel.leagueAccounts, _.spread((leagueAcc, gameId) => !!gameId));
             const activeAccount = activeAccountAndGameId[0];
@@ -90,13 +91,15 @@ function checkForGameStart(app) {
           })
           .value())
       .then((updates) =>
-        // Update inGame and current game id
-        Promise.all(_.map(updates, (obj) => ChannelService.patch(obj.id, obj.save)))
-          // Trigger market creation for each channel that is now in game
-          .then((updatedChannels) => {
-            _.map(updatedChannels, (channel, index) => marketManager.handleNewGame(app, { channel, extraDetails: updates[index].extraDetails }));
-            return updatedChannels;
-          }))
+        // Update inGame and current game id  HERE
+        // Trigger market creation for each channel that is now in game
+        Promise.all(_.map(updates, (obj) => MatchStateService.create({
+          type: 'GAME_START',
+          channelId: obj.id,
+          leagueGameRegion: obj.save.leagueGameRegion,
+          leagueGameId: obj.save.leagueGameId,
+          activeAccount: obj.extraDetails.activeAccount,
+        }))))
       .then(
         () => app.logger.info('Successfully checked for game starts'),
         (err) => app.logger.error('League Game Start Check failed with error', err));
@@ -139,34 +142,26 @@ function checkForGameStart(app) {
 
 function checkForGameEnd(app) {
   const allGameIdsQuery =
-    `SELECT "leagueGameId", "leagueGameRegion"
-    FROM public."Channel" 
-    WHERE 
-      "leagueGameId" IS NOT NULL
-      AND "leagueGameRegion" IS NOT NULL
-      AND "inGame" IS TRUE
-    UNION
-    SELECT "leagueGameId", "leagueGameRegion"
-    FROM public."Market" 
-    WHERE 
-      "leagueGameId" IS NOT NULL
-      AND "leagueGameRegion" IS NOT NULL
-      AND "active" IS TRUE`;
+    `
+    SELECT DISTINCT "leagueGameId", "leagueGameRegion" from (
+      SELECT "leagueGameId", "leagueGameRegion"
+      FROM public."Channel" 
+      WHERE 
+        "leagueGameId" IS NOT NULL
+        AND "leagueGameRegion" IS NOT NULL
+        AND "inGame" IS TRUE
+      UNION
+      SELECT "leagueGameId", "leagueGameRegion"
+      FROM public."Market" 
+      WHERE 
+        "leagueGameId" IS NOT NULL
+        AND "leagueGameRegion" IS NOT NULL
+        AND "active" IS TRUE
+    ) a`;
 
-  function updateChannelsOnGameOver(match) {
-    const ChannelService = app.service('channels');
-    return ChannelService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
-      .then((channels) => channels.data)
-      .then((channels) => {
-        if (channels.length > 0) {
-          app.logger.info(`Found game over for users ${_.map(channels, 'displayName')}`);
-        }
-        return channels;
-      })
-      .then((channels) => Promise.all(_.map(channels, (channel) =>
-        ChannelService.patch(channel.id, { inGame: false, leagueGameId: null, leagueGameRegion: null }))));
-  }
   function getGameCompletion(game) {
+    const MatchStateService = app.service('match-state');
+
     return LolApi.getMatch(game.leagueGameId, false, game.leagueGameRegion)
       .then((res) => res,
         (err) => {
@@ -180,8 +175,11 @@ function checkForGameEnd(app) {
         })
       .then((match) => {
         if (!!match) {
-          marketManager.handleGameOver(app, match);
-          return updateChannelsOnGameOver(match);
+          // Game which we thought was running is now over.
+          MatchStateService.create({
+            type: 'GAME_END',
+            match,
+          });
         }
         return Promise.resolve(match); // TODO - better return value?
       });

@@ -14,4 +14,9 @@ module.exports = [
     password: 'test123',
     username: 'DinoEntrails3',
   },
+  {
+    email: 'admin@admin.admin',
+    password: 'verylongandcomplicatedpassword',
+    username: 'admin',
+  },
 ];

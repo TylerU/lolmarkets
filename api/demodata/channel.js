@@ -4,6 +4,7 @@ module.exports = [
     twitchName: 'Nightblue3',
     isStreaming: false,
     leagueAccounts: [
+      { id: 25850956, region: 'na' },
       { id: 74229789, region: 'na' },
     ],
   },
@@ -118,6 +119,16 @@ module.exports = [
     ],
   },
   {
+    displayName: 'Hai',
+    twitchName: 'hail9',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 44989364, region: 'na' },
+      { id: 44989332, region: 'na' },
+      { id: 492066, region: 'na' },
+    ],
+  },
+  {
     displayName: 'IWillDominate',
     twitchName: 'IWillDominate',
     isStreaming: false,
@@ -125,6 +136,7 @@ module.exports = [
       { id: 50529339, region: 'na' },
       { id: 38249375, region: 'na' },
       { id: 50759303, region: 'na' },
+      { id: 74612923, region: 'na' },
     ],
   },
   {
@@ -143,6 +155,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 11422189, region: 'kr' },
+      { id: 9004218, region: 'kr' },
     ],
   },
   {
@@ -169,5 +182,19 @@ module.exports = [
       { id: 78989837, region: 'na' },
       { id: 23557909, region: 'na' },
     ],
+  },
+  {
+    displayName: 'Reckful',
+    twitchName: 'reckful',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 65461569, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Test Account, Please Ignore',
+    twitchName: '',
+    isStreaming: false,
+    leagueAccounts: [],
   },
 ];
