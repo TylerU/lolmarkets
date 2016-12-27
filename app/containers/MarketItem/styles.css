@@ -54,7 +54,11 @@
   display: block;
   /*float: right;*/
   width: 100%;
-  margin-top: 15px;
+  /*margin-top: 15px;*/
+}
+
+.marketBtnGo {
+  margin-bottom: 15px;
 }
 
 .marketInfoDesc {
@@ -68,6 +72,7 @@
 .marketCol {
   padding: 35px;
   padding-top: 15px;
+  padding-bottom: 10px;
   border-top: 2px solid #2c2c2c;
 }
 
@@ -123,4 +128,8 @@
   border-color: #3c3c3c;
 }
 
+.transactionHighlight {
+  font-weight: 600;
+  color: #00bc8c;
+}
 

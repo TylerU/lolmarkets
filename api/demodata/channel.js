@@ -89,6 +89,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 1496, region: 'na' },
+      { id: 21337269, region: 'na' },
     ],
   },
   {
@@ -222,5 +223,13 @@ module.exports = [
     twitchName: '',
     isStreaming: false,
     leagueAccounts: [],
+  },
+  {
+    displayName: 'Doublelift',
+    twitchName: 'doublelift',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 20132258, region: 'na' },
+    ],
   },
 ];

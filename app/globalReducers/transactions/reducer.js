@@ -12,7 +12,9 @@
 
 import {
   TRANSACTION_AMOUNT_CHANGE,
-  HYPOTHETICAL_TRANSACTION_RESULT,
+  EXECUTE_HYPOTHETICAL_TRANSACTION,
+  HYPOTHETICAL_TRANSACTION_SUCCESS,
+  HYPOTHETICAL_TRANSACTION_ERROR,
   EXECUTE_TRANSACTION,
   EXECUTE_TRANSACTION_SUCCESS,
   EXECUTE_TRANSACTION_ERROR,
@@ -42,18 +44,72 @@ function appReducer(state = initialState, action) {
       obj = getObj(action);
       obj[action.market][action.entity][action.operation] = {
         amount: action.amount,
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case EXECUTE_HYPOTHETICAL_TRANSACTION:
+      obj = getObj(action);
+      obj[action.market][action.entity][action.operation] = {
         hypothetical: {
           loading: true,
+          result: null,
+          error: null,
+        },
+        actual: {
+          loading: false,
+          result: null,
+          error: null,
         },
       };
       return state
         .mergeDeep(fromJS(obj));
-    case HYPOTHETICAL_TRANSACTION_RESULT:
+    case HYPOTHETICAL_TRANSACTION_SUCCESS:
       obj = getObj(action);
       obj[action.market][action.entity][action.operation] = {
         hypothetical: {
           loading: false,
           result: action.result,
+        },
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case HYPOTHETICAL_TRANSACTION_ERROR:
+      obj = getObj(action);
+      obj[action.market][action.entity][action.operation] = {
+        hypothetical: {
+          loading: false,
+          error: action.error,
+        },
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case EXECUTE_TRANSACTION:
+      obj = getObj(action);
+      obj[action.market][action.entity][action.operation] = {
+        actual: {
+          loading: true,
+          error: null,
+          result: null,
+        },
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case EXECUTE_TRANSACTION_SUCCESS:
+      obj = getObj(action);
+      obj[action.market][action.entity][action.operation] = {
+        actual: {
+          loading: false,
+          result: action.result,
+        },
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case EXECUTE_TRANSACTION_ERROR:
+      obj = getObj(action);
+      obj[action.market][action.entity][action.operation] = {
+        actual: {
+          loading: false,
+          error: action.error,
         },
       };
       return state

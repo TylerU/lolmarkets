@@ -1,8 +1,8 @@
 import { take, call, put, select, fork, cancel } from 'redux-saga/effects';
 import { takeEvery, takeLatest, delay } from 'redux-saga';
 
-import { TRANSACTION_AMOUNT_CHANGE, EXECUTE_TRANSACTION } from './constants';
-import { hypotheticalTransactionResult, executeTransactionError, executeTransactionSuccess } from './actions';
+import { TRANSACTION_AMOUNT_CHANGE, EXECUTE_TRANSACTION, EXECUTE_HYPOTHETICAL_TRANSACTION } from './constants';
+import { hypotheticalTransactionSuccess, hypotheticalTransactionError, executeTransactionError, executeTransactionSuccess } from './actions';
 import { selectHypotheticalTransaction, selectTransactionAmount } from './selectors';
 
 // import request from 'utils/request';
@@ -30,8 +30,7 @@ function getHypotheticalTransaction(market, yesSharesDelta, noSharesDelta) {
     .then((result) => ({ result }), (error) => ({ error }));
 }
 
-export function* amountChange(action) {
-  yield call(delay, 700);
+export function* executeHypothetical(action) {
   let yes = 0;
   let no = 0;
 
@@ -56,23 +55,23 @@ export function* amountChange(action) {
 
   const { result, error } = yield call(getHypotheticalTransaction, action.market, yes, no);
   if (result) {
-    yield put(hypotheticalTransactionResult(action.market, action.entity, action.operation, result));
+    yield put(hypotheticalTransactionSuccess(action.market, action.entity, action.operation, result));
   } else {
-    console.log('Error fetching hypothetical transaction result', error);
+    yield put(hypotheticalTransactionError(action.market, action.entity, action.operation, error));
   }
 }
 
-export function* amountChangeWatcher() {
-  yield* takeLatest(TRANSACTION_AMOUNT_CHANGE, amountChange);
+export function* hypotheticalTransactionWatcher() {
+  yield* takeLatest(EXECUTE_HYPOTHETICAL_TRANSACTION, executeHypothetical);
 }
 
 function* executeTransaction(action) {
   let yes = 0;
   let no = 0;
 
-  const quantity = yield select((store) => {
-    return selectTransactionAmount(action.market, action.entity, action.operation)(store);
-  });
+  const quantity = yield select((store) =>
+    selectTransactionAmount(action.market, action.entity, action.operation)(store)
+  );
 
 
   if (action.entity === 'YES') {
@@ -102,6 +101,6 @@ export function* transactionWatcher() {
 }
 // Bootstrap sagas
 export default [
-  amountChangeWatcher,
+  hypotheticalTransactionWatcher,
   transactionWatcher,
 ];

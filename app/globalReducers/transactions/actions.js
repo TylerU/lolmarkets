@@ -1,7 +1,9 @@
 
 import {
   TRANSACTION_AMOUNT_CHANGE,
-  HYPOTHETICAL_TRANSACTION_RESULT,
+  EXECUTE_HYPOTHETICAL_TRANSACTION,
+  HYPOTHETICAL_TRANSACTION_ERROR,
+  HYPOTHETICAL_TRANSACTION_SUCCESS,
   EXECUTE_TRANSACTION,
   EXECUTE_TRANSACTION_SUCCESS,
   EXECUTE_TRANSACTION_ERROR,
@@ -18,13 +20,32 @@ export function transactionAmountChange(market, entity, operation, amount) {
   };
 }
 
-export function hypotheticalTransactionResult(market, entity, operation, result) {
+export function executeHypotheticalTransaction(market, entity, operation) {
   return {
-    type: HYPOTHETICAL_TRANSACTION_RESULT,
+    type: EXECUTE_HYPOTHETICAL_TRANSACTION,
+    market,
+    entity,
+    operation,
+  };
+}
+
+export function hypotheticalTransactionSuccess(market, entity, operation, result) {
+  return {
+    type: HYPOTHETICAL_TRANSACTION_SUCCESS,
     market,
     entity,
     operation,
     result,
+  };
+}
+
+export function hypotheticalTransactionError(market, entity, operation, error) {
+  return {
+    type: HYPOTHETICAL_TRANSACTION_ERROR,
+    market,
+    entity,
+    operation,
+    error,
   };
 }
 

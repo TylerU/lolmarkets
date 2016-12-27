@@ -29,7 +29,9 @@ function appReducer(state = initialState, action) {
     case LOAD_MARKET_SUCCESS:
       return state.merge(_.keyBy([action.market], 'id'));
     case LOAD_CHANNEL_MARKETS_SUCCESS:
-      return state.filterNot((val) => val.get('channel') === action.channel).merge(_.keyBy(action.markets, 'id'));
+      return state
+        .filterNot((val) => val.get('channel') === action.channel)
+        .merge(_.keyBy(action.markets, 'id'));
     default:
       return state;
   }
