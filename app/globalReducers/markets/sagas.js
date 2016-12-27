@@ -80,9 +80,9 @@ export function* loadChannelMarkets(action) {
       .then((res) => ({ res: res.data }), (err) => ({ err }));
 
   if (!markets.err) {
-    yield put(loadChannelMarketsSuccess(markets.res));
+    yield put(loadChannelMarketsSuccess(markets.res, channelId));
   } else {
-    yield put(loadChannelMarketsError(markets.err));
+    yield put(loadChannelMarketsError(markets.err, channelId));
   }
 }
 

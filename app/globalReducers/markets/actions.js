@@ -55,16 +55,18 @@ export function loadMarketSuccess(market) {
   };
 }
 
-export function loadChannelMarketsSuccess(markets) {
+export function loadChannelMarketsSuccess(markets, channel) {
   return {
     type: LOAD_CHANNEL_MARKETS_SUCCESS,
+    channel,
     markets,
   };
 }
 
-export function loadChannelMarketsError(error) {
+export function loadChannelMarketsError(error, channel) {
   return {
     type: LOAD_CHANNEL_MARKETS_ERROR,
+    channel,
     error,
   };
 }

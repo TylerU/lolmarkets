@@ -5,6 +5,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 25850956, region: 'na' },
+      { id: 78691395, region: 'na' },
       { id: 74229789, region: 'na' },
     ],
   },
@@ -164,6 +165,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 19209176, region: 'na' },
+      { id: 19088327, region: 'na' },
     ],
   },
   {
@@ -189,6 +191,30 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 65461569, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Svenskeren',
+    twitchName: 'tsm_svenskeren',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 19543261, region: 'euw' },
+    ],
+  },
+  {
+    displayName: 'Aphromoo',
+    twitchName: 'aphromoo',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 442232, region: 'na' },
+    ],
+  },
+  {
+    displayName: 'Sp4zie',
+    twitchName: 'sp4zie',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 28059, region: 'euw' },
     ],
   },
   {

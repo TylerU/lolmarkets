@@ -35,6 +35,8 @@ function checkForGameStart(app) {
       RANKED_TEAM_3x3:	41,
       RANKED_TEAM_5x5:	42,
       TEAM_BUILDER_DRAFT_RANKED_5x5:	410,
+      RANKED_FLEX_SR: 440,
+      TEAM_BUILDER_RANKED_SOLO: 420,
     };
     const reverseQueueTypes = _.invert(relevantQueueTypes);
 

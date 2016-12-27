@@ -17,7 +17,7 @@ function formatNumber(x) {
 }
 
 function formatPrice(x) {
-  return numeral(x).format('0.000');
+  return numeral(x).format('0.00');
 }
 
 function formatPercent(x) {
@@ -50,8 +50,8 @@ class SliderInputButton extends React.Component {
   }
 
   render() {
-    // console.log(this.props);
     const hypoResult = _.get(this.props, ['hypotheticalResult', 'result']);
+    const isLoadingHypoResult = _.get(this.props, ['hypotheticalResult', 'loading']);
     const totalCost = formatPrice(_.get(hypoResult, ['totalPrice'], 0.0));
     const newPercent = formatPrice(_.get(hypoResult, ['newPercent'], 0.0));
 
@@ -87,7 +87,7 @@ class SliderInputButton extends React.Component {
             >
               <div className={`${styles.buySellButtonChildren} ${styles.buySellLeftChild}`}>
                 <MoneyIcon />
-                {totalCost}
+                {isLoadingHypoResult ? 'LOADING' : totalCost}
               </div>
               <div className={styles.buySellButtonChildren}>
                 {this.props.buttonText}
@@ -131,6 +131,9 @@ class BuySellView extends React.Component {
     this.state = {
       x: Math.floor(this.props.max / 2),
     };
+    if (this.state.x > 0) {
+      this.props.onChange(this.state.x);
+    }
   }
 
   numChange(val) {

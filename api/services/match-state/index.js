@@ -16,13 +16,14 @@ class MatchStateService {
   }
 
   create(data/* , params */) {
+    const app = this.app;
     function updateChannelsOnGameOver(match) {
-      const ChannelService = this.app.service('channels');
+      const ChannelService = app.service('channels');
       return ChannelService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
         .then((channels) => channels.data)
         .then((channels) => {
           if (channels.length > 0) {
-            this.app.logger.info(`Found game over for users ${_.map(channels, 'displayName')}`);
+            app.logger.info(`Found game over for users ${_.map(channels, 'displayName')}`);
           }
           return channels;
         })
@@ -31,7 +32,8 @@ class MatchStateService {
     }
 
     if (data.type === 'GAME_START') {
-      // TODO - verify that this person isn't currently in game? Race conditions or something.
+      // const requiredKeys = ['channelId', 'leagueGameRegion', 'leagueGameId', 'activeAccount'];
+      // if (!_.chain(data).keys().)
       const { channelId, leagueGameRegion, leagueGameId, activeAccount } = data;
 
       return this.app.service('channels').patch(channelId, {
@@ -48,7 +50,10 @@ class MatchStateService {
               leagueGameId,
             },
           })
-        );
+        )
+        .then(() => ({
+          success: true,
+        }));
     } else if (data.type === 'GAME_END') {
       const match = data.match;
       this.marketManager.handleGameOver(this.app, match);
