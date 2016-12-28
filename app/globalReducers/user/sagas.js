@@ -12,9 +12,7 @@ import { reauthSuccess, reauthError, attemptReauth } from 'globalReducers/user/a
 // import { selectUsername } from 'containers/HomePage/selectors';
 import { app } from 'globalReducers/feathers-app';
 window.app = app;
-/**
- * Github repos request/response handler
- */
+
 export function* attemptReauthActual() {
   const auth = yield app.authenticate({
     // Uncomment if expired
@@ -31,18 +29,12 @@ export function* attemptReauthActual() {
   }
 }
 
-/**
- * Watches for LOAD_REPOS action and calls handler
- */
 export function* attemptAuthWatcher() {
   while (yield take(ATTEMPT_REAUTH)) {
     yield call(attemptReauthActual);
   }
 }
 
-/**
- * Root saga manages watcher lifecycle
- */
 export function* attemptAuth() {
   // Fork watcher so we can continue execution
   yield fork(attemptAuthWatcher);

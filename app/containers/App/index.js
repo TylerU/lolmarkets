@@ -77,7 +77,9 @@ export class App extends React.Component {
                   <MenuItem eventKey="4.1">Profile</MenuItem>
                   <MenuItem eventKey="4.2" onClick={this.props.logout}>Logout</MenuItem>
                 </NavDropdown>
-              </Nav>) : (null)}
+              </Nav>) : (<Nav pullRight>
+                <LinkContainer to="/login"><NavItem eventKey={3}>Login / Create Account</NavItem></LinkContainer>
+              </Nav>)}
           </Navbar.Collapse>
         </Navbar>
         <div className="container">

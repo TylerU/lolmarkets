@@ -12,6 +12,10 @@ const loadModule = (cb) => (componentModule) => {
   cb(null, componentModule.default);
 };
 
+const loadModuleName = (cb, name) => (componentModule) => {
+  cb(null, componentModule[name]);
+};
+
 export default function createRoutes(store) {
   // create reusable async injectors using getAsyncInjectors factory
   const { injectReducer, injectSagas } = getAsyncInjectors(store);
@@ -54,7 +58,15 @@ export default function createRoutes(store) {
       name: 'login',
       getComponent(nextState, cb) {
         System.import('containers/LoginPage')
-          .then(loadModule(cb))
+          .then(loadModuleName(cb, 'LoginPage'))
+          .catch(errorLoading);
+      },
+    }, {
+      path: '/register',
+      name: 'register',
+      getComponent(nextState, cb) {
+        System.import('containers/LoginPage')
+          .then(loadModuleName(cb, 'RegisterPage'))
           .catch(errorLoading);
       },
     }, {
