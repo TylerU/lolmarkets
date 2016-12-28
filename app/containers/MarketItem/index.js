@@ -101,7 +101,7 @@ class SliderInputButton extends React.Component {
     const stageOneLoadingView = (<div style={{ marginBottom: '10px' }} className="col-sm-12">Loading...</div>);
     const stageOneLoadedView = (<div style={{ marginBottom: '10px' }} className="col-sm-12">
       {!hypoError ?
-        (<div>{this.props.buttonText} <span className={`${styles.transactionHighlight}`}>{this.props.value}</span> shares for a total of <MoneyIcon /><span className={`${styles.transactionHighlight}`}>{totalCost}</span>, moving the market belief to ~{newPercent}?</div>) :
+        (<div><div>Please Confirm:</div><div>{this.props.buttonText} <span className={`${styles.transactionHighlight}`}>{this.props.value}</span> share{this.props.value == 1 ? '' : 's'} for a total of <MoneyIcon /><span className={`${styles.transactionHighlight}`}>{totalCost}</span>, moving the market belief to ~{newPercent}?</div></div>) :
         (<div>Error: {hypoError.message}. Please try again.</div>)
       }
     </div>);
@@ -141,7 +141,7 @@ class SliderInputButton extends React.Component {
             className={`${styles.marketBtnCancel} btn btn-primary`}
             onClick={() => this.props.cancel()}
           >
-            Continue
+            Okay
           </button>
         </div>
       </div>);
@@ -231,20 +231,25 @@ class MarketActions extends React.Component {
   render() {
     const primaryView =
       (<div>
-        <button
-          className={`${styles.marketBtn} btn btn-success`}
-          onClick={() => this.toggleExpand('buy')}
-        >
-          Buy {this.props.asset} Shares
-        </button>
-
-        <button
-          disabled={false}
-          className={`${styles.marketBtn} btn btn-danger`}
-          onClick={() => this.toggleExpand('sell')}
-        >
-          Sell {this.props.asset} Shares
-        </button>
+        <div className="col-md-6">
+          <button
+            style={{ width: '100%' }}
+            className={`${styles.marketBtn} btn btn-success`}
+            onClick={() => this.toggleExpand('buy')}
+          >
+            Buy {this.props.asset} Shares
+          </button>
+        </div>
+        <div className="col-md-6">
+          <button
+            style={{ width: '100%' }}
+            disabled={false}
+            className={`${styles.marketBtn} btn btn-danger`}
+            onClick={() => this.toggleExpand('sell')}
+          >
+            Sell {this.props.asset} Shares
+          </button>
+        </div>
       </div>);
 
     const sellView =
@@ -285,7 +290,7 @@ class MarketActions extends React.Component {
               overlay={(<Tooltip id={`tooltip-${this.props.asset}`}>{this.props.helpText}</Tooltip>)} placement="top"
               delayShow={50} delayHide={150}
             >
-              <span className={`${styles.helpIcon} glyphicon glyphicon-question-sign`}></span>
+              <a href="#" tabIndex="30"><span className={`${styles.helpIcon} glyphicon glyphicon-question-sign`}></span></a>
             </OverlayTrigger>
           </h4>
           <h4 className="pull-right">

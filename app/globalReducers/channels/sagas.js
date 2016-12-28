@@ -1,5 +1,5 @@
-import { take, call, put, select, fork, cancel, cancelled, race, } from 'redux-saga/effects';
-import { takeEvery, eventChannel } from 'redux-saga';
+import { take, call, put, select, fork, cancel, cancelled, race} from 'redux-saga/effects';
+import { takeEvery, takeLatest, eventChannel, delay } from 'redux-saga';
 
 import {
   LOAD_CHANNEL,
@@ -85,6 +85,7 @@ export function* loadChannelByNameActual(action) {
 }
 
 export function* loadAllChannelsActual() {
+  yield call(delay, 10);
   const channels = yield ChannelService.find({ query: {
     isStreaming: true,
     $sort: {
@@ -104,7 +105,7 @@ export function* loadAllChannelsActual() {
  * Root saga manages watcher lifecycle
  */
 export function* onLoadAllChannels() {
-  yield* takeEvery(LOAD_ALL_CHANNELS, loadAllChannelsActual);
+  yield* takeLatest(LOAD_ALL_CHANNELS, loadAllChannelsActual);
 }
 
 export function* onLoadChannel() {

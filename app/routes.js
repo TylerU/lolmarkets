@@ -37,7 +37,7 @@ export default function createRoutes(store) {
         // });
         //
         // importModules.catch(errorLoading);
-        System.import('containers/HomePage')
+        System.import('containers/ChannelsPage')
           .then(loadModule(cb))
           .catch(errorLoading);
       },
@@ -46,6 +46,14 @@ export default function createRoutes(store) {
       name: 'portfolio',
       getComponent(nextState, cb) {
         System.import('containers/PortfolioPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
+      path: '/login',
+      name: 'login',
+      getComponent(nextState, cb) {
+        System.import('containers/LoginPage')
           .then(loadModule(cb))
           .catch(errorLoading);
       },

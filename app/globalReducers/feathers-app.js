@@ -4,7 +4,7 @@ const socketio = require('feathers-socketio/client');
 const hooks = require('feathers-hooks');
 const io = require('socket.io-client');
 
-const host = 'http://localhost:3030';
+const host = window.location.hostname + ':3030';
 
 // TODO - fix url
 const socket = io(host, {
