@@ -11,19 +11,19 @@ import { reauthSuccess, reauthError, attemptReauth } from 'globalReducers/user/a
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
 import { app } from 'globalReducers/feathers-app';
-
+window.app = app;
 /**
  * Github repos request/response handler
  */
 export function* attemptReauthActual() {
   const auth = yield app.authenticate({
     // Uncomment if expired
-    type: 'local',
-    email: 'tyler@gmail.com',
-    password: 'test123',
+    // type: 'local',
+    // email: 'tyler@gmail.com',
+    // password: 'test123',
   })
     .then((result) => ({ result }), (error) => ({ error }));
-
+  console.log(auth);
   if (!auth.error) {
     yield put(reauthSuccess(app.get('user')));
   } else {
