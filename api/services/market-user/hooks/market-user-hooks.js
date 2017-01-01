@@ -26,6 +26,7 @@ exports.before = {
         hook.params.includeMarket = true;
       }
     },
+    customHooks.saveNormal(),
   ],
   find: [
     customHooks.pluckQuery(outProperties),

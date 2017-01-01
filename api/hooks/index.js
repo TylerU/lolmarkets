@@ -122,9 +122,16 @@ exports.maybeVerifyToken = () =>
 exports.pluckQuery = (outProperties) =>
        hooks.pluckQuery.apply(hooks, outProperties.concat(['$sort', '$skip', '$select', '$limit']));
 
+exports.saveNormal = () =>
+  (hook) => { // TODO - Resolve this little problem
+    if (hook.params.query && hook.params.query.$beNormal) {
+      hook.params.beNormal = hook.params.query.$beNormal;
+    }
+  };
+
 exports.ignoreNoProvider = () =>
   (hook) => { // TODO - Resolve this little problem
-    if (!hook.params.provider && hook.params.query && hook.params.query.$beNormal) {
+    if (!hook.params.provider && hook.params.beNormal) {
       hook.params.provider = 'rest';
     }
   };
