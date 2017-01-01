@@ -21,8 +21,36 @@ import {
   REAUTH_ERROR,
   USER_UPDATE,
   LOGOUT,
+  LOGIN,
+  LOGIN_ERROR,
+  LOGIN_SUCCESS,
+  REGISTER,
 } from './constants';
 
+export function login(user) {
+  return {
+    type: LOGIN,
+  };
+}
+
+export function register(user) {
+  return {
+    type: REGISTER,
+  };
+}
+
+export function loginSuccess() {
+  return {
+    type: LOGIN_SUCCESS,
+  };
+}
+
+export function loginError(err) {
+  return {
+    type: LOGIN_ERROR,
+    error: err,
+  };
+}
 
 export function userUpdate(user) {
   return {

@@ -46,6 +46,7 @@ function populateMaxCanBuy(hook, market) {
 
 // If MarketUser ever changes without market also changing, we'll need to manually emit events
 function populateMarketUser(hook, market) {
+  market.marketUser = {};
   if (hook.params.user) {
     return hook.app.service('/marketUsers').find({ query: { user: hook.params.user.id, market: market.id } })
       .then((res) => {

@@ -14,3 +14,7 @@ export const REAUTH_SUCCESS = 'zilean/App/REAUTH_SUCCESS';
 export const REAUTH_ERROR = 'zilean/App/REAUTH_ERROR';
 export const USER_UPDATE = 'zilean/App/USER_UPDATE';
 export const LOGOUT = 'zilean/App/LOGOUT';
+export const LOGIN = 'zilean/App/LOGIN';
+export const REGISTER = 'zilean/App/REGISTER';
+export const LOGIN_SUCCESS = 'zilean/App/LOGIN_SUCCESS';
+export const LOGIN_ERROR = 'zilean/App/LOGIN_ERROR';

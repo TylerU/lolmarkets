@@ -18,6 +18,7 @@ class PortfolioPage extends React.Component {
         yesOwned: Math.round(Math.random() * 30),
         noOwned: Math.round(Math.random() * 30),
         channel: 1,
+        marketUser: {},
       },
       {
         name: 'Republicans will win the house',
@@ -27,6 +28,7 @@ class PortfolioPage extends React.Component {
         yesOwned: Math.round(Math.random() * 30),
         noOwned: Math.round(Math.random() * 30),
         channel: 1,
+        marketUser: {},
       },
       {
         name: 'Republicans will the senate',
@@ -36,6 +38,7 @@ class PortfolioPage extends React.Component {
         yesOwned: Math.round(Math.random() * 30),
         noOwned: Math.round(Math.random() * 30),
         channel: 2,
+        marketUser: {},
       },
       {
         name: 'Voyboy will in this game',
@@ -45,6 +48,7 @@ class PortfolioPage extends React.Component {
         yesOwned: Math.round(Math.random() * 30),
         noOwned: Math.round(Math.random() * 30),
         channel: 2,
+        marketUser: {},
       },
       {
         name: 'The square root of five is sqrt(5)',
@@ -54,6 +58,7 @@ class PortfolioPage extends React.Component {
         yesOwned: Math.round(Math.random() * 30),
         noOwned: Math.round(Math.random() * 30),
         channel: 3,
+        marketUser: {},
       },
     ];
 

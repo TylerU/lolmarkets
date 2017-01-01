@@ -3,7 +3,7 @@
 }
 
 .streamPreviewContainer {
-  float: left;
+  display: inline-block;
   margin: 20px;
   width: 320px;
 }

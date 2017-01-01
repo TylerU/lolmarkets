@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import { createStructuredSelector } from 'reselect';
 import { loadAllChannels } from 'globalReducers/channels/actions';
 import { selectChannelsJs } from 'globalReducers/channels/selectors';
-import { FormGroup, FormControl, ControlLabel, HelpBlock, Form, Col} from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, HelpBlock, Form, Col } from 'react-bootstrap';
 import {
   selectAuthLoading,
   selectAuthError,
@@ -20,6 +20,8 @@ import {
   attemptReauth,
   userUpdate,
   logout,
+  login,
+  register,
 } from 'globalReducers/user/actions';
 
 import styles from './styles.css';
@@ -72,13 +74,15 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
   </FormGroup>
 );
 const SyncValidationForm = (props) => {
-  const { handleSubmit, pristine, reset, submitting, submitText, isLogin } = props;
+  const { attemptSubmit, pristine, reset, submitting, submitText, isLogin, invalid, error } = props;
+  const handleSubmit = attemptSubmit;
   return (
-    <Form horizontal onSubmit={handleSubmit}>
+    <Form horizontal onSubmit={(e) => { e.preventDefault(); attemptSubmit(); }}>
+      {error ? <div className="alert alert-danger" role="alert">{error}</div> : null}
       <Field name="email" type="email" component={renderField} label="Email" />
       {!isLogin ? <Field name="username" type="text" component={renderField} label="Username" /> : null}
       <Field name="password" type="password" component={renderField} label="Password" />
-      {!isLogin ? <Field name="passwordConfirm" type="password" component={renderField} label="Confirm Password" />: null}
+      {!isLogin ? <Field name="passwordConfirm" type="password" component={renderField} label="Confirm Password" /> : null}
 
       <div style={{ float: 'right' }}>
         <button className="btn btn-success" type="submit" disabled={submitting}>{submitText}</button>
@@ -96,15 +100,13 @@ const FForm =  reduxForm({
 class PreLoginPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       tab: 0,
     };
   }
 
   handleLogin(values) {
-    // Do something with the form values
-    console.log(values.toJS());
+    this.props.login();
   }
 
   render() {
@@ -112,10 +114,10 @@ class PreLoginPage extends React.Component {
       <div>
         <div style={{ width: '500px', marginLeft: 'auto', marginRight: 'auto', paddingBottom: '50px' }}>
           <div className="clearfix">
-            <h3 style={{float: 'left'}}>Login</h3>
-            <h5 style={{float: 'right', marginTop: '30px'}}>Or <Link to="/register">Create Account</Link></h5>
+            <h3 style={{ float: 'left' }}>Login</h3>
+            <h5 style={{ float: 'right', marginTop: '30px' }}>Or <Link to="/register">Create Account</Link></h5>
           </div>
-          <FForm onSubmit={this.handleLogin} submitText="Login" isLogin />
+          <FForm attemptSubmit={() => this.handleLogin()} submitText="Login" isLogin />
         </div>
       </div>
     );
@@ -126,15 +128,14 @@ class PreLoginPage extends React.Component {
 class PreRegisterPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       tab: 0,
     };
   }
 
-  handleLogin(values) {
+  handleRegister() {
     // Do something with the form values
-    console.log(values.toJS());
+    this.props.register();
   }
 
   render() {
@@ -142,10 +143,10 @@ class PreRegisterPage extends React.Component {
       <div>
         <div style={{ width: '500px', marginLeft: 'auto', marginRight: 'auto', paddingBottom: '50px' }}>
           <div className="clearfix">
-            <h3 style={{float: 'left'}}>Create Account</h3>
-            <h5 style={{float: 'right', marginTop: '30px'}}>Or <Link to="/login">Login</Link></h5>
+            <h3 style={{ float: 'left' }}>Create Account</h3>
+            <h5 style={{ float: 'right', marginTop: '30px' }}>Or <Link to="/login">Login</Link></h5>
           </div>
-          <FForm onSubmit={this.handleLogin} submitText="Create Account" />
+          <FForm attemptSubmit={() => this.handleRegister()} submitText="Create Account" />
         </div>
       </div>
     );
@@ -155,6 +156,8 @@ class PreRegisterPage extends React.Component {
 function mapDispatchToProps(dispatch) {
   return {
     attemptReauth: () => dispatch(attemptReauth()),
+    login: () => dispatch(login()),
+    register: () => dispatch(register()),
     changeRoute: (url) => dispatch(push(url)),
     dispatch,
   };
