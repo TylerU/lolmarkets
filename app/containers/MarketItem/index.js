@@ -354,17 +354,21 @@ class MarketItem extends React.Component {
 
     return (
       <div>
-        <div className={`${styles.collapseHeader} well`}>
+        <div onClick={this.props.handleExpand} className={`${styles.collapseHeader} well`}>
           <div className={styles.openMarketContainer} onClick={() => this.toggle()}>
             <div className={styles.openMarketName}>
               <h5>{this.props.market.name}</h5>
             </div>
             <div className={styles.openMarketPriceContainer}>
-              <span
-                className={`${showOwned ? styles.chevronIcon : styles.chevronIconSmall} pull-right glyphicon
+              {!this.props.handleExpand ?
+                <span
+                  className={`${showOwned ? styles.chevronIcon : styles.chevronIconSmall} pull-right glyphicon
                     glyphicon-chevron-${(this.state.open ? 'up' : 'down')}`}
-              >
-              </span>
+                ></span> :
+                <span
+                  className={`${showOwned ? styles.chevronIcon : styles.chevronIconSmall} pull-right glyphicon
+                    glyphicon-log-in`}
+                ></span>}
               <div className={`${styles.marketHeaderStats} pull-right`}>
                 <span className={`${styles.openMarketPrice}`}>
                   {formatPercent(this.props.market.percent)}
@@ -373,7 +377,7 @@ class MarketItem extends React.Component {
               </div>
             </div>
           </div>
-          <Collapse isOpened={this.state.open}>
+          {!this.props.handleExpand ? <Collapse isOpened={this.state.open}>
             <div className={`${styles.expandedMarketContent} row`}>
               <MarketActions
                 loggedIn={this.props.loggedIn}
@@ -412,7 +416,7 @@ class MarketItem extends React.Component {
                 icon={<NoShareIcon />}
               />
             </div>
-          </Collapse>
+          </Collapse> : null}
         </div>
       </div>
     );
@@ -423,6 +427,7 @@ MarketItem.propTypes = {
   transactionAmountChange: React.PropTypes.func,
   executeTransaction: React.PropTypes.func,
   executeHypotheticalTransaction: React.PropTypes.func,
+  handleExpand: React.PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
