@@ -141,7 +141,7 @@ class PreRegisterPage extends React.Component {
   render() {
     return (
       <div>
-        <div style={{ width: '500px', marginLeft: 'auto', marginRight: 'auto', paddingBottom: '50px' }}>
+        <div style={{ maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto', paddingBottom: '50px' }}>
           <div className="clearfix">
             <h3 style={{ float: 'left' }}>Create Account</h3>
             <h5 style={{ float: 'right', marginTop: '30px' }}>Or <Link to="/login">Login</Link></h5>

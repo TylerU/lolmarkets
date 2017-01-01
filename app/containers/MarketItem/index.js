@@ -1,12 +1,13 @@
 import React from 'react';
 import Collapse from 'react-collapse';
 import Slider from 'react-rangeslider';
-import { OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Glyphicon, Popover } from 'react-bootstrap';
 import MoneyIcon from '../../components/MoneyIcon';
 import _ from 'lodash';
 import numeral from 'numeral';
 import styles from './styles.css';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 
 import { transactionAmountChange, executeTransaction, executeHypotheticalTransaction } from 'globalReducers/transactions/actions';
@@ -229,26 +230,41 @@ class MarketActions extends React.Component {
   }
 
   render() {
+    let loginPrompt = (<Popover id="login-prompt" className={`${styles.popoverInWell}`} title="">
+      Please <Link to={`/login?next=${this.props.path}`}>Log In</Link> or <Link to={`/register?next=${this.props.path}`}>Register</Link> to buy / sell shares.
+    </Popover>);
+
+    let buyBtn = (<button
+      style={{ width: '100%' }}
+      className={`${styles.marketBtn} btn btn-success`}
+      onClick={() => this.toggleExpand('buy')}
+    >
+      Buy {this.props.asset} Shares
+    </button>);
+
+    let sellBtn = (<button
+      style={{ width: '100%' }}
+      disabled={false}
+      className={`${styles.marketBtn} btn btn-danger`}
+      onClick={() => this.toggleExpand('sell')}
+    >
+      Sell {this.props.asset} Shares
+    </button>);
+
     const primaryView =
       (<div>
         <div className="col-md-6">
-          <button
-            style={{ width: '100%' }}
-            className={`${styles.marketBtn} btn btn-success`}
-            onClick={() => this.toggleExpand('buy')}
-          >
-            Buy {this.props.asset} Shares
-          </button>
+          {this.props.loggedIn ? buyBtn :
+            <OverlayTrigger trigger="click" rootClose placement="top" overlay={loginPrompt}>
+              {buyBtn}
+            </OverlayTrigger>
+          }
         </div>
         <div className="col-md-6">
-          <button
-            style={{ width: '100%' }}
-            disabled={false}
-            className={`${styles.marketBtn} btn btn-danger`}
-            onClick={() => this.toggleExpand('sell')}
-          >
-            Sell {this.props.asset} Shares
-          </button>
+          {this.props.loggedIn ? sellBtn :
+            <OverlayTrigger trigger="click" rootClose placement="top" overlay={loginPrompt}>
+              {sellBtn}
+            </OverlayTrigger>}
         </div>
       </div>);
 
@@ -370,6 +386,7 @@ class MarketItem extends React.Component {
                 price={this.props.market.yesPrice}
                 max={this.props.market.marketUser.maxYes}
                 helpText={tooltipYes}
+                path={this.props.path}
                 numOwned={_.get(this.props, 'market.marketUser.yesShares', 0)}
                 onChange={_.partial(this.props.transactionAmountChange, this.props.market.id, 'YES')}
                 executeTransaction={_.partial(this.props.executeTransaction, this.props.market.id, 'YES')}
@@ -379,6 +396,7 @@ class MarketItem extends React.Component {
               <MarketActions
                 loggedIn={this.props.loggedIn}
                 market={this.props.market}
+                path={this.props.path}
                 asset="No"
                 sellHypo={this.props.noSellHypo}
                 buyHypo={this.props.noBuyHypo}
@@ -423,6 +441,7 @@ function toJSON(obj) {
 }
 function mapStateToProps(state, props) {
   const market = props.market.id;
+
   const yesBuyHypo = toJSON(selectHypotheticalTransaction(market, 'YES', 'BUY')(state));
   const yesSellHypo = toJSON(selectHypotheticalTransaction(market, 'YES', 'SELL')(state));
   const noBuyHypo = toJSON(selectHypotheticalTransaction(market, 'NO', 'BUY')(state));
@@ -433,7 +452,9 @@ function mapStateToProps(state, props) {
   const noBuyActual = toJSON(selectActualTransaction(market, 'NO', 'BUY')(state));
   const noSellActual = toJSON(selectActualTransaction(market, 'NO', 'SELL')(state));
 
+  const path = state.getIn(['route', 'locationBeforeTransitions', 'pathname']);
   return {
+    path,
     yesBuyHypo,
     yesSellHypo,
     noBuyHypo,

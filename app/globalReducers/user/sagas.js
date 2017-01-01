@@ -2,12 +2,12 @@
  * Gets the repositories of the user from Github
  */
 
-import { take, call, put, select, fork, cancel } from 'redux-saga/effects';
+import { take, call, put, select, fork } from 'redux-saga/effects';
 import { takeEvery } from 'redux-saga';
 import { push } from 'react-router-redux';
 import _ from 'lodash';
 import { ATTEMPT_REAUTH, LOGOUT, LOGIN, REGISTER } from 'globalReducers/user/constants';
-import { reauthSuccess, reauthError, attemptReauth, loginSuccess, loginError, login } from 'globalReducers/user/actions';
+import { reauthSuccess, reauthError, attemptReauth, login } from 'globalReducers/user/actions';
 
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
@@ -55,6 +55,14 @@ export function* logoutWatcher() {
   yield* takeEvery(LOGOUT, logout);
 }
 
+function extractErrors(err) {
+  const res = {};
+  _.each(err, (e) => {
+    res[e.path] = _.capitalize(e.message);
+  });
+  return res;
+}
+
 const formName = 'loginForm';
 
 export function* loginWorker() {
@@ -71,7 +79,9 @@ export function* loginWorker() {
   if (!auth.error) {
     yield put(stopSubmit(formName, {}));
     yield put(reauthSuccess(app.get('user')));
-    yield put(push('/streams'));
+    let newPath = yield select((state) => state.getIn(['route', 'locationBeforeTransitions', 'query', 'next']));
+    newPath = newPath || 'streams';
+    yield put(push(`/${newPath}`));
   } else {
     const errorObj = auth.error;
     const errors = extractErrors(errorObj.errors);
@@ -86,13 +96,7 @@ export function* loginWatcher() {
 
 // TODO - make more general, abstract out what's common here for fuck's sake
 
-function extractErrors(err) {
-  const res = {};
-  _.each(err, (e) => {
-    res[e.path] = _.capitalize(e.message);
-  });
-  return res;
-}
+
 export function* register() {
   const formData = yield select(getFormValues(formName));
   yield put(startSubmit(formName));

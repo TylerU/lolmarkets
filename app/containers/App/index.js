@@ -65,7 +65,7 @@ export class App extends React.Component {
           <Navbar.Collapse>
             <Nav>
               <LinkContainer to="/streams"><NavItem eventKey={1}>Active Streams</NavItem></LinkContainer>
-              <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer>
+              {this.props.loggedIn ? <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer> : null }
             </Nav>
             {this.props.loggedIn ? (
               <Nav pullRight>
@@ -74,7 +74,7 @@ export class App extends React.Component {
                   {Math.round(this.props.user.get('money') * 100) / 100}
                 </NavItem>
                 <NavDropdown eventKey={4} title={this.props.user.get('username')} id="nav-dropdown">
-                  <MenuItem eventKey="4.1">Profile</MenuItem>
+                  {/* <MenuItem eventKey="4.1">Profile</MenuItem> */}
                   <MenuItem eventKey="4.2" onClick={this.props.logout}>Logout</MenuItem>
                 </NavDropdown>
               </Nav>) : (<Nav pullRight>

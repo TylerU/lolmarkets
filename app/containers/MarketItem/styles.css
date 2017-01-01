@@ -2,6 +2,10 @@
   padding: 0;
 }
 
+.popoverInWell {
+  background-color: #3c3c3c;
+}
+
 .openMarketContainer {
   clear: both;
   cursor: pointer;
