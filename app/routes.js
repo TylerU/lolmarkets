@@ -16,9 +16,17 @@ const loadModuleName = (cb, name) => (componentModule) => {
   cb(null, componentModule[name]);
 };
 
+
+
 export default function createRoutes(store) {
   // create reusable async injectors using getAsyncInjectors factory
   const { injectReducer, injectSagas } = getAsyncInjectors(store);
+
+  const redirectIfLoggedIn = (nextState, replace) => {
+    if (store.getState().getIn(['user', 'loggedIn'])) {
+      replace('/streams');
+    }
+  };
 
   return [
     {
@@ -56,6 +64,7 @@ export default function createRoutes(store) {
     }, {
       path: '/login',
       name: 'login',
+      onEnter: redirectIfLoggedIn,
       getComponent(nextState, cb) {
         System.import('containers/LoginPage')
           .then(loadModuleName(cb, 'LoginPage'))
@@ -64,6 +73,7 @@ export default function createRoutes(store) {
     }, {
       path: '/register',
       name: 'register',
+      onEnter: redirectIfLoggedIn,
       getComponent(nextState, cb) {
         System.import('containers/LoginPage')
           .then(loadModuleName(cb, 'RegisterPage'))

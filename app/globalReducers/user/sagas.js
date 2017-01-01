@@ -18,17 +18,18 @@ import {
   stopSubmit,
 } from 'redux-form/immutable';
 
+function selectPath(state) {
 
+}
 export function* attemptReauthActual() {
-  const auth = yield app.authenticate({
-    // Uncomment if expired
-    // type: 'local',
-    // email: 'tyler@gmail.com',
-    // password: 'test123',
-  })
+  const auth = yield app.authenticate({})
     .then((result) => ({ result }), (error) => ({ error }));
   if (!auth.error) {
     yield put(reauthSuccess(app.get('user')));
+    const curPath = yield select((state) => state.getIn(['route', 'locationBeforeTransitions', 'pathname']));
+    if (curPath === '/login' || curPath === '/register') {
+      yield put(push('/'));
+    }
   } else {
     yield put(reauthError(auth.error));
   }

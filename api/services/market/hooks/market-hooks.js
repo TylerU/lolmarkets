@@ -48,7 +48,7 @@ function populateMaxCanBuy(hook, market) {
 function populateMarketUser(hook, market) {
   market.marketUser = {};
   if (hook.params.user) {
-    return hook.app.service('/marketUsers').find({ query: { user: hook.params.user.id, market: market.id } })
+    return hook.app.service('/marketUsers').find({ query: { user: hook.params.user.id, market: market.id, $beNormal: true, } })
       .then((res) => {
         if (res.data.length > 0) {
           market.marketUser = res.data[0];
@@ -132,8 +132,8 @@ exports.after = {
     customHooks.mapResultHook(populateMarketUser),
     customHooks.mapResultHook(populateProperties),
     customHooks.mapResultHook(populateMaxCanBuy),
-    // TODO - Does commenting this cause data leakage somewhere?
-    // customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
+    // TODO - Does commenting this cause data leakage somewhere?. Yes, in MarketUser. Why the fuck did you do this?
+    customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
   find: [],

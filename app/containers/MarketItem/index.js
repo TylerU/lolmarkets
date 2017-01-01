@@ -343,13 +343,13 @@ class MarketItem extends React.Component {
   render() {
     const tooltipYes = 'At the end of the game, if this prediction is true, all yes shares are redeemed for $1. If the prediction is false, they are worth nothing';
     const tooltipNo = 'At the end of the game, if this prediction is false, all no shares are redeemed for $1. If the prediction is true, they are worth nothing';
-    const showOwned = this.props.market.yesOwned > 0 && this.props.market.noOwned > 0;
+    const showOwned = this.props.market.marketUser && (this.props.market.marketUser.yesShares > 0 || this.props.market.marketUser.noShares > 0);
     const ownedUI = showOwned ? (
       <div className={`${styles.currentInvestment}`}>
         <YesShareIcon style={{ marginLeft: '1px', marginRight: '3px' }} />
-        {this.props.market.yesOwned}
+        {this.props.market.marketUser.yesShares}
         <NoShareIcon style={{ marginLeft: '15px', marginRight: '3px' }} />
-        {this.props.market.noOwned}
+        {this.props.market.marketUser.noShares}
       </div>) : (null);
 
     return (

@@ -10,7 +10,7 @@ const inProperties = schema.inProperties;
 
 function populateMarket(hook, marketUser) {
   if (hook.params.includeMarket) {
-    return hook.app.service('/markets').get(marketUser.market)
+    return hook.app.service('/markets').get(marketUser.market, { query: { $beNormal: true } })
       .then((res) => {
         marketUser.marketObj = res;
         return marketUser;

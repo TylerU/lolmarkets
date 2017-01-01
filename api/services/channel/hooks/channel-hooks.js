@@ -11,7 +11,7 @@ const inProperties = schema.inProperties;
 
 
 function populateMarkets(hook, channel) {
-  return hook.app.service('/markets').find({ query: { channel: channel.id, active: true } })
+  return hook.app.service('/markets').find({ query: { channel: channel.id, active: true, $beNormal: true, } })
     .then((res) => {
       if (res.data.length > 0) {
         channel.markets = _.map(res.data, 'id');
