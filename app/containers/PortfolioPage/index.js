@@ -93,6 +93,10 @@ class PortfolioPage extends React.Component {
             className={market.result ? 'danger' : 'success'}
           >{market.marketUser.noShares}</td>
           <td
+            data-title="Market Result"
+            className={market.result ? 'success' : 'danger'}
+          ><strong>{market.result ? 'YES' : 'NO'}</strong></td>
+          <td
             data-title="Net Profit"
             className={profit > 0 ? 'success' : 'danger'}
           ><MoneyIcon />{formatPrice(profit)}</td>
@@ -114,6 +118,7 @@ class PortfolioPage extends React.Component {
                 <th>Pre-close Net Profit</th>
                 <th>Yes Shares Owned</th>
                 <th>No Shares Owned</th>
+                <th>Market Result</th>
                 <th>Net Profit</th>
               </tr>
             </thead>
