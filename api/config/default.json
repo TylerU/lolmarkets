@@ -6,7 +6,8 @@
     "startGamePollInterval": 2
   },
   "businessSettings": {
-    "startingMoney": 5000
+    "startingMoney": 100,
+    "loginReward": 10
   },
   "market": {
     "startingYes": 500,

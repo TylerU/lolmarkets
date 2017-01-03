@@ -62,6 +62,14 @@ export default function createRoutes(store) {
           .catch(errorLoading);
       },
     }, {
+      path: '/leaderboard',
+      name: 'leaderboard',
+      getComponent(nextState, cb) {
+        System.import('containers/LeaderboardPage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
       path: '/login',
       name: 'login',
       onEnter: redirectIfLoggedIn,
