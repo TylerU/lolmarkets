@@ -83,9 +83,12 @@ function resolveMarkets(app) {
   function notifyAll(res) {
     const UserService = app.service('users');
     const MarketService = app.service('markets');
+    const MarketUserService = app.service('marketUsers');
+
     const ServiceMap = {
       Market: MarketService,
       User: UserService,
+      MarketUser: MarketUserService,
     };
 
     function toPromises(arr) {
@@ -93,7 +96,10 @@ function resolveMarkets(app) {
     }
 
     // Udpate all Users, then all Markets so that the Markets will have updated user info
-    return Promise.all(toPromises([].concat(_.filter(res, { type: 'User' }), _.filter(res, { type: 'Market' }))));
+    return Promise.all(toPromises([].concat(
+      _.filter(res, { type: 'User' }),
+      _.filter(res, { type: 'Market' }),
+      _.filter(res, { type: 'MarketUser' }))));
   }
 
   // Grab unresolved markets
@@ -103,7 +109,7 @@ function resolveMarkets(app) {
   const resolveQuery = `
     WITH 
     "shares" AS
-        (SELECT "result", "user", "MarketUser"."yesShares", "MarketUser"."noShares", "Market"."id"
+        (SELECT "result", "user", "MarketUser"."yesShares", "MarketUser"."noShares", "Market"."id", "MarketUser"."id" as "marketUserId"
             FROM public."MarketUser"
             INNER JOIN public."Market"
             ON "Market"."id" = "MarketUser"."market"
@@ -125,12 +131,23 @@ function resolveMarkets(app) {
             SET "resolved" = TRUE
             WHERE "Market"."id" in (SELECT "id" FROM "shares")
           RETURNING "id"
+        ),
+    "marketUsersUpdated" AS 
+        (UPDATE public."MarketUser"
+            SET "inMoneyFinal" = "inMoney",
+                "outMoneyFinal" = "outMoney" + "shares"."<%= curField %>",
+                "marketResult" = <%= curResult %>
+            FROM "shares"
+            WHERE "MarketUser"."id" = "shares"."marketUserId"
+          RETURNING "marketUserId"
         )
     SELECT * 
     FROM 
       (SELECT DISTINCT "id", 'Market' AS "type" FROM "marketsUpdated"
          UNION 
-         select  "userId", 'User' as "type" from "updated") as "test2"`;
+         select  "marketUserId" as "id", 'MarketUser' as "type" from "marketUsersUpdated"
+         UNION
+         select  "userId" as "id", 'User' as "type" from "updated") as "test2"`;
 
   const compiled = _.template(resolveQuery);
   const yesQuery = compiled({ curResult: 'TRUE', curField: 'yesShares' });

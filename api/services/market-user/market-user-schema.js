@@ -16,6 +16,14 @@ const schema = {
   maxNoShares: {
     publicRead: true,
   },
+  marketResult: {
+    publicRead: true,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.BOOLEAN,
+    },
+  },
   yesShares: {
     publicRead: true,
     sequelize: {
@@ -39,6 +47,22 @@ const schema = {
     },
   },
   outMoney: {
+    publicRead: true,
+    sequelize: {
+      allowNull: false,
+      defaultValue: 0,
+      type: Sequelize.DOUBLE,
+    },
+  },
+  inMoneyFinal: {
+    publicRead: true,
+    sequelize: {
+      allowNull: false,
+      defaultValue: 0,
+      type: Sequelize.DOUBLE,
+    },
+  },
+  outMoneyFinal: {
     publicRead: true,
     sequelize: {
       allowNull: false,

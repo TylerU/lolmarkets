@@ -68,9 +68,7 @@ class PortfolioPage extends React.Component {
 
     const closedMarkets = _.map(oldMarkets, (market) => {
       const preTrading = market.marketUser.outMoney - market.marketUser.inMoney;
-      let profit = preTrading;
-      if (market.result) profit += market.marketUser.yesShares;
-      else profit += market.marketUser.noShares;
+      const profit = market.marketUser.outMoneyFinal - market.marketUser.inMoneyFinal;
 
       return (
         <tr key={market.id}>

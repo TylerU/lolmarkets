@@ -16,9 +16,9 @@ class LeaderboardService {
         (SELECT
           "user",
           "channel",
-          SUM("outMoney")-SUM("inMoney") AS "profit"
+          SUM("outMoneyFinal")-SUM("inMoneyFinal") AS "profit"
         FROM public."MarketUser"
-        INNER JOIN public."Market"
+         INNER JOIN public."Market"
           ON "MarketUser"."market" = "Market"."id"
           WHERE "Market"."resolved" = true
         GROUP BY "user", "channel") AS withoutusernames
@@ -45,14 +45,19 @@ class LeaderboardService {
 
     let query = baseGlobal;
     if (params.query.channel) query = thisChannelQuery;
+    const justUser = params.query.username;
 
-    const finalQuery =
+    const withRankings =
       `SELECT 
         "username", 
         "userId", 
         "profit", 
         row_number() over (order by "profit" desc) as "ranking" 
-      from (${query}) as "sub" 
+      from (${query}) as "sub"`;
+
+    const finalQuery =
+      `SELECT * from (${withRankings}) as "rankings"
+      ${justUser ? ` WHERE username = '${justUser}' ` : ''}
       ${sort}
       ${limitSkip}`;
 
