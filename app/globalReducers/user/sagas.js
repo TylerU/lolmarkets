@@ -18,11 +18,10 @@ import {
   stopSubmit,
 } from 'redux-form/immutable';
 
-function selectPath(state) {
-
-}
 export function* attemptReauthActual() {
-  const auth = yield app.authenticate({})
+  const authPromise = app.authenticate({});
+  app.set('reauthPromise', authPromise);
+  const auth = yield authPromise
     .then((result) => ({ result }), (error) => ({ error }));
   if (!auth.error) {
     yield put(reauthSuccess(app.get('user')));
@@ -36,15 +35,13 @@ export function* attemptReauthActual() {
 }
 
 export function* attemptAuthWatcher() {
-  while (yield take(ATTEMPT_REAUTH)) {
-    yield call(attemptReauthActual);
-  }
+  yield* takeEvery(ATTEMPT_REAUTH, attemptReauthActual);
 }
 
 export function* attemptAuth() {
   // Fork watcher so we can continue execution
   yield fork(attemptAuthWatcher);
-  yield put(attemptReauth()); // TODO - if this is slow the whole app is broken
+  yield put(attemptReauth());
 }
 
 export function* logout() {

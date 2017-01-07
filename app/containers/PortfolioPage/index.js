@@ -130,8 +130,8 @@ class PortfolioPage extends React.Component {
         <div>
           <h2>
             Please
-            <Link to={`/login?next=portfolio`}> Log In </Link> or
-            <Link to={`/register?next=portfolio`}> Register </Link>
+            <Link to="/login?next=portfolio"> Log In </Link> or
+            <Link to="/register?next=portfolio"> Register </Link>
             to see this page.
           </h2>
         </div>
