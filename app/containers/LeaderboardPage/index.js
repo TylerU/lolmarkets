@@ -9,7 +9,6 @@ import Leaderboard from 'components/Leaderboard';
 
 class LeaderboardPage extends React.Component {
   render() {
-    console.log('User:', this.props.user);
     return (
       <div>
         <h2>Global Leaderboard</h2>

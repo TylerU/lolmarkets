@@ -12,17 +12,24 @@ function formatPrice(x) {
 }
 
 class Leaderboard extends React.Component {
-  componentWillMount() {
-    // Poor man's refresh
+  refresh() {
+    clearTimeout(this.to);
     const interval = 60000;
-    const refresh = () => {
-      this.props.loadAll(0, 100);
-      if (this.props.loggedIn) {
-        this.props.loadUser();
-      }
-      this.to = setTimeout(refresh, interval);
-    };
-    this.to = setTimeout(refresh, 0);
+    this.props.loadAll(0, 100);
+    if (this.props.loggedIn) {
+      this.props.loadUser();
+    }
+    this.to = setTimeout(() => this.refresh, interval);
+  }
+
+  componentWillMount() {
+    this.refresh();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.loggedIn !== null && prevProps.loggedIn === null) {
+      this.refresh();
+    }
   }
 
   componentWillUnmount() {

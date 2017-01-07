@@ -22,6 +22,7 @@ import _ from 'lodash';
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
 import { MarketService, socket } from 'globalReducers/feathers-app';
+import { wrapWatcherWaitOnAuth } from 'globalReducers/util';
 
 const matchesAction = (obj) => (action) => _.matches(obj)(action);
 
@@ -87,7 +88,7 @@ export function* loadChannelMarkets(action) {
 }
 
 export function* loadChannelMarketsWatcher() {
-  yield* takeEvery(LOAD_CHANNEL_MARKETS, loadChannelMarkets);
+  yield* wrapWatcherWaitOnAuth(LOAD_CHANNEL_MARKETS, loadChannelMarkets);
 }
 
 function* watchChannelMarketChanges(channelId) {
@@ -116,7 +117,7 @@ function* startWatchingChannelMarkets(action) {
 }
 
 function* channelMarketsChanges() {
-  yield* takeEvery(SUBSCRIBE_CHANNEL_MARKETS, startWatchingChannelMarkets);
+  yield* wrapWatcherWaitOnAuth(SUBSCRIBE_CHANNEL_MARKETS, startWatchingChannelMarkets);
 }
 
 function* fetchUpdatedMarket(action) {
@@ -131,7 +132,7 @@ function* fetchUpdatedMarket(action) {
 }
 
 function* fetchNewMarketOnChange() {
-  yield* takeEvery(MARKET_UPDATED, fetchUpdatedMarket);
+  yield* wrapWatcherWaitOnAuth(MARKET_UPDATED, fetchUpdatedMarket);
 }
 
 // Bootstrap sagas

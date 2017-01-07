@@ -16,6 +16,8 @@ import {
 } from './actions';
 import _ from 'lodash';
 import { MarketUserService } from 'globalReducers/feathers-app';
+import { wrapWatcherWaitOnAuth } from 'globalReducers/util';
+
 const matchesAction = (obj) => (action) => _.matches(obj)(action);
 
 export function* loadUserMarkets(action) {
@@ -30,7 +32,7 @@ export function* loadUserMarkets(action) {
 }
 
 export function* loadUserMarketsWatcher() {
-  yield* takeEvery(LOAD_USER_MARKETS, loadUserMarkets);
+  yield* wrapWatcherWaitOnAuth(LOAD_USER_MARKETS, loadUserMarkets);
 }
 
 export function* navigateToStream(action) {
