@@ -20,7 +20,7 @@ export function loadLeaderboard(key, channel, username, skip, limit) {
 export function loadGlobalLeaderboard(username, skip, limit) {
   return {
     type: LOAD_LEADERBOARD,
-    key: '_global',
+    key: `_global${username ? '|user' : ''}`,
     username,
     skip,
     limit,
@@ -30,7 +30,7 @@ export function loadGlobalLeaderboard(username, skip, limit) {
 export function loadChannelLeaderboard(channel, username, skip, limit) {
   return {
     type: LOAD_LEADERBOARD,
-    key: channel,
+    key: `${channel}${username ? '|user' : ''}`,
     channel,
     username,
     skip,

@@ -14,9 +14,12 @@ function formatPrice(x) {
 class Leaderboard extends React.Component {
   componentWillMount() {
     // Poor man's refresh
-    const interval = 10000;
+    const interval = 60000;
     const refresh = () => {
       this.props.loadAll(0, 100);
+      if (this.props.loggedIn) {
+        this.props.loadUser();
+      }
       this.to = setTimeout(refresh, interval);
     };
     this.to = setTimeout(refresh, 0);
@@ -46,6 +49,12 @@ class Leaderboard extends React.Component {
 
     return (
       <div className={`${styles.tableContainer} well`}>
+        {this.props.userRanking ? (<div className={`${styles.yourStatsContainer}`}>
+          <div className={`${styles.statsLeft}`}>Your Ranking: </div>
+          <div className={`${styles.statsRight}`}>{this.props.userRanking.ranking}</div>
+          <div className={`${styles.statsLeft}`}>Net Profit: </div>
+          <div className={`${styles.statsRight}`}><MoneyIcon /> {formatPrice(this.props.userRanking.profit)}</div>
+        </div>) : null}
         <table className="table table-responsive table-striped">
           <thead>
           <tr key="-1">

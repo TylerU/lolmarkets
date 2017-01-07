@@ -12,7 +12,20 @@ const selectChannelLeaderboard = (channelId) => (state) => {
   return {};
 };
 
+const selectGlobalLeaderboardUser = () => (state) => {
+  const r = state.getIn(['leaderboards', '_global|user', 'result']);
+  if (r) return r.toJS()[0];
+  return null;
+};
+
+const selectChannelLeaderboardUser = (channelId) => (state) => {
+  const r = state.getIn(['leaderboards', `${channelId}|user`, 'result']);
+  if (r) return r.toJS()[0];
+  return null
+};
 export {
   selectGlobalLeaderboard,
   selectChannelLeaderboard,
+  selectGlobalLeaderboardUser,
+  selectChannelLeaderboardUser,
 };

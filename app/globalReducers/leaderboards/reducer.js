@@ -16,7 +16,7 @@ function appReducer(state = initialState, action) {
     case LOAD_LEADERBOARD:
       obj = {};
       obj[action.key] = { loading: true };
-      return state.merge(obj);
+      return state.mergeDeep(obj);
     case LOAD_LEADERBOARD_SUCCESS:
       obj = {};
       obj[action.key] = { loading: false, result: action.result };

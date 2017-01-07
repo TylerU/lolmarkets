@@ -1,10 +1,17 @@
-.coinImage {
-  width: 17px;
-  position: relative;
-  top: -2px;
-  /*left: -15px;*/
+.yourStatsContainer {
+  width: 200px;
+  margin-bottom: 15px;
 }
 
-.coinContainer {
-  /*height: 60px;*/
+.yourStatsContainer>div {
+  display: inline-block;
+}
+
+.statsLeft {
+  width: 120px;
+}
+
+.statsRight {
+  width: 50px;
+  text-align: right;
 }

@@ -8,9 +8,9 @@ import styles from './styles.css';
 import Leaderboard from 'components/Leaderboard';
 
 import { loadChannelMarketsAndSubscribe, unsubscribeChannelMarkets } from 'globalReducers/markets/actions';
-import { selectLoggedIn } from 'globalReducers/user/selectors';
+import { selectLoggedIn, selectUserObj } from 'globalReducers/user/selectors';
 import { loadChannelLeaderboard } from 'globalReducers/leaderboards/actions';
-import { selectChannelLeaderboard } from 'globalReducers/leaderboards/selectors';
+import { selectChannelLeaderboard, selectChannelLeaderboardUser } from 'globalReducers/leaderboards/selectors';
 
 import { transactionAmountChange } from 'globalReducers/transactions/actions';
 
@@ -93,9 +93,14 @@ export class StreamPage extends React.Component {
     const leaderboard = (<div>
       <div className={styles.headerContainer}>
       </div>
-      {this.props.channel ? <Leaderboard
+      {this.props.channel ?
+        <Leaderboard
           loadAll={_.partial(this.props.loadLeaderboard, this.props.channel.get('id'))}
-          leaderboard={this.props.leaderboard} /> : null}
+          leaderboard={this.props.leaderboard}
+          loadUser={_.partial(this.props.loadLeaderboardUser, this.props.channel.get('id'), this.props.user ? this.props.user.get('username') : '')}
+          loggedIn={this.props.loggedIn}
+          userRanking={this.props.leaderboardUser}
+        /> : null}
     </div>);
     return (
       <div>
@@ -128,6 +133,8 @@ function mapDispatchToProps(dispatch) {
     transactionAmountChange: (market, entity, operation, amount) => dispatch(transactionAmountChange(market, entity, operation, amount)),
     navigate: (path) => dispatch(push(path)),
     loadLeaderboard: (channelId, skip, limit) => dispatch(loadChannelLeaderboard(channelId, null, skip, limit)),
+    loadLeaderboardUser: (channelId, username, skip, limit) => dispatch(loadChannelLeaderboard(channelId, username, skip, limit)),
+
   };
 }
 
@@ -153,6 +160,8 @@ function mapStateToProps(state, props) {
     channel,
     loggedIn: selectLoggedIn()(state),
     leaderboard: channel ? selectChannelLeaderboard(channel.get('id'))(state) : {},
+    leaderboardUser: channel ? selectChannelLeaderboardUser(channel.get('id'))(state) : {},
+    user: selectUserObj()(state),
   };
 }
 
