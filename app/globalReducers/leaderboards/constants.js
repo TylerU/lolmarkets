@@ -1,0 +1,3 @@
+export const LOAD_LEADERBOARD = 'zilean/Markets/LOAD_LEADERBOARD';
+export const LOAD_LEADERBOARD_SUCCESS = 'zilean/Markets/LOAD_LEADERBOARD_SUCCESS';
+export const LOAD_LEADERBOARD_ERROR = 'zilean/Markets/LOAD_LEADERBOARD_ERROR';

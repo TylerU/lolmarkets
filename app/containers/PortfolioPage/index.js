@@ -43,7 +43,7 @@ class PortfolioPage extends React.Component {
       marketObj.marketUser = marketUser;
       return marketObj;
     });
-    const markets = _.filter(marketsPre, { active: true });
+    const markets = _.filter(marketsPre, (market) => market.active);
     const oldMarkets = _.filter(marketsPre, { active: false });
 
     // const groupedMarkets = _.groupBy(markets, 'channel');
@@ -104,7 +104,7 @@ class PortfolioPage extends React.Component {
     return (
       <div>
         <h2>Your Portfolio</h2>
-        <h3>Active Market Investments</h3>
+        <h3>Active Markets</h3>
         {activeMarkets}
         <h3>Resolved Markets</h3>
         <div className={`${styles.tableContainer} well`}>

@@ -59,7 +59,10 @@ function getResult(details, match) {
   if (!details || !details.activeAccount) throw new Error('Invalid market. Needs activeAccount set');
   const summonerId = details.activeAccount.id;
   const participantId = _.find(match.participantIdentities, (identity) => identity.player.summonerId === summonerId).participantId;
+  if (!participantId) throw new Error('Unable to find participant id in match object');
+
   const participant = _.find(match.participants, { participantId });
+  if (!participant || !participant.stats) throw new Error('Unable to find the participant stats object for the participantId');
 
   const resolve = {
     WILL_WIN: () =>
@@ -68,7 +71,7 @@ function getResult(details, match) {
       if (!details.kills) {
         throw new Error(`Markets of type ${predictionTypes.MORE_THAN_X_KILLS} must have 'kills' member`);
       }
-      return participant.kills > details.kills;
+      return participant.stats.kills > details.kills;
     },
   };
 
@@ -108,46 +111,48 @@ function resolveMarkets(app) {
   // Mark market as resolved
   const resolveQuery = `
     WITH 
-    "shares" AS
-        (SELECT "result", "user", "MarketUser"."yesShares", "MarketUser"."noShares", "Market"."id", "MarketUser"."id" as "marketUserId"
+    "markets" AS 
+      (SELECT "id"  
+        FROM public."Market"
+        WHERE "active" = FALSE 
+          AND "resolved" = FALSE
+          AND "result" = <%= curResult %>
+        FOR UPDATE
+      ),
+    "marketUsers" AS
+        (SELECT "user", "yesShares", "noShares", "MarketUser"."id"
             FROM public."MarketUser"
-            INNER JOIN public."Market"
-            ON "Market"."id" = "MarketUser"."market"
-            WHERE "active" = FALSE 
-            AND "resolved" = FALSE
-            AND "result" = <%= curResult %>
-            AND "MarketUser"."<%= curField %>" > 0
+            WHERE "market" in (SELECT * from markets)
             FOR UPDATE
         ),
-    "updated" AS 
+    "usersUpdated" AS 
         (UPDATE public."User"
-            SET "money" = "money" + "shares"."<%= curField %>"
-            FROM "shares"
-            WHERE "shares"."user" = "User"."id"
-          RETURNING "User"."id" as "userId", "User"."money"
+            SET "money" = "money" + "marketUsers"."<%= curField %>"
+            FROM "marketUsers"
+            WHERE "marketUsers"."user" = "User"."id"
+          RETURNING "User"."id" as "id"
         ),
     "marketsUpdated" AS 
         (UPDATE public."Market"
             SET "resolved" = TRUE
-            WHERE "Market"."id" in (SELECT "id" FROM "shares")
+            WHERE "id" in (SELECT "id" FROM "markets")
           RETURNING "id"
         ),
     "marketUsersUpdated" AS 
         (UPDATE public."MarketUser"
             SET "inMoneyFinal" = "inMoney",
-                "outMoneyFinal" = "outMoney" + "shares"."<%= curField %>",
+                "outMoneyFinal" = "outMoney" + "<%= curField %>",
                 "marketResult" = <%= curResult %>
-            FROM "shares"
-            WHERE "MarketUser"."id" = "shares"."marketUserId"
-          RETURNING "marketUserId"
+            WHERE "market" in (SELECT * from markets)
+          RETURNING "id"
         )
     SELECT * 
     FROM 
       (SELECT DISTINCT "id", 'Market' AS "type" FROM "marketsUpdated"
          UNION 
-         select  "marketUserId" as "id", 'MarketUser' as "type" from "marketUsersUpdated"
+         select  "id" as "id", 'MarketUser' as "type" from "marketUsersUpdated"
          UNION
-         select  "userId" as "id", 'User' as "type" from "updated") as "test2"`;
+         select  "id" as "id", 'User' as "type" from "usersUpdated") as "test2"`;
 
   const compiled = _.template(resolveQuery);
   const yesQuery = compiled({ curResult: 'TRUE', curField: 'yesShares' });

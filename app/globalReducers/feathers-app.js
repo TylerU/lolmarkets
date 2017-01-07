@@ -22,6 +22,7 @@ const ChannelService = app.service('channels');
 const MarketService = app.service('markets');
 const MarketUserService = app.service('marketUsers');
 const TransactionService = app.service('transactions');
+const LeaderboardService = app.service('leaderboards');
 
 // const _ = require('lodash');
 //
@@ -50,4 +51,5 @@ export {
   MarketService,
   TransactionService,
   MarketUserService,
+  LeaderboardService
 };

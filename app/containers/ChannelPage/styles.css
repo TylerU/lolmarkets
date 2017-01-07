@@ -1,7 +1,7 @@
 
 
 .headerContainer {
-  height: 65px;
+  height: 25px;
 }
 
 .marketsHeader {
@@ -13,4 +13,10 @@
   height: 400px;
 }
 
-
+.marketTabsContainer>ul>li {
+  width: 50%;
+}
+.marketTabsContainer>ul>li>a {
+  margin-right: 0;
+  font-size: 26px;
+}

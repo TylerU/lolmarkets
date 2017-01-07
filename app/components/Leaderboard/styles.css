@@ -1,0 +1,10 @@
+.coinImage {
+  width: 17px;
+  position: relative;
+  top: -2px;
+  /*left: -15px;*/
+}
+
+.coinContainer {
+  /*height: 60px;*/
+}

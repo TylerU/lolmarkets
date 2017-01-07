@@ -1,13 +1,16 @@
-// import { push } from 'react-router-redux';
-// import { Link } from 'react-router';
+import { push } from 'react-router-redux';
+import { Tabs, Tab } from 'react-bootstrap';
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import MarketItem from '../../containers/MarketItem';
 import styles from './styles.css';
+import Leaderboard from 'components/Leaderboard';
 
 import { loadChannelMarketsAndSubscribe, unsubscribeChannelMarkets } from 'globalReducers/markets/actions';
 import { selectLoggedIn } from 'globalReducers/user/selectors';
+import { loadChannelLeaderboard } from 'globalReducers/leaderboards/actions';
+import { selectChannelLeaderboard } from 'globalReducers/leaderboards/selectors';
 
 import { transactionAmountChange } from 'globalReducers/transactions/actions';
 
@@ -44,6 +47,12 @@ class MarketsList extends React.Component {
 }
 
 export class StreamPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      key: props.location.hash === '#leaderboard' ? 2 : 1,
+    };
+  }
   componentWillMount() {
     this.props.loadMarketsForChannelAndSubscribe(this.props.params.streamName, this.props.channel);
   }
@@ -52,13 +61,42 @@ export class StreamPage extends React.Component {
     this.props.unsubscribeChannelMarkets(this.props.params.streamName);
   }
 
-  render() {
-    // console.log(this.props.markets);
+  handleSelect(key) {
+    let path = `${this.props.location.pathname}#${key === 1 ? 'markets' : 'leaderboard'}`;
+    if (path[0] !== '/') {
+      path = `/${path}`;
+    }
 
+    this.props.navigate(path);
+    this.setState({ key });
+  }
+
+  render() {
     const stream = this.props.channel;
     const markets = _.values(this.props.markets);
     // console.log(this.props.markets, stream);
 
+    const allMarkets = (<div>
+      <div className={styles.headerContainer}>
+
+      </div>
+
+      <div>
+        {markets.length > 0 ?
+          (<MarketsList
+            markets={markets}
+            loggedIn={this.props.loggedIn}
+          />) : (<h4>There are currently no open markets.</h4>)}
+      </div>
+    </div>);
+
+    const leaderboard = (<div>
+      <div className={styles.headerContainer}>
+      </div>
+      {this.props.channel ? <Leaderboard
+          loadAll={_.partial(this.props.loadLeaderboard, this.props.channel.get('id'))}
+          leaderboard={this.props.leaderboard} /> : null}
+    </div>);
     return (
       <div>
         <h2>{stream ? stream.get('displayName') : ''}</h2>
@@ -67,19 +105,11 @@ export class StreamPage extends React.Component {
             {/* <EmbeddedTwitchPlayer stream={stream.name} /> */}
           </div>
         </div>
-        <div>
-          <div className={styles.headerContainer}>
-            <h3 className={styles.marketsHeader}>Open Markets</h3>
-            <h3 className="pull-right">Price</h3>
-          </div>
-          <div>
-            {markets.length > 0 ?
-              (<MarketsList
-                markets={markets}
-                loggedIn={this.props.loggedIn}
-              />) : (<h4>There are currently no open markets.</h4>)}
-          </div>
-        </div>
+        <Tabs activeKey={this.state.key} onSelect={(key) => this.handleSelect(key)} className={`${styles.marketTabsContainer}`} id="market-or-leaderboard-tabs">
+          <Tab eventKey={1} title="Markets">{allMarkets}</Tab>
+          <Tab eventKey={2} title="Leaderboard">{leaderboard}</Tab>
+        </Tabs>
+
       </div>
     );
   }
@@ -96,6 +126,8 @@ function mapDispatchToProps(dispatch) {
     loadMarketsForChannelAndSubscribe: (channelName, channelObj) => dispatch(loadChannelMarketsAndSubscribe(channelName, channelObj)),
     unsubscribeChannelMarkets: (channelId) => dispatch(unsubscribeChannelMarkets(channelId)),
     transactionAmountChange: (market, entity, operation, amount) => dispatch(transactionAmountChange(market, entity, operation, amount)),
+    navigate: (path) => dispatch(push(path)),
+    loadLeaderboard: (channelId, skip, limit) => dispatch(loadChannelLeaderboard(channelId, null, skip, limit)),
   };
 }
 
@@ -115,10 +147,12 @@ function mapStateToProps(state, props) {
       markets = markets.toJS();
     }
   }
+
   return {
     markets,
     channel,
     loggedIn: selectLoggedIn()(state),
+    leaderboard: channel ? selectChannelLeaderboard(channel.get('id'))(state) : {},
   };
 }
 
