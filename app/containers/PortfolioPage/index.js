@@ -12,6 +12,7 @@ import numeral from 'numeral';
 import MoneyIcon from '../../components/MoneyIcon';
 import styles from './styles.css';
 import moment from 'moment';
+import { Link } from 'react-router';
 
 function formatPrice(x) {
   return numeral(x).format('0.00');
@@ -102,7 +103,7 @@ class PortfolioPage extends React.Component {
     });
 
     return (
-      <div>
+      this.props.loggedIn ? (<div>
         <h2>Your Portfolio</h2>
         <h3>Active Markets</h3>
         {activeMarkets}
@@ -125,7 +126,15 @@ class PortfolioPage extends React.Component {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>) :
+        <div>
+          <h2>
+            Please
+            <Link to={`/login?next=portfolio`}> Log In </Link> or
+            <Link to={`/register?next=portfolio`}> Register </Link>
+            to see this page.
+          </h2>
+        </div>
     );
   }
 }
