@@ -60,7 +60,10 @@ class Leaderboard extends React.Component {
           <div className={`${styles.statsLeft}`}>Your Ranking: </div>
           <div className={`${styles.statsRight}`}>{this.props.userRanking.ranking}</div>
           <div className={`${styles.statsLeft}`}>Net Profit: </div>
-          <div className={`${styles.statsRight}`}><MoneyIcon /> {formatPrice(this.props.userRanking.profit)}</div>
+          <div className={`${styles.statsRight}`}>
+            <MoneyIcon />
+            <span>{formatPrice(this.props.userRanking.profit)}</span>
+          </div>
         </div>) : null}
         <table className="table table-responsive table-striped">
           <thead>

@@ -186,7 +186,7 @@ class BuySellView extends React.Component {
       x: Math.floor(this.props.max / 2),
     };
     if (this.state.x > 0) {
-      this.props.onChange(this.state.x);
+      _.defer(() => this.props.onChange(this.state.x));
     }
   }
 
@@ -433,7 +433,7 @@ MarketItem.propTypes = {
 function mapDispatchToProps(dispatch) {
   return {
     transactionAmountChange:
-      _.debounce((market, entity, operation, amount) =>
+      _.throttle((market, entity, operation, amount) =>
         dispatch(transactionAmountChange(market, entity, operation, amount)), 50),
     executeTransaction: (market, entity, operation, amount) => dispatch(executeTransaction(market, entity, operation, amount)),
     executeHypotheticalTransaction: (market, entity, operation, amount) => dispatch(executeHypotheticalTransaction(market, entity, operation, amount)),
