@@ -2,8 +2,8 @@
  * Gets the repositories of the user from Github
  */
 
-import { take, call, put, select, fork } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, select, fork, } from 'redux-saga/effects';
+import { takeEvery, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import _ from 'lodash';
 import { ATTEMPT_REAUTH, LOGOUT, LOGIN, REGISTER } from 'globalReducers/user/constants';
@@ -41,6 +41,7 @@ export function* attemptAuthWatcher() {
 export function* attemptAuth() {
   // Fork watcher so we can continue execution
   yield fork(attemptAuthWatcher);
+  yield delay(1);
   yield put(attemptReauth());
 }
 

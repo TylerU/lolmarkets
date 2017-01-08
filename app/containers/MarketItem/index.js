@@ -399,6 +399,7 @@ class MarketItem extends React.Component {
   transactionClick(e) {
     this.setState({ transactionsOpen: !this.state.transactionsOpen });
     if (!this.state.transactionsOpen) {
+      this.props.showMarketTransactions();
       this.props.loadMarketTransactions(this.props.market.id);
     }
     e.preventDefault();
@@ -512,6 +513,7 @@ function mapDispatchToProps(dispatch) {
     executeTransaction: (market, entity, operation, amount) => dispatch(executeTransaction(market, entity, operation, amount)),
     executeHypotheticalTransaction: (market, entity, operation, amount) => dispatch(executeHypotheticalTransaction(market, entity, operation, amount)),
     loadMarketTransactions: (market) => dispatch(loadMarketTransactions(market)),
+    showMarketTransactions: () => dispatch({ type: 'zilean/Transactions/SHOW_MARKET_TRANSACTIONS' }),
   };
 }
 
