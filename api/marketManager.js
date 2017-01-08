@@ -4,14 +4,144 @@ const Promise = require('bluebird');
 exports.predictionTypes = {
   WILL_WIN: 0,
   MORE_THAN_X_KILLS: 1,
+  MORE_THAN_X_DEATHS: 2,
+  MORE_THAN_X_CS: 3,
+  GET_FIRST_BLOOD: 4,
+  GET_DOUBLEKILL: 5,
+  GET_TRIPLEKILL: 6,
+  GET_QUADRA: 7,
+  GET_PENTA: 8,
+  MORE_THAN_X_ASSISTS: 9,
+  END_GAME_LEVEL_18: 10,
 };
+const predictionTypes = exports.predictionTypes;
+const predictionGenerators = [
+  function willWin(activeAccount, name) {
+    return {
+      name: `${name} will win this game`,
+      predictionDetails: {
+        type: predictionTypes.WILL_WIN,
+        activeAccount,
+      },
+    };
+  },
+  function level18(activeAccount, name) {
+    return {
+      name: `${name} will hit level 18 this game`,
+      predictionDetails: {
+        type: predictionTypes.END_GAME_LEVEL_18,
+        activeAccount,
+      },
+    };
+  },
+  function killCount(activeAccount, name) {
+    const numKills = _.random(3, 9);
+    return {
+      name: `${name} will get ${numKills} or more kills`,
+      predictionDetails: {
+        type: predictionTypes.MORE_THAN_X_KILLS,
+        activeAccount,
+        kills: numKills,
+      },
+    };
+  },
+  function assistCount(activeAccount, name) {
+    const num = _.random(3, 9);
+    return {
+      name: `${name} will get ${num} or more assists`,
+      predictionDetails: {
+        type: predictionTypes.MORE_THAN_X_ASSISTS,
+        activeAccount,
+        kills: num,
+      },
+    };
+  },
+  function deathCount(activeAccount, name) {
+    const num = _.random(2, 10);
+    return {
+      name: `${name} will die ${num} or more times`,
+      predictionDetails: {
+        type: predictionTypes.MORE_THAN_X_DEATHS,
+        activeAccount,
+        deaths: num,
+      },
+    };
+  },
+  function assistCount(activeAccount, name) {
+    const num = _.random(2, 12);
+    return {
+      name: `${name} will get ${num} or more assists`,
+      predictionDetails: {
+        type: predictionTypes.MORE_THAN_X_ASSISTS,
+        activeAccount,
+        assists: num,
+      },
+    };
+  },
+  function csCount(activeAccount, name) {
+    const num = _.random(4, 28) * 10;
+    return {
+      name: `${name} will get ${num} or more cs`,
+      predictionDetails: {
+        type: predictionTypes.MORE_THAN_X_CS,
+        activeAccount,
+        cs: num,
+      },
+    };
+  },
+  function firstBlood(activeAccount, name) {
+    return {
+      name: `${name} will get or assist first blood`,
+      predictionDetails: {
+        type: predictionTypes.GET_FIRST_BLOOD,
+        activeAccount,
+      },
+    };
+  },
+  function doubleKill(activeAccount, name) {
+    return {
+      name: `${name} will get a double kill`,
+      predictionDetails: {
+        type: predictionTypes.GET_DOUBLEKILL,
+        activeAccount,
+      },
+    };
+  },
+  function tripleKill(activeAccount, name) {
+    return {
+      name: `${name} will get a triple kill`,
+      predictionDetails: {
+        type: predictionTypes.GET_TRIPLEKILL,
+        activeAccount,
+      },
+    };
+  },
+  function quadraKill(activeAccount, name) {
+    return {
+      name: `${name} will get a quadra kill`,
+      predictionDetails: {
+        type: predictionTypes.GET_QUADRA,
+        activeAccount,
+      },
+    };
+  },
+  function tripleKill(activeAccount, name) {
+    return {
+      name: `${name} will get a penta kill`,
+      predictionDetails: {
+        type: predictionTypes.GET_PENTA,
+        activeAccount,
+      },
+    };
+  },
+
+];
 
 function log(res) {
   console.log(res);
   return res;
 }
 
-const predictionTypes = exports.predictionTypes;
 
 // TODO - fix wonky app tossing
 exports.handleNewGame = function handleNewGame(app, details) {
@@ -24,31 +154,20 @@ exports.handleNewGame = function handleNewGame(app, details) {
   const leagueGameRegion = details.extraDetails.activeAccount.region;
   const activeAccount = details.extraDetails.activeAccount;
   const name = channelIn.displayName;
-  const numKills = _.random(3, 9);
 
-  const promises = [
-    MarketService.create({
-      name: `${name} will win this game`,
-      predictionDetails: {
-        type: predictionTypes.WILL_WIN,
-        activeAccount,
-      },
+  const NUM_MARKETS = 2;
+  const generators = _.sampleSize(_.tail(predictionGenerators), NUM_MARKETS);
+  generators.push(predictionGenerators[0]);
+  const promises = _.map(generators, (gen) => {
+    const pred = gen(activeAccount, name);
+    return MarketService.create({
+      name: pred.name,
+      predictionDetails: pred.predictionDetails,
       channel,
       leagueGameId,
       leagueGameRegion,
-    }),
-    MarketService.create({
-      name: `${name} will get ${numKills} or more kills`,
-      predictionDetails: {
-        type: predictionTypes.MORE_THAN_X_KILLS,
-        activeAccount,
-        kills: numKills,
-      },
-      channel,
-      leagueGameId,
-      leagueGameRegion,
-    }),
-  ];
+    });
+  });
 
   return Promise.all(promises).then(
     () => app.logger.info(`Successfully created markets for new game. Player: ${name}`),

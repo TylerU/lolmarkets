@@ -52,8 +52,6 @@ module.exports = function () {
     .then(() => demoData(app))
     .then(() => twitchMonitor(app))
     .then(() => LeagueMonitor.startMonitoring(app))
-    .then(() => MarketManager.resolveMarkets(app)) // TODO - TEMP
-    // TODO - security-ize this
     .then(() => sequelize.query('update public."User" set "superAdmin" = TRUE where username = \'admin\'', { type: app.get('sequelize').QueryTypes.UPDATE}))
     .then(null, (err) => app.logger.error('Error encountered during setup', err));
 };

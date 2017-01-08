@@ -93,8 +93,6 @@ export function* loginWatcher() {
 }
 
 // TODO - make more general, abstract out what's common here for fuck's sake
-
-
 export function* register() {
   const formData = yield select(getFormValues(formName));
   yield put(startSubmit(formName));

@@ -6,7 +6,6 @@ const io = require('socket.io-client');
 
 const host = window.location.hostname + ':3030';
 
-// TODO - fix url
 const socket = io(host, {
   transport: ['websockets'],
 });

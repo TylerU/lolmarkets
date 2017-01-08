@@ -134,7 +134,6 @@ exports.after = {
     customHooks.mapResultHook(populateMarketUser),
     customHooks.mapResultHook(populateProperties),
     customHooks.mapResultHook(populateMaxCanBuy),
-    // TODO - Does commenting this cause data leakage somewhere?. Yes, in MarketUser. Why the fuck did you do this?
     customHooks.ignoreNoProvider(), // Hack for the behavior of hooks.pluck. Do not call any other methods below here
     hooks.pluck.apply(hooks, outProperties),
   ],
