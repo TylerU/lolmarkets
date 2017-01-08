@@ -46,13 +46,13 @@ const predictionGenerators = [
     };
   },
   function assistCount(activeAccount, name) {
-    const num = _.random(3, 9);
+    const num = _.random(2, 12);
     return {
       name: `${name} will get ${num} or more assists`,
       predictionDetails: {
         type: predictionTypes.MORE_THAN_X_ASSISTS,
         activeAccount,
-        kills: num,
+        assists: num,
       },
     };
   },
@@ -64,17 +64,6 @@ const predictionGenerators = [
         type: predictionTypes.MORE_THAN_X_DEATHS,
         activeAccount,
         deaths: num,
-      },
-    };
-  },
-  function assistCount(activeAccount, name) {
-    const num = _.random(2, 12);
-    return {
-      name: `${name} will get ${num} or more assists`,
-      predictionDetails: {
-        type: predictionTypes.MORE_THAN_X_ASSISTS,
-        activeAccount,
-        assists: num,
       },
     };
   },
@@ -125,7 +114,7 @@ const predictionGenerators = [
       },
     };
   },
-  function tripleKill(activeAccount, name) {
+  function pentaKill(activeAccount, name) {
     return {
       name: `${name} will get a penta kill`,
       predictionDetails: {
@@ -155,11 +144,12 @@ exports.handleNewGame = function handleNewGame(app, details) {
   const activeAccount = details.extraDetails.activeAccount;
   const name = channelIn.displayName;
 
-  const NUM_MARKETS = 2;
+  const NUM_MARKETS = predictionGenerators.length-1; // TEMP
   const generators = _.sampleSize(_.tail(predictionGenerators), NUM_MARKETS);
   generators.push(predictionGenerators[0]);
   const promises = _.map(generators, (gen) => {
     const pred = gen(activeAccount, name);
+
     return MarketService.create({
       name: pred.name,
       predictionDetails: pred.predictionDetails,
@@ -183,21 +173,58 @@ function getResult(details, match) {
   const participant = _.find(match.participants, { participantId });
   if (!participant || !participant.stats) throw new Error('Unable to find the participant stats object for the participantId');
 
+  const stats = participant.stats;
+
+  function ensureHas(val, props) {
+    if (_.intersection(_.keys(val), props).length === props.length) return true;
+    throw new Error(`Invalid object received. Expected members: ${_.toString(props)}, but received object only has ${_.toString(_.keys(val))}`)
+  }
+
   const resolve = {
     WILL_WIN: () =>
-       participant.stats.winner,
-    MORE_THAN_X_KILLS: () => {
-      if (!details.kills) {
-        throw new Error(`Markets of type ${predictionTypes.MORE_THAN_X_KILLS} must have 'kills' member`);
-      }
-      return participant.stats.kills > details.kills;
-    },
+      ensureHas(stats, ['winner']) &&
+      stats.winner,
+    MORE_THAN_X_KILLS: () =>
+      ensureHas(stats, ['kills']) &&
+      ensureHas(details, ['kills']) &&
+      stats.kills >= details.kills,
+    MORE_THAN_X_DEATHS: () =>
+      ensureHas(stats, ['deaths']) &&
+      ensureHas(details, ['deaths']) &&
+      stats.deaths >= details.deaths,
+    MORE_THAN_X_CS: () =>
+      ensureHas(stats, ['neutralMinionsKilled', 'minionsKilled']) &&
+      ensureHas(details, ['cs']) &&
+      stats.neutralMinionsKilled + stats.minionsKilled >= details.cs,
+    GET_FIRST_BLOOD: () =>
+      ensureHas(stats, ['firstBloodAssist', 'firstBloodKill']) &&
+      stats.firstBloodAssist || stats.firstBloodKill,
+    GET_DOUBLEKILL: () =>
+      ensureHas(stats, ['doubleKills']) &&
+      stats.doubleKills > 0,
+    GET_TRIPLEKILL: () =>
+      ensureHas(stats, ['tripleKills']) &&
+      stats.tripleKills > 0,
+    GET_QUADRA: () =>
+      ensureHas(stats, ['quadraKills']) &&
+      stats.quadraKills > 0,
+    GET_PENTA: () =>
+      ensureHas(stats, ['pentaKills']) &&
+      stats.pentaKills > 0,
+    MORE_THAN_X_ASSISTS: () =>
+      ensureHas(stats, ['assists']) &&
+      ensureHas(details, ['assists']) &&
+      stats.assists >= details.assists,
+    END_GAME_LEVEL_18: () =>
+      ensureHas(stats, ['champLevel']) &&
+      stats.champLevel == 18,
   };
 
   if (!_.isEqual(_.keys(resolve), _.keys(predictionTypes))) {
     throw new Error('Prediction Types not equal');
   }
   const result = _.mapKeys(resolve, (value, key) => predictionTypes[key])[details.type]();
+
   return result;
 }
 
