@@ -1,14 +1,21 @@
 import { take, call, put, select, fork, cancel } from 'redux-saga/effects';
 import { takeEvery, takeLatest, delay } from 'redux-saga';
 
-import { TRANSACTION_AMOUNT_CHANGE, EXECUTE_TRANSACTION, EXECUTE_HYPOTHETICAL_TRANSACTION } from './constants';
-import { hypotheticalTransactionSuccess, hypotheticalTransactionError, executeTransactionError, executeTransactionSuccess } from './actions';
+import { LOAD_MARKET_TRANSACTIONS, TRANSACTION_AMOUNT_CHANGE, EXECUTE_TRANSACTION, EXECUTE_HYPOTHETICAL_TRANSACTION } from './constants';
+import {
+  loadMarketTransactionsSuccess,
+  loadMarketTransactions,
+  hypotheticalTransactionSuccess,
+  hypotheticalTransactionError,
+  executeTransactionError,
+  executeTransactionSuccess } from './actions';
 import { selectHypotheticalTransaction, selectTransactionAmount } from './selectors';
 
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
 import { app } from 'globalReducers/feathers-app';
 const TransactionService = app.service('transactions');
+import { wrapWatcherWaitOnAuth } from 'globalReducers/util';
 
 function getTransaction(market, yesSharesDelta, noSharesDelta) {
   return TransactionService.create({
@@ -94,13 +101,31 @@ function* executeTransaction(action) {
   } else {
     console.log('Error executing transaction: ', error);
   }
+  yield put(loadMarketTransactions(action.market));
 }
 
 export function* transactionWatcher() {
   yield* takeLatest(EXECUTE_TRANSACTION, executeTransaction);
 }
+
+function* executeLoadMarketTransactions(action) {
+  const markets = yield TransactionService.find({ query: { market: action.marketId, } })
+    .then((res) => ({ res: res.data }), (err) => ({ err }));
+
+  if (!markets.err) {
+    yield put(loadMarketTransactionsSuccess(action.marketId, markets.res));
+  } else {
+    console.log('ERROR LOADING MARKET TRANSACTIONS', markets);
+    // yield put(loadUserMarketsError(markets.err));
+  }
+}
+
+export function* loadMarketTransactionWatcher() {
+  yield* wrapWatcherWaitOnAuth(LOAD_MARKET_TRANSACTIONS, executeLoadMarketTransactions);
+}
 // Bootstrap sagas
 export default [
   hypotheticalTransactionWatcher,
   transactionWatcher,
+  loadMarketTransactionWatcher,
 ];

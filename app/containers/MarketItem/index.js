@@ -9,9 +9,16 @@ import styles from './styles.css';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
+import {
+  transactionAmountChange,
+  loadMarketTransactions,
+  executeTransaction,
+  executeHypotheticalTransaction } from 'globalReducers/transactions/actions';
 
-import { transactionAmountChange, executeTransaction, executeHypotheticalTransaction } from 'globalReducers/transactions/actions';
-import { selectHypotheticalTransaction, selectTransactionAmount, selectActualTransaction } from 'globalReducers/transactions/selectors';
+import {
+  selectHypotheticalTransaction,
+  selectMarketTransactions,
+  selectActualTransaction } from 'globalReducers/transactions/selectors';
 
 function formatNumber(x) {
   return numeral(x).format('0.00');
@@ -327,12 +334,61 @@ class MarketActions extends React.Component {
   }
 }
 
+class TransactionTable extends React.Component {
+
+  render() {
+    const transactions = this.props.transactions.result;
+
+    const rows = _.map(transactions, (transaction) => {
+      const yes = transaction.yesSharesDelta;
+      const no = transaction.noSharesDelta;
+      let opDisplay = null;
+      if (yes > 0) {
+        opDisplay = <span>+ {yes} <YesShareIcon style={{ marginLeft: '2px' }} /></span>;
+      } else if (yes < 0) {
+        opDisplay = <span>- {-yes} <YesShareIcon style={{ marginLeft: '2px' }} /></span>;
+      } else if (no > 0) {
+        opDisplay = <span>+ {no} <NoShareIcon style={{ marginLeft: '2px' }} /></span>;
+      } else if (no < 0) {
+        opDisplay = <span>- {-no} <NoShareIcon style={{ marginLeft: '2px' }} /></span>;
+      }
+
+      return (
+        <tr key={transaction.id}>
+          <td
+            data-title="Operation"
+          >{opDisplay}</td>
+          <td
+            data-title="Total Cost"
+          ><MoneyIcon />{formatPrice(transaction.totalPrice)}</td>
+          <td
+            data-title="New Market Belief"
+          >{formatPercent(transaction.newPercent)}</td>
+        </tr>);
+    });
+    return (<div>
+      <table className="table table-responsive table-striped">
+        <thead>
+          <tr key="-1">
+            <th>Operation</th>
+            <th>Total Cost</th>
+            <th>New Market Belief</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+    </div>);
+  }
+}
 
 class MarketItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
+      transactionsOpen: false,
     };
   }
 
@@ -340,6 +396,13 @@ class MarketItem extends React.Component {
     this.setState({ open: !this.state.open });
   }
 
+  transactionClick(e) {
+    this.setState({ transactionsOpen: !this.state.transactionsOpen });
+    if (!this.state.transactionsOpen) {
+      this.props.loadMarketTransactions(this.props.market.id);
+    }
+    e.preventDefault();
+  }
   render() {
     const tooltipYes = 'At the end of the game, if this prediction is true, all yes shares are redeemed for $1. If the prediction is false, they are worth nothing';
     const tooltipNo = 'At the end of the game, if this prediction is false, all no shares are redeemed for $1. If the prediction is true, they are worth nothing';
@@ -416,7 +479,18 @@ class MarketItem extends React.Component {
                 icon={<NoShareIcon />}
               />
             </div>
+            <div className="clearfix"></div>
+            <div className={`${styles.transactionListContainer}`}>
+              <a href="#" onClick={(e) => this.transactionClick(e)}>
+                {this.state.transactionsOpen ? 'Hide' : 'View'} my transactions
+              </a>
+              {this.state.transactionsOpen ?
+                <div>
+                  <TransactionTable transactions={this.props.userTransactions} />
+                </div> : null}
+            </div>
           </Collapse> : null}
+
         </div>
       </div>
     );
@@ -437,6 +511,7 @@ function mapDispatchToProps(dispatch) {
         dispatch(transactionAmountChange(market, entity, operation, amount)), 50),
     executeTransaction: (market, entity, operation, amount) => dispatch(executeTransaction(market, entity, operation, amount)),
     executeHypotheticalTransaction: (market, entity, operation, amount) => dispatch(executeHypotheticalTransaction(market, entity, operation, amount)),
+    loadMarketTransactions: (market) => dispatch(loadMarketTransactions(market)),
   };
 }
 
@@ -468,6 +543,7 @@ function mapStateToProps(state, props) {
     yesSellActual,
     noBuyActual,
     noSellActual,
+    userTransactions: toJSON(selectMarketTransactions(market)(state)),
   };
 }
 

@@ -18,6 +18,8 @@ import {
   EXECUTE_TRANSACTION,
   EXECUTE_TRANSACTION_SUCCESS,
   EXECUTE_TRANSACTION_ERROR,
+  LOAD_MARKET_TRANSACTIONS,
+  LOAD_MARKET_TRANSACTIONS_SUCCESS,
 } from './constants';
 
 import { fromJS } from 'immutable';
@@ -44,6 +46,24 @@ function appReducer(state = initialState, action) {
       obj = getObj(action);
       obj[action.market][action.entity][action.operation] = {
         amount: action.amount,
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case LOAD_MARKET_TRANSACTIONS:
+      obj = {};
+      obj[action.marketId] = {};
+      obj[action.marketId].transactions = {
+        loading: true,
+        result: [],
+      };
+      return state
+        .mergeDeep(fromJS(obj));
+    case LOAD_MARKET_TRANSACTIONS_SUCCESS:
+      obj = {};
+      obj[action.marketId] = {};
+      obj[action.marketId].transactions = {
+        loading: false,
+        result: action.transactions,
       };
       return state
         .mergeDeep(fromJS(obj));

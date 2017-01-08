@@ -7,8 +7,26 @@ import {
   EXECUTE_TRANSACTION,
   EXECUTE_TRANSACTION_SUCCESS,
   EXECUTE_TRANSACTION_ERROR,
+  LOAD_MARKET_TRANSACTIONS,
+  LOAD_MARKET_TRANSACTIONS_SUCCESS,
 } from './constants';
 
+// Load the current user's transactions in the given market
+export function loadMarketTransactions(marketId) {
+  return {
+    type: LOAD_MARKET_TRANSACTIONS,
+    marketId,
+  };
+}
+
+// Load the current user's transactions in the given market
+export function loadMarketTransactionsSuccess(marketId, result) {
+  return {
+    type: LOAD_MARKET_TRANSACTIONS_SUCCESS,
+    marketId,
+    transactions: result,
+  };
+}
 
 export function transactionAmountChange(market, entity, operation, amount) {
   return {

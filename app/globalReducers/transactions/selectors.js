@@ -2,16 +2,6 @@
  * The global state selectors
  */
 
-import { createSelector } from 'reselect';
-
-
-const selectCurrentUser = () =>
-  (globalState) => globalState.get('user');
-
-const selectAuthLoading = () => createSelector(
-  selectCurrentUser(),
-  (user) => user.get('loading')
-);
 
 const selectHypotheticalTransaction = (market, entity, operation) =>
   (store) =>
@@ -25,8 +15,13 @@ const selectTransactionAmount = (market, entity, operation) =>
   (store) =>
     store.getIn(['transactions', `${market}`, entity, operation, 'amount']);
 
+const selectMarketTransactions = (market) =>
+  (store) =>
+    store.getIn(['transactions', `${market}`, 'transactions']);
+
 export {
   selectActualTransaction,
   selectHypotheticalTransaction,
   selectTransactionAmount,
+  selectMarketTransactions,
 };
