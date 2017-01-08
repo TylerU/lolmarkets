@@ -121,9 +121,9 @@ function resolveMarkets(app) {
       ),
     "marketUsers" AS
         (SELECT "user", "yesShares", "noShares", "MarketUser"."id"
-            FROM public."MarketUser"
+            FROM public."MarketUser" 
             WHERE "market" in (SELECT * from markets)
-            FOR UPDATE
+            --FOR UPDATE -- Apparently this causes other things to not be able to read this data
         ),
     "usersUpdated" AS 
         (UPDATE public."User"
@@ -150,9 +150,9 @@ function resolveMarkets(app) {
     FROM 
       (SELECT DISTINCT "id", 'Market' AS "type" FROM "marketsUpdated"
          UNION 
-         select  "id" as "id", 'MarketUser' as "type" from "marketUsersUpdated"
+         select DISTINCT "id" as "id", 'MarketUser' as "type" from "marketUsersUpdated"
          UNION
-         select  "id" as "id", 'User' as "type" from "usersUpdated") as "test2"`;
+         select DISTINCT "id" as "id", 'User' as "type" from "usersUpdated") as "test2"`;
 
   const compiled = _.template(resolveQuery);
   const yesQuery = compiled({ curResult: 'TRUE', curField: 'yesShares' });
