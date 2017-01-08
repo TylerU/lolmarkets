@@ -59,6 +59,15 @@ const schema = {
       type: Sequelize.DOUBLE,
     },
   },
+  lastLogin: {
+    publicRead: false,
+    publicWrite: false,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.DATE,
+    },
+  },
 };
 
 module.exports = extractSchemaExports(schema);

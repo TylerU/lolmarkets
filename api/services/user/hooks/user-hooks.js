@@ -42,7 +42,11 @@ exports.before = {
     hooks.pluck.apply(hooks, inProperties),
     auth.verifyToken(),
     customHooks.validateHook(jsonSchema),
-    // auth.hashPassword(),
+    (hook) => {
+      if (hook.data.password) {
+        auth.hashPassword()(hook);
+      }
+    },
     auth.populateUser(),
     auth.restrictToAuthenticated(),
     auth.restrictToOwner({ ownerField: 'id' }),

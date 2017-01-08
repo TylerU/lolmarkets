@@ -9,10 +9,17 @@ module.exports = function () {
 
   app.configure(authentication(config));
 
+  function updateLastLogin(hook) {
+    hook.app.service('users').patch(hook.result.data.id, { lastLogin: new Date() });
+  }
+
   // Remove properties of user object so as not to leak data.
   app.service('auth/token').after({
-    create: [function (hook) {
-      hook.result.data = _.pick(hook.result.data, userOutProps);
-    }],
+    create: [
+      function (hook) {
+        hook.result.data = _.pick(hook.result.data, userOutProps);
+      },
+      updateLastLogin,
+    ],
   });
 };
