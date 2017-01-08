@@ -5,6 +5,7 @@ const transactions = require('../demodata/transaction');
 const Promise = require('bluebird');
 
 module.exports = function (app) {
+  if (app.settings.env !== 'development') return;
   const UserService = app.service('users');
   const ChannelService = app.service('channels');
   const MarketService = app.service('markets');

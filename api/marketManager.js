@@ -144,7 +144,7 @@ exports.handleNewGame = function handleNewGame(app, details) {
   const activeAccount = details.extraDetails.activeAccount;
   const name = channelIn.displayName;
 
-  const NUM_MARKETS = predictionGenerators.length-1; // TEMP
+  const NUM_MARKETS = 2;
   const generators = _.sampleSize(_.tail(predictionGenerators), NUM_MARKETS);
   generators.push(predictionGenerators[0]);
   const promises = _.map(generators, (gen) => {

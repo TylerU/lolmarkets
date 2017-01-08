@@ -4,5 +4,13 @@
       "secret": "+GJwhl9/93z1LNvxJ7xyIkEFFeqeErUYoub/Eeh4FIqLqr3j5nZoSt8UJkqogOP8iHUbJxo74R4L0OpRkZSFgw=="
     },
     "local": {}
-  }
+  },
+  "postgres": {
+    "host": "localhost",
+    "username": "postgres",
+    "password": "password",
+    "database": "lolmarkets"
+  },
+  "host": "localhost",
+  "port": 3030
 }
