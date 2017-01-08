@@ -10,6 +10,13 @@ const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngr
 const resolve = require('path').resolve;
 const app = express();
 
+let myApi;
+const runServerHere = false;
+
+if (runServerHere) {
+  myApi = require('../api/app');
+  app.use('/api', myApi);
+}
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
@@ -21,7 +28,7 @@ setup(app, {
 const port = argv.port || process.env.PORT || 3000;
 
 // Start your app.
-app.listen(port, (err) => {
+const server = app.listen(port, (err) => {
   if (err) {
     return logger.error(err.message);
   }
@@ -39,3 +46,7 @@ app.listen(port, (err) => {
     logger.appStarted(port);
   }
 });
+
+if (runServerHere) {
+  myApi.setup(server);
+}

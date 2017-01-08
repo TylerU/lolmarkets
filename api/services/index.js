@@ -20,16 +20,21 @@ module.exports = function () {
   const app = this;
 
   const pgSettings = app.get('postgres');
-  const sequelize = new Sequelize(pgSettings.database, pgSettings.username, pgSettings.password, {
-    host: pgSettings.host,
-    dialect: 'postgres',
-    logging,
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000,
-    },
-  });
+  const sequelize = new Sequelize(
+    pgSettings.database,
+    process.env.RDS_USERNAME || pgSettings.username,
+    process.env.RDS_PASSWORD || pgSettings.password,
+    {
+      host: process.env.RDS_HOSTNAME ? `${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}` : pgSettings.host,
+      dialect: 'postgres',
+      logging,
+      pool: {
+        max: 5,
+        min: 0,
+        idle: 10000,
+      },
+    }
+  );
 
   app.set('sequelize', sequelize);
 
