@@ -68,6 +68,15 @@ const schema = {
       type: Sequelize.DATE,
     },
   },
+  lastLoginReward: {
+    publicRead: false,
+    publicWrite: false,
+    sequelize: {
+      allowNull: true,
+      defaultValue: null,
+      type: Sequelize.DATE,
+    },
+  },
 };
 
 module.exports = extractSchemaExports(schema);

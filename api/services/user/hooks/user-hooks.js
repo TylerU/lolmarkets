@@ -4,7 +4,7 @@ const auth = require('feathers-authentication').hooks;
 const _ = require('lodash');
 const customHooks = require('../../../hooks');
 const schema = require('../user-schema');
-
+const moment = require('moment');
 const jsonSchema = schema.jsonSchema;
 const outProperties = schema.outProperties;
 const inProperties = schema.inProperties;
@@ -32,6 +32,8 @@ exports.before = {
     customHooks.overrideData((app) => ({
       superAdmin: false,
       money: app.get('businessSettings').startingMoney,
+      lastLogin: moment().toDate(),
+      lastLoginReward: moment().toDate(),
     })),
   ],
   update: [

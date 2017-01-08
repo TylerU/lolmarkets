@@ -7,7 +7,7 @@
   },
   "businessSettings": {
     "startingMoney": 100,
-    "loginReward": 10
+    "loginReward": 20
   },
   "market": {
     "startingYes": 500,
