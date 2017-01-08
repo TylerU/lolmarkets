@@ -480,7 +480,7 @@ class MarketItem extends React.Component {
               />
             </div>
             <div className="clearfix"></div>
-            <div className={`${styles.transactionListContainer}`}>
+              {this.props.market.marketUser && _.isNumber(this.props.market.marketUser.yesShares) ? <div className={`${styles.transactionListContainer}`}>
               <a href="#" onClick={(e) => this.transactionClick(e)}>
                 {this.state.transactionsOpen ? 'Hide' : 'View'} my transactions
               </a>
@@ -488,7 +488,7 @@ class MarketItem extends React.Component {
                 <div>
                   <TransactionTable transactions={this.props.userTransactions} />
                 </div> : null}
-            </div>
+            </div> : null}
           </Collapse> : null}
 
         </div>
