@@ -79,7 +79,9 @@ ReactDOM.render(
       render={
         // Scroll to top when going to a new page, imitating default browser
         // behaviour
-        applyRouterMiddleware(useScroll())
+        applyRouterMiddleware(useScroll((prevRouterProps, { location }) => {
+          return prevRouterProps && location.pathname !== prevRouterProps.location.pathname;
+        }))
       }
     />
   </Provider>,

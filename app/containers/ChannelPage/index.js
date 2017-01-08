@@ -18,16 +18,30 @@ import { transactionAmountChange } from 'globalReducers/transactions/actions';
 class EmbeddedTwitchPlayer extends React.Component {
   render() {
     return (
-      <iframe
-        className={styles.frame}
-        muted="true"
-        autoPlay={0}
-        frameBorder="0"
-        src={`http://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
-        scrolling="no"
-        allowFullScreen
-      >
-      </iframe>
+      <div>
+        <div className={`col-md-8 ${styles.frameContainer}`}>
+          <iframe
+            className={styles.frame}
+            muted="true"
+            autoPlay={0}
+            frameBorder="0"
+            src={`http://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
+            scrolling="no"
+            allowFullScreen
+          >
+          </iframe>
+        </div>
+        <div className={`col-md-4 ${styles.frameContainer}`}>
+          <iframe
+            frameBorder="0"
+            scrolling="no"
+            src={`http://www.twitch.tv/${_.toLower(this.props.stream)}/chat`}
+            className={`${styles.chat} col-md-3`}
+          >
+          </iframe>
+        </div>
+        <div className="clearfix"></div>
+      </div>
     );
   }
 }
@@ -74,7 +88,6 @@ export class StreamPage extends React.Component {
   render() {
     const stream = this.props.channel;
     const markets = _.values(this.props.markets);
-    // console.log(this.props.markets, stream);
 
     const allMarkets = (<div>
       <div className={styles.headerContainer}>
@@ -107,7 +120,7 @@ export class StreamPage extends React.Component {
         <h2>{stream ? stream.get('displayName') : ''}</h2>
         <div className={styles.embedContainer}>
           <div className={styles.embedItem}>
-            {/* <EmbeddedTwitchPlayer stream={stream.name} /> */}
+            {stream ? <EmbeddedTwitchPlayer stream={stream.get('twitchName')} /> : null}
           </div>
         </div>
         <Tabs activeKey={this.state.key} onSelect={(key) => this.handleSelect(key)} className={`${styles.marketTabsContainer}`} id="market-or-leaderboard-tabs">
