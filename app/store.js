@@ -23,13 +23,15 @@ export default function configureStore(initialState = {}, history) {
 
   const enhancers = [
     applyMiddleware(...middlewares),
-    devtools(),
+    // devtools(),
   ];
+
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   const store = createStore(
     createReducer(),
     fromJS(initialState),
-    compose(...enhancers)
+    composeEnhancers(...enhancers)
   );
 
   // Extensions
