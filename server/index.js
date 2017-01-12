@@ -11,7 +11,7 @@ const resolve = require('path').resolve;
 const app = express();
 
 let myApi;
-const runServerHere = false;
+const runServerHere = !isDev;
 
 if (runServerHere) {
   myApi = require('../api/app');

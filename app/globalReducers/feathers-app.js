@@ -4,7 +4,7 @@ const socketio = require('feathers-socketio/client');
 const hooks = require('feathers-hooks');
 const io = require('socket.io-client');
 
-const usePrefix = false;
+const usePrefix = process.env.NODE_ENV === 'production';
 const host = window.location.hostname + ':3030';
 const socket = usePrefix ? io() : io(host);
 
