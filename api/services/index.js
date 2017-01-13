@@ -21,11 +21,11 @@ module.exports = function () {
 
   const pgSettings = app.get('postgres');
   const sequelize = new Sequelize(
-    pgSettings.database,
+    process.env.RDS_DB_NAME || pgSettings.database,
     process.env.RDS_USERNAME || pgSettings.username,
     process.env.RDS_PASSWORD || pgSettings.password,
     {
-      host: process.env.RDS_HOSTNAME ? `${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}` : pgSettings.host,
+      host: process.env.RDS_HOSTNAME ? `${process.env.RDS_HOSTNAME}` : pgSettings.host,
       dialect: 'postgres',
       logging,
       pool: {
@@ -55,10 +55,6 @@ module.exports = function () {
 
   sequelize.sync({ force: app.settings.env === 'development', logging })
     .then(() => demoData(app))
-    .then(() => (app.settings.env === 'development' ?
-      sequelize.query('update public."User" set "superAdmin" = TRUE where username = \'admin\'', {
-        type: app.get('sequelize').QueryTypes.UPDATE,
-      }) : null))
     .then(() => twitchMonitor(app))
     .then(() => LeagueMonitor.startMonitoring(app))
     .then(null, (err) => app.logger.error('Error encountered during setup', err));
