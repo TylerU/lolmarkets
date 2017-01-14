@@ -13,8 +13,7 @@ import { selectHypotheticalTransaction, selectTransactionAmount } from './select
 
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
-import { app } from 'globalReducers/feathers-app';
-const TransactionService = app.service('transactions');
+import { TransactionService } from 'globalReducers/feathers-app';
 import { wrapWatcherWaitOnAuth } from 'globalReducers/util';
 
 function getTransaction(market, yesSharesDelta, noSharesDelta) {

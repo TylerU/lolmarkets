@@ -8,10 +8,10 @@ import { push } from 'react-router-redux';
 import _ from 'lodash';
 import { ATTEMPT_REAUTH, LOGOUT, LOGIN, REGISTER } from 'globalReducers/user/constants';
 import { reauthSuccess, reauthError, attemptReauth, login } from 'globalReducers/user/actions';
+import { app, UserService } from 'globalReducers/feathers-app';
 
 // import request from 'utils/request';
 // import { selectUsername } from 'containers/HomePage/selectors';
-import { app } from 'globalReducers/feathers-app';
 import {
   getFormValues,
   startSubmit,
@@ -98,7 +98,7 @@ export function* register() {
   const formData = yield select(getFormValues(formName));
   yield put(startSubmit(formName));
 
-  const auth = yield app.service('users').create({
+  const auth = yield UserService.create({
     email: formData.get('email'),
     password: formData.get('password'),
     username: formData.get('username'),
