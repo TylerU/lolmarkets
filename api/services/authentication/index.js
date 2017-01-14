@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 module.exports = function () {
   const app = this;
   const config = app.get('auth');
+  config.token.secret = process.env.AUTH_SECRET || '+GJwhl9/93z1LNvxJ7xyIkEFFeqeErUYoub/Eeh4FIqLqr3j5nZoSt8UJkqogOP8iHUbJxo74R4L0OpRkZSFgw==';
 
   app.configure(authentication(config));
 

@@ -1,7 +1,7 @@
 import { take, call, put, select, fork } from 'redux-saga/effects';
 import { takeEvery } from 'redux-saga';
 
-import { ATTEMPT_REAUTH, REAUTH_SUCCESS, REAUTH_ERROR, LOGOUT, LOGIN, REGISTER, LOGIN_SUCCESS, LOGIN_ERROR } from 'globalReducers/user/constants';
+import { ATTEMPT_REAUTH, REAUTH_SUCCESS, REAUTH_ERROR, LOGOUT, LOGIN, REGISTER, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGIN_ERROR } from 'globalReducers/user/constants';
 import { LOAD_CHANNEL_MARKETS } from 'globalReducers/markets/constants';
 import { LOAD_ALL_CHANNELS, LOAD_CHANNEL, LOAD_CHANNEL_BY_NAME } from 'globalReducers/channels/constants';
 import { SHOW_MARKET_TRANSACTIONS, LOAD_MARKET_TRANSACTIONS, EXECUTE_HYPOTHETICAL_TRANSACTION, HYPOTHETICAL_TRANSACTION_SUCCESS, HYPOTHETICAL_TRANSACTION_ERROR, EXECUTE_TRANSACTION, EXECUTE_TRANSACTION_SUCCESS, EXECUTE_TRANSACTION_ERROR } from 'globalReducers/transactions/constants';
@@ -66,4 +66,16 @@ export function* trackSigninWatcher() {
   ], trackSignin);
 }
 
-export default [trackUser, trackRouteWatcher, trackSigninWatcher];
+function* trackRegistration(action) {
+  if (!window.mixpanel) return;
+
+  window.mixpanel.alias(`${action.user.id}`);
+}
+
+export function* trackRegistrationWatcher() {
+  yield* takeEvery([
+    REGISTER_SUCCESS,
+  ], trackRegistration);
+}
+
+export default [trackRegistrationWatcher, trackUser, trackRouteWatcher, trackSigninWatcher];

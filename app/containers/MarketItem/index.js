@@ -8,6 +8,7 @@ import numeral from 'numeral';
 import styles from './styles.css';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { YesShareIcon, NoShareIcon } from 'components/ShareIcons';
 
 import {
   transactionAmountChange,
@@ -32,25 +33,7 @@ function formatPercent(x) {
   return numeral(x).format('0.0 %');
 }
 
-class YesShareIcon extends React.Component {
-  render() {
-    const curStyle = _.defaults(this.props.style || {}, { color: '#00bc8c' });
 
-    return (
-      <Glyphicon className={styles.shareIcon} glyph="ok-sign" style={curStyle} />
-    );
-  }
-}
-
-class NoShareIcon extends React.Component {
-  render() {
-    const curStyle = _.defaults(this.props.style || {}, { color: '#e74c3c' });
-
-    return (
-      <Glyphicon className={styles.shareIcon} glyph="remove-sign" style={curStyle} />
-    );
-  }
-}
 
 class SliderInputButton extends React.Component {
   constructor(props) {

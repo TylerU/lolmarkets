@@ -85,7 +85,7 @@ export function* loadChannelByNameActual(action) {
 }
 
 export function* loadAllChannelsActual() {
-  yield call(delay, 10);
+  yield call(delay, 50);
   const channels = yield ChannelService.find({ query: {
     isStreaming: true,
     $sort: {

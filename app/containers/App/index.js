@@ -65,8 +65,9 @@ export class App extends React.Component {
           <Navbar.Collapse>
             <Nav>
               <LinkContainer to="/streams"><NavItem eventKey={1}>Active Streams</NavItem></LinkContainer>
-              {this.props.loggedIn ? <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer> : null }
               <LinkContainer to="/leaderboard"><NavItem eventKey={4.4}>Leaderboard</NavItem></LinkContainer>
+              <LinkContainer to="/help"><NavItem eventKey={4.5}>Help / FAQ</NavItem></LinkContainer>
+              {this.props.loggedIn ? <LinkContainer to="/portfolio"><NavItem eventKey={4.3}>My Portfolio</NavItem></LinkContainer> : null }
             </Nav>
             {this.props.loggedIn ? (
               <Nav pullRight>

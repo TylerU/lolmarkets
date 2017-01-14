@@ -62,6 +62,14 @@ export default function createRoutes(store) {
           .catch(errorLoading);
       },
     }, {
+      path: '/help',
+      name: 'help',
+      getComponent(nextState, cb) {
+        System.import('containers/HomePage')
+          .then(loadModule(cb))
+          .catch(errorLoading);
+      },
+    }, {
       path: '/leaderboard',
       name: 'leaderboard',
       getComponent(nextState, cb) {

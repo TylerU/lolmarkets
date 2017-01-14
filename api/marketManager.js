@@ -14,6 +14,7 @@ exports.predictionTypes = {
   MORE_THAN_X_ASSISTS: 9,
   END_GAME_LEVEL_18: 10,
 };
+
 const predictionTypes = exports.predictionTypes;
 const predictionGenerators = [
   function willWin(activeAccount, name) {

@@ -25,6 +25,7 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   REGISTER,
+  REGISTER_SUCCESS,
 } from './constants';
 
 export function login(user) {
@@ -36,6 +37,13 @@ export function login(user) {
 export function register(user) {
   return {
     type: REGISTER,
+  };
+}
+
+export function registerSuccess(user) {
+  return {
+    type: REGISTER_SUCCESS,
+    user,
   };
 }
 

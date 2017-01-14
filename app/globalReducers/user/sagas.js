@@ -7,7 +7,7 @@ import { takeEvery, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import _ from 'lodash';
 import { ATTEMPT_REAUTH, LOGOUT, LOGIN, REGISTER } from 'globalReducers/user/constants';
-import { reauthSuccess, reauthError, attemptReauth, login } from 'globalReducers/user/actions';
+import { reauthSuccess, reauthError, attemptReauth, login, registerSuccess, } from 'globalReducers/user/actions';
 import { app, UserService } from 'globalReducers/feathers-app';
 
 // import request from 'utils/request';
@@ -106,6 +106,7 @@ export function* register() {
     .then((result) => ({ result }), (error) => ({ error }));
 
   if (!auth.error) {
+    yield put(registerSuccess(auth.result));
     yield put(stopSubmit(formName, {}));
     yield put(login());
   } else {
