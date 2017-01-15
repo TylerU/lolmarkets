@@ -14,10 +14,10 @@ const twitchMonitor = require('../twitchMonitor');
 const LeagueMonitor = require('../leagueMonitor');
 const MarketManager = require('../marketManager');
 
-const logging = false;
-
 module.exports = function () {
   const app = this;
+  let logging = (msg) => (app.logger ? app.logger.info(msg) : console.log(msg));
+  logging = false;
 
   const pgSettings = app.get('postgres');
   const sequelize = new Sequelize(
