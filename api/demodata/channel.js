@@ -15,6 +15,7 @@ module.exports = [
     isStreaming: false,
     leagueAccounts: [
       { id: 53742348, region: 'na' },
+      { id: 19660288, region: 'na' },
     ],
   },
   {

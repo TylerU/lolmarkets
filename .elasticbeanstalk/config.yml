@@ -1,7 +1,11 @@
 branch-defaults:
   master:
-    environment: zilean3-dev
+    environment: zilean-prod
     group_suffix: null
+environment-defaults:
+  zilean3-dev:
+    branch: null
+    repository: null
 global:
   application_name: zilean2
   branch: null
