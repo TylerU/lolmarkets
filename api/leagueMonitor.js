@@ -181,7 +181,12 @@ function checkForGameEnd(app) {
           MatchStateService.create({
             type: 'GAME_END',
             match,
-          });
+          }).then(
+            () => null,
+            (err) => {
+              app.logger.error('Error encountered ending game: ', err);
+              return null;
+            });
         }
         return Promise.resolve(match); // TODO - better return value?
       });
