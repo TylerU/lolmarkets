@@ -25,7 +25,7 @@ class EmbeddedTwitchPlayer extends React.Component {
             muted="true"
             autoPlay={0}
             frameBorder="0"
-            src={`http://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
+            src={`https://player.twitch.tv/?channel=${this.props.stream}&autoplay=false`}
             scrolling="no"
             allowFullScreen
           >
@@ -35,7 +35,7 @@ class EmbeddedTwitchPlayer extends React.Component {
           <iframe
             frameBorder="0"
             scrolling="no"
-            src={`http://www.twitch.tv/${_.toLower(this.props.stream)}/chat`}
+            src={`https://www.twitch.tv/${_.toLower(this.props.stream)}/chat`}
             className={`${styles.chat} col-md-3`}
           >
           </iframe>
