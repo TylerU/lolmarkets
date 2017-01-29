@@ -15,3 +15,5 @@ build.zip
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+acme-challenge/riot.txt
+test.txt

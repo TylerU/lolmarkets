@@ -98,7 +98,7 @@ function checkForGameStart(app) {
         Promise.all(_.map(updates, (obj) => MatchStateService.create({
           type: 'GAME_START',
           channelId: obj.id,
-          leagueGameRegion: obj.save.leagueGameRegion,
+          leagueGameRegion: _.toLower(obj.save.leagueGameRegion),
           leagueGameId: obj.save.leagueGameId,
           activeAccount: obj.extraDetails.activeAccount,
         }))))

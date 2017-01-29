@@ -65,6 +65,7 @@ const schema = {
     },
   },
   leagueGameRegion: {
+    publicRead: true,
     publicWrite: true,
     sequelize: {
       allowNull: true,

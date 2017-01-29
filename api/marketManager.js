@@ -176,6 +176,7 @@ function getResult(details, match) {
 
   const stats = participant.stats;
 
+
   function ensureHas(val, props) {
     if (_.intersection(_.keys(val), props).length === props.length) return true;
     throw new Error(`Invalid object received. Expected members: ${_.toString(props)}, but received object only has ${_.toString(_.keys(val))}`)
@@ -320,14 +321,15 @@ exports.handleGameOver = function handleGameOver(app, match) {
   // Resolve markets
   const MarketService = app.service('markets');
 
-  MarketService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
+  MarketService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: _.toLower(match.region) } })
     .then((markets) => markets.data)
     // Mark as inactive
-    .then((markets) => Promise.all(_.map(markets, (market) => MarketService.patch(market.id, {
-      active: false,
-      timeClosed: new Date(),
-      result: getResult(market.predictionDetails, match),
-    }))))
+    .then((markets) => Promise.all(_.map(markets, (market) =>
+      MarketService.patch(market.id, {
+        active: false,
+        timeClosed: new Date(),
+        result: getResult(market.predictionDetails, match),
+      }))))
     .then((markets) => resolveMarkets(app, markets))
     .then(
       () => app.logger.info(`Successfully resolved markets for match: ${match.matchId}`),

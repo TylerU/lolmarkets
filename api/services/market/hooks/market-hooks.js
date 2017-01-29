@@ -84,12 +84,21 @@ function getDefaults(app) {
   };
 }
 
+function processData(hook) {
+  if (hook.data && hook.data.leagueGameRegion) {
+    hook.data.leagueGameRegion = hook.data.leagueGameRegion.toLowerCase();
+  } else if (hook.params && hook.params.query && hook.params.query.leagueGameRegion) {
+    hook.params.query.leagueGameRegion = hook.params.query.leagueGameRegion.toLowerCase();
+  }
+}
+
 exports.before = {
   all: [
     customHooks.saveNormal(),
   ],
   find: [
     customHooks.pluckQuery(outProperties),
+    processData,
     customHooks.maybeVerifyToken(),
     auth.populateUser(),
   ],
@@ -100,6 +109,7 @@ exports.before = {
   ],
   create: [
     hooks.pluck.apply(hooks, inProperties),
+    processData,
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -113,6 +123,7 @@ exports.before = {
   patch: [
     customHooks.ensureId(),
     hooks.pluck.apply(hooks, inProperties),
+    processData,
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -127,6 +138,7 @@ exports.before = {
     customHooks.superAdminOnlyHook(),
   ],
 };
+
 
 exports.after = {
   all: [

@@ -19,7 +19,7 @@ class MatchStateService {
     const app = this.app;
     function updateChannelsOnGameOver(match) {
       const ChannelService = app.service('channels');
-      return ChannelService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: match.region } })
+      return ChannelService.find({ query: { $limit: 1000, leagueGameId: match.matchId, leagueGameRegion: _.toLower(match.region) } })
         .then((channels) => channels.data)
         .then((channels) => {
           if (channels.length > 0) {
@@ -39,7 +39,7 @@ class MatchStateService {
       return this.app.service('channels').patch(channelId, {
         inGame: true,
         leagueGameId,
-        leagueGameRegion,
+        leagueGameRegion: _.toLower(leagueGameRegion),
       })
         // Trigger market creation for the channel that's now in game
         .then((channel) =>

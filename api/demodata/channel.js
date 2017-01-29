@@ -233,5 +233,12 @@ module.exports = [
       { id: 20132258, region: 'na' },
     ],
   },
-
+  {
+    displayName: 'Krepo',
+    twitchName: 'Krepo',
+    isStreaming: false,
+    leagueAccounts: [
+      { id: 19307647, region: 'euw' },
+    ],
+  },
 ];
