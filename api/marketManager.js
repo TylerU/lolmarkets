@@ -79,15 +79,15 @@ const predictionGenerators = [
       },
     };
   },
-  function firstBlood(activeAccount, name) {
-    return {
-      name: `${name} will get or assist first blood`,
-      predictionDetails: {
-        type: predictionTypes.GET_FIRST_BLOOD,
-        activeAccount,
-      },
-    };
-  },
+  // function firstBlood(activeAccount, name) {
+  //   return {
+  //     name: `${name} will get or assist first blood`,
+  //     predictionDetails: {
+  //       type: predictionTypes.GET_FIRST_BLOOD,
+  //       activeAccount,
+  //     },
+  //   };
+  // },
   function doubleKill(activeAccount, name) {
     return {
       name: `${name} will get a double kill`,
@@ -199,7 +199,7 @@ function getResult(details, match) {
       ensureHas(details, ['cs']) &&
       stats.neutralMinionsKilled + stats.minionsKilled >= details.cs,
     GET_FIRST_BLOOD: () =>
-      ensureHas(stats, ['firstBloodAssist', 'firstBloodKill']) &&
+      /*ensureHas(stats, ['firstBloodAssist', 'firstBloodKill']) &&*/
       stats.firstBloodAssist || stats.firstBloodKill,
     GET_DOUBLEKILL: () =>
       ensureHas(stats, ['doubleKills']) &&
