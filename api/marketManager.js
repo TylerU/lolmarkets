@@ -275,9 +275,9 @@ function resolveMarkets(app) {
         ),
     "usersUpdated" AS 
         (UPDATE public."User"
-            SET "money" = "money" + "marketUsers"."<%= curField %>"
-            FROM "marketUsers"
-            WHERE "marketUsers"."user" = "User"."id"
+            SET "money" = "money" + "mu"."<%= curField %>"
+            FROM (select "user", SUM("<%= curField %>") as "<%= curField %>" from "marketUsers" group by "user") mu
+            WHERE "mu"."user" = "User"."id"
           RETURNING "User"."id" as "id"
         ),
     "marketsUpdated" AS 

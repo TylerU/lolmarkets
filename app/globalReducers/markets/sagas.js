@@ -2,6 +2,8 @@
 import { take, call, put, select, fork, cancel, race, cancelled } from 'redux-saga/effects';
 import { takeEvery, eventChannel } from 'redux-saga';
 
+import { USER_UPDATE } from 'globalReducers/user/constants';
+
 import {
   LOAD_CHANNEL_MARKETS,
   SUBSCRIBE_CHANNEL_MARKETS,
@@ -16,6 +18,7 @@ import {
   loadChannelMarketsSuccess,
   loadMarketSuccess,
   subscribeChannelMarkets,
+  loadChannelMarkets,
 } from './actions';
 import _ from 'lodash';
 
@@ -47,7 +50,7 @@ export function channelMarketChangeEmitter(channelId) {
   });
 }
 
-export function* loadChannelMarkets(action) {
+export function* loadChannelMarketsWorker(action) {
   let channelId = null;
   if (action.channelObj) {
     channelId = action.channelObj.get('id');
@@ -75,7 +78,9 @@ export function* loadChannelMarkets(action) {
     channelId = channel.channel.id;
   }
 
-  yield put(subscribeChannelMarkets(channelId, action.channelName));
+  if (action.subscribe) {
+    yield put(subscribeChannelMarkets(channelId, action.channelName));
+  }
 
   const markets = yield MarketService.find({ query: { channel: channelId, active: true } })
       .then((res) => ({ res: res.data }), (err) => ({ err }));
@@ -88,7 +93,7 @@ export function* loadChannelMarkets(action) {
 }
 
 export function* loadChannelMarketsWatcher() {
-  yield* wrapWatcherWaitOnAuth(LOAD_CHANNEL_MARKETS, loadChannelMarkets);
+  yield* wrapWatcherWaitOnAuth(LOAD_CHANNEL_MARKETS, loadChannelMarketsWorker);
 }
 
 function* watchChannelMarketChanges(channelId) {
@@ -135,9 +140,26 @@ function* fetchNewMarketOnChange() {
   yield* wrapWatcherWaitOnAuth(MARKET_UPDATED, fetchUpdatedMarket);
 }
 
+function* updateMarketsOnUserChange() {
+  const markets = yield select((state) => state.get('markets').keySeq().toArray());
+  for (let i = 0; i < markets.length; i++) {
+    yield put({
+      type: MARKET_UPDATED,
+      market: {
+        id: markets[i],
+      },
+    });
+  }
+}
+
+function* userChangeWatcher() {
+  yield* wrapWatcherWaitOnAuth(USER_UPDATE, updateMarketsOnUserChange);
+}
+
 // Bootstrap sagas
 export default [
   loadChannelMarketsWatcher,
   channelMarketsChanges,
   fetchNewMarketOnChange,
+  userChangeWatcher,
 ];

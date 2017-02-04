@@ -45,6 +45,15 @@ export function loadChannelMarketsAndSubscribe(channelName, channelObj) {
     type: LOAD_CHANNEL_MARKETS,
     channelName,
     channelObj,
+    subscribe: true,
+  };
+}
+
+export function loadChannelMarkets(channelName, channelObj) {
+  return {
+    type: LOAD_CHANNEL_MARKETS,
+    channelName,
+    channelObj,
   };
 }
 
