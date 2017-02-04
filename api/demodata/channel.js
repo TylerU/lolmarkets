@@ -140,6 +140,7 @@ module.exports = [
       { id: 38249375, region: 'na' },
       { id: 50759303, region: 'na' },
       { id: 74612923, region: 'na' },
+      { id: 75871222, region: 'na' },
     ],
   },
   {

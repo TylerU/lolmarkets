@@ -27,6 +27,7 @@ function execElem(i, arr, fn) {
 function checkForGameStart(app) {
   const ChannelService = app.service('channels');
   const MatchStateService = app.service('match-state');
+  const MarketService = app.service('markets');
   function getCurrentGameId(account) {
     const relevantQueueTypes = {
       RANKED_SOLO_5x5:	4,
@@ -51,14 +52,32 @@ function checkForGameStart(app) {
             return null;
           }
           throw err;
-        });
+        })
+      .then((gameId) => {
+        if (gameId) {
+          return MarketService.find({ query: {
+            $limit: 1,
+            leagueGameId: gameId,
+            leagueGameRegion: _.toLower(account.region),
+            active: false,
+          } })
+            .then((res) => {
+              if (res.data.length === 0) {
+                return gameId;
+              } else {
+                app.logger.info(`Preventing game start because game is known to be over. Account: ${account.id}. Game: ${gameId}`);
+                return null;
+              }
+            });
+        }
+        return gameId;
+      });
   }
 
   function checkAllAccountsForActiveGame(accounts) {
     return Promise.all(_.map(accounts, getCurrentGameId));
   }
 
-  // TODO - may be swallowing errors
   function checkChannelObjectsForGameStart(channels) {
     return Promise.all(
       _.chain(channels)
@@ -92,16 +111,17 @@ function checkForGameStart(app) {
             });
           })
           .value())
-      .then((updates) =>
+      .then((updates) => {
         // Update inGame and current game id  HERE
         // Trigger market creation for each channel that is now in game
-        Promise.all(_.map(updates, (obj) => MatchStateService.create({
+        return Promise.all(_.map(updates, (obj) => MatchStateService.create({
           type: 'GAME_START',
           channelId: obj.id,
           leagueGameRegion: _.toLower(obj.save.leagueGameRegion),
           leagueGameId: obj.save.leagueGameId,
           activeAccount: obj.extraDetails.activeAccount,
-        }))))
+        })));
+      })
       .then(
         () => app.logger.info('Successfully checked for game starts'),
         (err) => app.logger.error('League Game Start Check failed with error', err));
@@ -182,7 +202,7 @@ function checkForGameEnd(app) {
             type: 'GAME_END',
             match,
           }).then(
-            () => null,
+            () => app.logger.info('Ended Game'),
             (err) => {
               app.logger.error('Error encountered ending game: ', err);
               return null;
