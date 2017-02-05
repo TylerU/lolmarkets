@@ -16,10 +16,27 @@ import { transactionAmountChange } from 'globalReducers/transactions/actions';
 
 
 class EmbeddedTwitchPlayer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showChat: true,
+    };
+  }
+
+  toggleShowChat() {
+    this.setState({
+      showChat: !this.state.showChat,
+    });
+  }
+
   render() {
     return (
       <div>
-        <div className={`col-md-8 ${styles.frameContainer}`}>
+        <div className={styles.showHideButton}>
+          <a href="#" style={{ float: 'right' }} onClick={() => this.toggleShowChat()}>{this.state.showChat ? 'Hide' : 'Show'} Chat Window</a>
+        </div>
+        <div className="clearfix"></div>
+        <div className={`col-md-${this.state.showChat ? '8' : '12'} ${styles.frameContainer} ${this.state.showChat ? styles.containerShort : styles.containerTall}`}>
           <iframe
             className={styles.frame}
             muted="true"
@@ -31,7 +48,7 @@ class EmbeddedTwitchPlayer extends React.Component {
           >
           </iframe>
         </div>
-        <div className={`col-md-4 ${styles.frameContainer}`}>
+        {this.state.showChat ? (<div className={`col-md-4 ${styles.frameContainer}`}>
           <iframe
             frameBorder="0"
             scrolling="no"
@@ -39,7 +56,7 @@ class EmbeddedTwitchPlayer extends React.Component {
             className={`${styles.chat} col-md-3`}
           >
           </iframe>
-        </div>
+        </div>) : null}
         <div className="clearfix"></div>
       </div>
     );
