@@ -69,7 +69,7 @@ const predictionGenerators = [
     };
   },
   function csCount(activeAccount, name) {
-    const num = _.random(4, 28) * 10;
+    const num = _.random(15, 30) * 10;
     return {
       name: `${name} will get ${num} or more cs`,
       predictionDetails: {
